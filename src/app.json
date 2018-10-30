@@ -1,0 +1,32 @@
+{
+  "pages": [
+    "pages/list/main",
+    "pages/index/main",
+    "pages/map/main",
+    "pages/quiz/main",
+    "pages/my-reward/main",
+    "pages/quizdetail/main",
+    "pages/my-msg/main",
+  
+    "pages/paint/main",
+    
+    "pages/first/main",
+    
+    "pages/video/main",
+    "pages/scan/main",
+    "pages/my/main",
+    "pages/my-rule/main",
+    "pages/my-statement/main",
+    "pages/my-about/main",
+    "pages/my-suggest/main",
+    "pages/logs/main",
+    "pages/counter/main"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#53c6f7",
+    "backgroundColor": "#53c6f7",
+    "navigationBarTitleText": "青古线",
+    "navigationBarTextStyle": "#ffffff"
+  }
+}
