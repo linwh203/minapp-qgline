@@ -182,11 +182,13 @@ export default {
   },
   onLoad(option) {
     this.listItem = wx.getStorageSync('spotList');
-    if (option.from) {
-      this.fromMap = true
-      this.changeArticle(option.spot_index, option.spot_id)
+    console.log(option)
+    if (option.spot_index) {
+      // this.fromMap = true
+
+      this.changeArticle(option.spot_index, 1)
     } else {
-      this.changeArticle(1,this.listItem[0].spot_id)
+      this.changeArticle(1,1)
       // this.mainPic =
       //   "https://gw.alicdn.com/tfs/TB1xjt7hmzqK1RjSZFLXXcn2XXa-600-6588.png";
     }
