@@ -17,55 +17,6 @@
         <img src="../../assets/icon-index-my.png" alt="">
       </div>
     </div>
-    <!-- <scroll-view scroll-x class="index-list" v-if="listView">
-      <div class="index-list-box">
-        <div class="index-list-item">
-          <div class="index-list-item-img"><img src="../../assets/list-pic-1.png" alt=""></div>
-          <div class="index-list-item-title">深圳多样的生命</div>
-        </div>
-        <div class="index-list-item">
-          <div class="index-list-item-img"><img src="../../assets/list-pic-2.png" alt=""></div>
-          <div class="index-list-item-title">哦,你就是蝴蝶</div>
-        </div>
-        <div class="index-list-item">
-          <div class="index-list-item-img"><img src="../../assets/list-pic-3.png" alt=""></div>
-          <div class="index-list-item-title">生命的互联网故事</div>
-        </div>
-        <div class="index-list-item">
-          <div class="index-list-item-img"><img src="../../assets/list-pic-4.png" alt=""></div>
-          <div class="index-list-item-title">看花识蔬菜</div>
-        </div>
-        <div class="index-list-item">
-          <div class="index-list-item-img"><img src="../../assets/list-pic-5.png" alt=""></div>
-          <div class="index-list-item-title">农科院基地的候鸟</div>
-        </div>
-        <div class="index-list-item">
-          <div class="index-list-item-img"><img src="../../assets/list-pic-6.png" alt=""></div>
-          <div class="index-list-item-title">大眼睛飞行侠蜻蜓</div>
-        </div>
-        <div class="index-list-item">
-          <div class="index-list-item-img"><img src="../../assets/list-pic-7.png" alt=""></div>
-          <div class="index-list-item-title">外星人--昆虫</div>
-        </div>
-        <div class="index-list-item">
-          <div class="index-list-item-img"><img src="../../assets/list-pic-8.png" alt=""></div>
-          <div class="index-list-item-title">如何种植水稻</div>
-        </div>
-        <div class="index-list-item">
-          <div class="index-list-item-img"><img src="../../assets/list-pic-9.png" alt=""></div>
-          <div class="index-list-item-title">飞吧，鸟儿们</div>
-        </div>
-        <div class="index-list-item">
-          <div class="index-list-item-img"><img src="../../assets/list-pic-10.png" alt=""></div>
-          <div class="index-list-item-title">听一场自然音乐会</div>
-        </div>
-      </div>
-    </scroll-view>
-    <div class="index-list-close" v-if="listView">
-      <div class="index-list-close-body" @click="hideList">
-        <img src="../../assets/btn-close-list.png" alt="">
-      </div>
-    </div> -->
     
     <img src="../../assets/bg-index.jpg" alt="" class="index-bg">
   </div>
@@ -84,12 +35,20 @@ export default {
   components: {},
 
   methods: {
-    /* showList() {
-      this.listView = true
+    setStorage(key, val) {
+      try {
+        wx.setStorageSync(key,val)
+      } catch(e) {
+        wx.setStorage(key,val)
+      }
     },
-    hideList() {
-      this.listView = false
-    }, */
+    getStorage(key) {
+      try {
+        wx.getStorageSync(key)
+      } catch(e) {
+        wx.getStorage(key)
+      }
+    },
     bindTab(url) {
       wx.navigateTo({ url: url });
     },
@@ -110,7 +69,7 @@ export default {
         dataType: 'json', 
         success: res => {
           // console.log('login',res.data.data)
-          wx.setStorageSync('userCode',res.data.data)
+          this.setStorage('userCode',res.data.data)
         },
         fail: err => {
           console.log('hasError',err)
@@ -129,7 +88,7 @@ export default {
         success: res => {
           // console.log(res)
           // self.GLOBAL.spot_list = res.data.data
-          wx.setStorageSync('spotList',res.data.data)
+          this.setStorage('spotList',res.data.data)
         },
         fail: () => {},
         complete: () => {}
@@ -160,13 +119,13 @@ export default {
     }
   },
   onShow() {
-    wx.login({
-      success: (res) => {
-        console.log(res)
-        this.login(res.code);
-      }
-    }); 
-    this.getSpot();
+    // wx.login({
+    //   success: (res) => {
+    //     console.log(res)
+    //     this.login(res.code);
+    //   }
+    // }); 
+    // this.getSpot();
   }
 };
 </script>

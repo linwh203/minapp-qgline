@@ -69,26 +69,28 @@ export default {
   },
 
   created() {
-    this.userCode = wx.getStorageSync('userCode');
+    
   },
   mounted() {
-    wx.request({
-      url: config.base + 'quiz/getcheckpoint', 
-      data: {
-        LineId: config.lineId,
-        token: this.userCode
-      }, 
-      method: 'GET',
-      dataType: 'json', 
-      success: res => {
-        console.log(res.data)
-        this.score = res.data.data
-      },
-      fail: () => {},
-      complete: () => {}
-    });
+    // this.userCode = wx.getStorageSync('userCode');
+    // wx.request({
+    //   url: config.base + 'quiz/getcheckpoint', 
+    //   data: {
+    //     LineId: config.lineId,
+    //     token: this.userCode
+    //   }, 
+    //   method: 'GET',
+    //   dataType: 'json', 
+    //   success: res => {
+    //     console.log(res.data)
+    //     this.score = res.data.data
+    //   },
+    //   fail: () => {},
+    //   complete: () => {}
+    // });
   },
   onShow() {
+    this.userCode = wx.getStorageSync('userCode');
     wx.request({
       url: config.base + 'quiz/getcheckpoint', 
       data: {

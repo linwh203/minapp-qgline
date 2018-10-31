@@ -19,10 +19,11 @@ export function formatTime (date) {
 }
 
 export const config = {
-  base: 'http://39.106.120.41:8499/guidewechat/',
+  prefix: 'https://yxj.forestvisual.com',
+  base: 'https://yxj.forestvisual.com/guidewechat/',
   lineId: 'D508727E-3A3E-48BE-9F1B-6EB2F4063B2C',
-  appId: 'wxb6db5e06d4a0078a',
-  appSecret: '8035eac66a0427e510aedb20b1a3af08'
+  appId: 'wx64104ee36c863058',
+  appSecret: '1b3f1d4dc4d895247c60d0d426aca413'
 }
 //儿童线
 // AppID：wxb6db5e06d4a0078a

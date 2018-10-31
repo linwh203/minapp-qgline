@@ -1,7 +1,7 @@
 {
-  "name": "qingguline",
+  "name": "childline",
   "version": "1.0.0",
-  "description": "app for qingguline park",
+  "description": "app for childline park",
   "author": "LinWH <298976461@qq.com>",
   "private": true,
   "scripts": {

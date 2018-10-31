@@ -25,6 +25,20 @@ export default {
   components: {},
 
   methods: {
+    setStorage(key, val) {
+      try {
+        wx.setStorageSync(key,val)
+      } catch(e) {
+        wx.setStorage(key,val)
+      }
+    },
+    getStorage(key) {
+      try {
+        wx.getStorageSync(key)
+      } catch(e) {
+        wx.getStorage(key)
+      }
+    },
     bindNext() {
       wx.setStorageSync('firsttime', true)
       const url = "../index/main";
@@ -52,12 +66,6 @@ export default {
           console.log(res);
         }
       });
-      // 调用登录接口
-      // wx.login({
-      //   success: (res) => {
-      //     console.log('login',res)
-      //   }
-      // }); 
     },
     getUserInfo1() {
       console.log("click事件首先触发");
@@ -81,7 +89,8 @@ export default {
         const province = userInfo.province;
         const city = userInfo.city;
         const country = userInfo.country;
-        wx.setStorageSync("userInfo", userInfo);
+        // wx.setStorageSync("userInfo", userInfo);
+        this.setStorage("userInfo", userInfo)
         this.motto = false;
       } else {
         //用户按了拒绝按钮

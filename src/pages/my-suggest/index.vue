@@ -43,8 +43,26 @@ export default {
         success: res => {
           console.log(res)
           this.imgList = res.tempFilePaths
-          this.tempFile = res.tempFiles
+          const self = this
+          for(let i=0;i<res.tempFilePaths.length;i++){
+            self.postImg(res.tempFilePaths[i])
+          }
+          
         }, //返回图片的本地文件路径列表 tempFilePaths,
+        fail: () => {},
+        complete: () => {}
+      });
+    },
+    postImg(file) {
+      wx.uploadFile({
+        url: config.base + 'photo/UpdatePhoto', //开发者服务器 url
+        filePath: file, //要上传文件资源的路径
+        name: 'name', //文件对应的 key , 开发者在服务器端通过这个 key 可以获取到文件二进制内容
+        success: res => {
+          let data = JSON.parse(res.data).data
+          console.log(res.data)
+          this.tempFile.push(config.prefix + data)
+        },
         fail: () => {},
         complete: () => {}
       });
@@ -70,18 +88,18 @@ export default {
         });
         return 
       }
+      const token = wx.getStorageSync('userCode');
       wx.request({
         url: config.base + 'my/suggest', //开发者服务器接口地址",
         data: {
-          
           lineId: config.lineId,
           suggest: this.text,
           phone: this.contact,
-          image_url_list: this.imgList
+          image_url_list: this.tempFile
         }, //请求的参数",
         method: 'post',
         header: {
-          token: this.userCode,
+          token: token,
         },
         dataType: 'json', //如果设为json，会尝试对返回的数据做一次 JSON.parse
         success: res => {
@@ -94,6 +112,10 @@ export default {
               mask: true, //显示透明蒙层，防止触摸穿透,
               success: res => {}
             });
+            this.text=''
+            this.contact=''
+            this.imgList=[]
+            this.tempFile=[]
           } else {
             wx.showToast({
               title: '反馈失败，请稍后再试', //提示的内容,

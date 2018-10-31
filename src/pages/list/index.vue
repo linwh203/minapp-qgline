@@ -86,6 +86,20 @@ export default {
   components: {},
 
   methods: {
+    setStorage(key, val) {
+      try {
+        wx.setStorageSync(key,val)
+      } catch(e) {
+        wx.setStorage(key,val)
+      }
+    },
+    getStorage(key) {
+      try {
+        wx.getStorageSync(key)
+      } catch(e) {
+        wx.getStorage(key)
+      }
+    },
     bindTab() {
       this.fromMap
         ? wx.navigateTo({ url: "../map/main" })
@@ -119,59 +133,79 @@ export default {
 
       const currentId = parseInt(id)
       this.activeIndex = currentId
-      // wx.request({
-      //   url: config.base + 'spot/listdetail', //开发者服务器接口地址",
-      //   data: {
-      //     spot_id: spot_id,
-      //     lineId: config.lineId
-      //   }, //请求的参数",
-      //   method: 'GET',
-      //   dataType: 'json', //如果设为json，会尝试对返回的数据做一次 JSON.parse
-      //   success: res => {
-      //     console.log(res.data.data)
-      //     this.innerAudioContext = wx.createInnerAudioContext();
-      //     this.audioUrl = res.data.data[0].audio_url == null ? '' :  "http://39.106.120.41:8499" + res.data.data[0].audio_url
-      //     this.videoUrl = res.data.data[0].video_url == null ? '' :  "http://39.106.120.41:8499" + res.data.data[0].video_url
-      //     if (this.audioUrl) {
-      //       this.innerAudioContext.src = this.audioUrl
-      //     }
-      //   },
-      //   fail: () => {},
-      //   complete: () => {}
-      // });
+      wx.request({
+        url: config.base + 'spot/listdetail', //开发者服务器接口地址",
+        data: {
+          spot_id: spot_id,
+          lineId: config.lineId
+        }, //请求的参数",
+        method: 'GET',
+        dataType: 'json', //如果设为json，会尝试对返回的数据做一次 JSON.parse
+        success: res => {
+          console.log(res.data.data)
+          this.mainPic = config.prefix + res.data.data[0].image_url
+          this.innerAudioContext = wx.createInnerAudioContext();
+          this.audioUrl = res.data.data[0].audio_url == null ? '' :  config.prefix + res.data.data[0].audio_url
+          this.videoUrl = res.data.data[0].video_url == null ? '' :  config.prefix + res.data.data[0].video_url
+          if (this.audioUrl) {
+            this.innerAudioContext.src = this.audioUrl
+          }
+        },
+        fail: () => {},
+        complete: () => {}
+      });
       // this.mainPic = `http://39.106.120.41:8499/${item.spot_image}`
-      switch (currentId) {
-        case 1:
-          this.mainPic = "https://gw.alicdn.com/tfs/TB1xjt7hmzqK1RjSZFLXXcn2XXa-600-6588.png"
-          break
-        case 2:
-          this.mainPic = "https://gw.alicdn.com/tfs/TB1kqGghgDqK1RjSZSyXXaxEVXa-600-2235.png"
-          break
-        case 3:
-          this.mainPic = "https://gw.alicdn.com/tfs/TB1no5jhgHqK1RjSZFkXXX.WFXa-600-6394.png"
-          break
-        case 4:
-          this.mainPic = "https://gw.alicdn.com/tfs/TB1f.idhb2pK1RjSZFsXXaNlXXa-600-4136.png"
-          break
-        case 5:
-          this.mainPic = "https://gw.alicdn.com/tfs/TB1bHihhmzqK1RjSZFLXXcn2XXa-600-6676.png"
-          break
-        case 6:
-          this.mainPic = "https://gw.alicdn.com/tfs/TB1c4unhhTpK1RjSZFMXXbG_VXa-600-2808.png"
-          break
-        case 7:
-          this.mainPic = "https://gw.alicdn.com/tfs/TB1.SOChhnaK1RjSZFBXXcW7VXa-600-8017.png"
-          break
-        case 8:
-          this.mainPic = "https://gw.alicdn.com/tfs/TB1YzKkhkvoK1RjSZFDXXXY3pXa-600-4388.png"
-          break
-        case 9:
-          this.mainPic = "https://gw.alicdn.com/tfs/TB1ChGjhkvoK1RjSZPfXXXPKFXa-600-4368.png"
-          break
-        case 10:
-          this.mainPic = "https://gw.alicdn.com/tfs/TB1g_GjhgHqK1RjSZFkXXX.WFXa-600-6135.png"
-          break
-      } 
+      // switch (currentId) {
+      //   case 1:
+      //     this.mainPic = "https://gw.alicdn.com/tfs/TB1xjt7hmzqK1RjSZFLXXcn2XXa-600-6588.png"
+      //     break
+      //   case 2:
+      //     this.mainPic = "https://gw.alicdn.com/tfs/TB1YzKkhkvoK1RjSZFDXXXY3pXa-600-4388.png"
+      //     break
+      //   case 3:
+      //     this.mainPic = "https://gw.alicdn.com/tfs/TB1kqGghgDqK1RjSZSyXXaxEVXa-600-2235.png"
+      //     break
+      //   case 4:
+      //     this.mainPic = "https://gw.alicdn.com/tfs/TB1f.idhb2pK1RjSZFsXXaNlXXa-600-4136.png"
+      //     break
+      //   case 5:
+      //     this.mainPic = "https://gw.alicdn.com/tfs/TB1bHihhmzqK1RjSZFLXXcn2XXa-600-6676.png"
+      //     break
+      //   case 6:
+      //     this.mainPic = "https://gw.alicdn.com/tfs/TB1ChGjhkvoK1RjSZPfXXXPKFXa-600-4368.png"
+      //     break
+      //   case 7:
+      //     this.mainPic = "https://gw.alicdn.com/tfs/TB1.SOChhnaK1RjSZFBXXcW7VXa-600-8017.png"
+      //     break
+      //   case 8:
+      //     this.mainPic = "https://gw.alicdn.com/tfs/TB1no5jhgHqK1RjSZFkXXX.WFXa-600-6394.png"
+      //     break
+      //   case 9:
+      //     this.mainPic = "https://gw.alicdn.com/tfs/TB1c4unhhTpK1RjSZFMXXbG_VXa-600-2808.png"
+      //     break
+      //   case 10:
+      //     this.mainPic = "https://gw.alicdn.com/tfs/TB1g_GjhgHqK1RjSZFkXXX.WFXa-600-6135.png"
+      //     break
+      // } 
+    },
+    getSpot() {
+      const self = this
+      wx.request({
+        url: config.base + 'spot/list', //开发者服务器接口地址",
+        data: {
+          lineId:config.lineId
+        }, //请求的参数",
+        method: 'GET',
+        dataType: 'json', //如果设为json，会尝试对返回的数据做一次 JSON.parse
+        success: res => {
+          // console.log(res)
+          // self.GLOBAL.spot_list = res.data.data
+          this.listItem = res.data.data
+          this.setStorage('spotList',res.data.data)
+        },
+        fail: () => {},
+        complete: () => {}
+      });
     }
   },
 
@@ -181,17 +215,20 @@ export default {
     // this.innerAudioContext.src = this.audioUrl;
   },
   onLoad(option) {
-    this.listItem = wx.getStorageSync('spotList');
-    console.log(option)
-    if (option.spot_index) {
-      // this.fromMap = true
-
-      this.changeArticle(option.spot_index, 1)
+    if (wx.getStorageSync('spotList')) {
+      this.listItem = wx.getStorageSync('spotList');
     } else {
-      this.changeArticle(1,1)
+      this.getSpot()
+    }
+    if (option.from) {
+      this.fromMap = true
+      this.changeArticle(option.spot_index, option.spot_id)
+    } else {
+      this.changeArticle(1,'bb022960-ee1c-4d54-a9ab-7fff67e63c45')
       // this.mainPic =
       //   "https://gw.alicdn.com/tfs/TB1xjt7hmzqK1RjSZFLXXcn2XXa-600-6588.png";
     }
+    this.innerAudioContext = wx.createInnerAudioContext()
   },
   onHide() {
     this.audioOff = true;
@@ -212,7 +249,7 @@ export default {
   },
   onShareAppMessage(result) {
     let title = "儿童研习径";
-    let path = "/pages/list/main?spot_id=" + this.activeIndex;
+    let path = "/pages/list/main?spot_index=" + this.activeIndex;
     let imageUrl = "../../assets/list-pic-1.png";
     // let desc = '这里是描述哦'
     // if (result.from === "button") {
@@ -307,8 +344,9 @@ export default {
   border-radius: 8rpx;
   background: #fff;
   overflow: hidden;
+  height: 84%;
   &-view {
-    height: 954rpx;
+    height: 100%;
     img {
       width: 100%;
       height: auto;
@@ -320,7 +358,7 @@ export default {
     position: absolute;
     left: 10rpx;
     right: 10rpx;
-    top: 972rpx;
+    top: 85%;
     margin: auto;
     border-radius: 8rpx;
     background: #a97b4f;
@@ -338,8 +376,8 @@ export default {
     display: block;
   }
   &-box {
-    padding-top: 40rpx;
-    height: 180rpx;
+    padding-top: 5%;
+    height: 20%;
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
@@ -373,7 +411,7 @@ export default {
     height: 80rpx;
     border-radius: 50%;
     position: fixed;
-    bottom: 180rpx;
+    bottom: 12.5%;
     right: 74rpx;
     z-index: 999;
     background: rgba(0, 0, 0, 0.7);

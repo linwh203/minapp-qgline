@@ -3,13 +3,13 @@
     <scroll-view scroll-x class="index-list">
       <div class="index-list-box">
         <div class="index-list-item" v-for="(item, index) in paintList" :key="index">
-          <img :src="'http://39.106.120.41:8499'+item.pic_icon_active" @load="setWidth(index,$event)" data-index=index v-bind:style="{ width: item.width + 'rpx'}" class="index-list-item-img" @click="changeArticle(index,item)" v-if="activeIndex == index">
-          <img :src="'http://39.106.120.41:8499'+item.pic_icon" @load="setWidth(index,$event)" data-index=index v-bind:style="{ width: item.width + 'rpx'}" class="index-list-item-img" @click="changeArticle(index,item)" v-else>
+          <img :src="prefix+item.pic_icon_active" @load="setWidth(index,$event)" data-index=index v-bind:style="{ width: index==2?'185rpx':'145rpx'}" class="index-list-item-img" @click="changeArticle(index,item)" v-if="activeIndex == index">
+          <img :src="prefix+item.pic_icon" @load="setWidth(index,$event)" data-index=index v-bind:style="{ width: index==2?'185rpx':'145rpx'}" class="index-list-item-img" @click="changeArticle(index,item)" v-else>
         </div>
       </div>
     </scroll-view>
     <scroll-view scroll-x class="paint-bg">
-      <img :src="'http://39.106.120.41:8499'+mainPic" @load="imageLoad" lazy-load v-bind:style="{ width: imgWidth + 'rpx'}">
+      <img :src="prefix+mainPic" @load="imageLoad" lazy-load v-bind:style="{ width: imgWidth + 'rpx'}">
     </scroll-view>
   </div>
 </template>
@@ -35,7 +35,8 @@ export default {
         {src:"https://gw.alicdn.com/tfs/TB1QqUKimzqK1RjSZFjXXblCFXa-187-146.png"},
         {src:"https://gw.alicdn.com/tfs/TB1QqUKimzqK1RjSZFjXXblCFXa-187-146.png"}
       ],
-      paintList:[]
+      paintList:[],
+      prefix:config.prefix
     };
   },
 
@@ -48,6 +49,7 @@ export default {
     setWidth(index,e) {
       const ratio = e.target.width/e.target.height
       this.tabList[index].width = parseInt(145*ratio)
+      console.log(index,this.tabList[index].width)
     },
     imageLoad(e) {
       const height = 1206

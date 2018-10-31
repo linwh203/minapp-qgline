@@ -61,7 +61,7 @@ export default {
   data() {
     return {
       userCode:'',
-      score:''
+      score:0
     };
   },
 

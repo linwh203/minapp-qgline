@@ -20,14 +20,18 @@
       
     </div>
     <div class="result-tab" v-if="showResult">
-      <div class="result-tab-item">
-        <div class="result-tab-item-name">大葱</div>
-        <div class="result-tab-item-desc">大葱辣眼睛，你比大葱凶</div>
-        <div class="result-tab-item-pic active">
-          <img :src="src" >
-          <div class="result-tab-item-pic-hint">点击查看详情</div>
+      <scroll-view scroll-x class="result-tab-scroll" :scroll-into-view="toView">
+        <div class="result-tab-box">
+          <div class="result-tab-item" v-for="(item,index) in matchItem" :key="index" :id="'result'+index">
+            <div class="result-tab-item-name">{{item.name}}</div>
+            <div class="result-tab-item-desc">{{item.desc}}</div>
+            <div class="result-tab-item-pic active">
+              <img :src="src" >
+              <div class="result-tab-item-pic-hint">匹配度:{{item.match}}%</div>
+            </div>
+         </div>
         </div>
-      </div>
+      </scroll-view>
     </div>
     <cover-view class="desc" v-if="showDesc">
       <cover-view>拍照识别物种：对准你好奇的物种，</cover-view>
@@ -37,13 +41,18 @@
 </template>
 
 <script>
+import { config } from '../../utils/index';
+
 export default {
   data() {
     return {
       src: "",
       cameraDirection:'back',
       showDesc:false,
-      showResult:false
+      showResult:false,
+      userCode:'',
+      matchItem:[],
+      toView:'result0'
     };
   },
 
@@ -67,8 +76,64 @@ export default {
         success: (res) => {
           this.src = res.tempImagePath
           this.showResult = true
+          this.upload(res.tempImagePath)
+          // this.postPhoto(res.tempImagePath)
         }
       })
+    },
+    upload(file) {
+      wx.uploadFile({
+        url: config.base + 'photo/UpdatePhoto', //开发者服务器 url
+        filePath: file, //要上传文件资源的路径
+        name: 'name', //文件对应的 key , 开发者在服务器端通过这个 key 可以获取到文件二进制内容
+        success: res => {
+          let data = JSON.parse(res.data).data
+          console.log(data)
+          this.postPhoto(data)
+        },
+        fail: () => {},
+        complete: () => {}
+      });
+    },
+    postPhoto(imgList) {
+      
+      wx.request({
+        url: config.base + 'identify/photo', //开发者服务器接口地址",
+        data: {
+          image_url: imgList,
+          lineId: config.lineId
+        }, //请求的参数",
+        header:{
+          token: this.userCode
+        },
+        method: 'POST',
+        dataType: 'json', //如果设为json，会尝试对返回的数据做一次 JSON.parse
+        success: res => {
+          const data = res.data
+          console.log(data)
+          if(data.res_code == 0){
+            const list = res.data.data
+            if(list.length>0){
+              list.forEach(item => {
+                let m = parseFloat(item.match).toFixed(2) * 100
+                item.match = m
+              });
+              this.matchItem = list
+            } else {
+              this.matchItem = res.data.data
+            }
+            console.log(this.matchItem)
+          } else {
+            this.matchItem = [{
+              name:'未能识别...',
+              desc:'请换个生物拍一拍',
+              match:0
+            }]
+          }
+        },
+        fail: () => {},
+        complete: () => {}
+      });
     },
     error(e) {
       console.log(e.detail)
@@ -76,12 +141,13 @@ export default {
   },
 
   created() {
-    
+    this.userCode = wx.getStorageSync('userCode');
   },
   onLoad() {
     const firsttime = wx.getStorageSync("firstPhoto");
     if (!firsttime) {
       this.showDesc = true
+      setTimeout(()=>{this.showDesc = false},2000)
     }
   },
   onShow() {
@@ -176,12 +242,21 @@ img {
   width: 100%;
   height: 60%;
   background: #fff;
+  &-scroll{
+    width: 100%;
+  }
+  &-box{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+  }
   &-item{
     width: 550rpx;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    padding-right:100rpx;
     &-name{
       font-size: 40rpx;
       line-height: 86rpx;
@@ -213,7 +288,7 @@ img {
     }
   }
   &-item:nth-of-type(1){
-    margin-left: 100rpx;
+    padding-left: 100rpx;
   }
 }
 </style>

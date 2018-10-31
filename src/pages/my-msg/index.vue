@@ -3,7 +3,7 @@
     <scroll-view scroll-y class="article-view">
       <div class="msg-item" v-for="(item,index) in msgList" :key="index">
         <div class="msg-item-pic">
-          <img :src="item.image" style="width:100%;height:100%;display:block;">
+          <img :src="prefix + item.image" style="width:100%;height:100%;display:block;">
         </div>
         <div class="msg-item-main">
           <div class="msg-item-main-top">
@@ -25,7 +25,8 @@ export default {
   data() {
     return {
       userCode:'',
-      msgList:[]
+      msgList:[],
+      prefix:config.prefix
     };
   },
 
