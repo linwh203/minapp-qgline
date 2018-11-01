@@ -36,7 +36,7 @@
     <scroll-view scroll-x class="index-list">
       <div class="index-list-box">
         <div class="index-list-item" v-for="(item,index) in listItem" :key=index>
-          <div class="index-list-item-img" :class="activeIndex == index+1 ? 'index-list-item-img-active':''" @click="changeArticle(index+1,item.spot_id)">
+          <div class="index-list-item-img" :class="activeIndex == index+1 ? 'index-list-item-img-active':''" @click="changeArticle(index+1)">
             <img :src="'../../assets/list-pic-'+(index+1)+'.png'" alt="">
           </div>
           <div class="index-list-item-title">{{item.spot_name}}</div>
@@ -127,10 +127,15 @@ export default {
     hideShareBox() {
       this.sharebox = false
     },
-    changeArticle(id,spot_id) {
+    changeArticle(id) {
       this.audioOff = true;
       if (this.innerAudioContext) { this.innerAudioContext.stop() }
-
+      let spot_id = ''
+      for(let i = 0;i < this.listItem.length; i++) {
+        if (this.listItem[i].sortNo == id) {
+          spot_id = this.listItem[i].spot_id
+        }
+      }
       const currentId = parseInt(id)
       this.activeIndex = currentId
       wx.request({
@@ -154,39 +159,6 @@ export default {
         fail: () => {},
         complete: () => {}
       });
-      // this.mainPic = `http://39.106.120.41:8499/${item.spot_image}`
-      // switch (currentId) {
-      //   case 1:
-      //     this.mainPic = "https://gw.alicdn.com/tfs/TB1xjt7hmzqK1RjSZFLXXcn2XXa-600-6588.png"
-      //     break
-      //   case 2:
-      //     this.mainPic = "https://gw.alicdn.com/tfs/TB1YzKkhkvoK1RjSZFDXXXY3pXa-600-4388.png"
-      //     break
-      //   case 3:
-      //     this.mainPic = "https://gw.alicdn.com/tfs/TB1kqGghgDqK1RjSZSyXXaxEVXa-600-2235.png"
-      //     break
-      //   case 4:
-      //     this.mainPic = "https://gw.alicdn.com/tfs/TB1f.idhb2pK1RjSZFsXXaNlXXa-600-4136.png"
-      //     break
-      //   case 5:
-      //     this.mainPic = "https://gw.alicdn.com/tfs/TB1bHihhmzqK1RjSZFLXXcn2XXa-600-6676.png"
-      //     break
-      //   case 6:
-      //     this.mainPic = "https://gw.alicdn.com/tfs/TB1ChGjhkvoK1RjSZPfXXXPKFXa-600-4368.png"
-      //     break
-      //   case 7:
-      //     this.mainPic = "https://gw.alicdn.com/tfs/TB1.SOChhnaK1RjSZFBXXcW7VXa-600-8017.png"
-      //     break
-      //   case 8:
-      //     this.mainPic = "https://gw.alicdn.com/tfs/TB1no5jhgHqK1RjSZFkXXX.WFXa-600-6394.png"
-      //     break
-      //   case 9:
-      //     this.mainPic = "https://gw.alicdn.com/tfs/TB1c4unhhTpK1RjSZFMXXbG_VXa-600-2808.png"
-      //     break
-      //   case 10:
-      //     this.mainPic = "https://gw.alicdn.com/tfs/TB1g_GjhgHqK1RjSZFkXXX.WFXa-600-6135.png"
-      //     break
-      // } 
     },
     getSpot() {
       const self = this
@@ -208,10 +180,8 @@ export default {
       });
     }
   },
-
   created() {},
   mounted() {
-    
     // this.innerAudioContext.src = this.audioUrl;
   },
   onLoad(option) {
@@ -222,11 +192,11 @@ export default {
     }
     if (option.from) {
       this.fromMap = true
-      this.changeArticle(option.spot_index, option.spot_id)
+      this.changeArticle(option.spot_index)
+    } else if (option.spot_index) {
+      this.changeArticle(option.spot_index)
     } else {
-      this.changeArticle(1,'bb022960-ee1c-4d54-a9ab-7fff67e63c45')
-      // this.mainPic =
-      //   "https://gw.alicdn.com/tfs/TB1xjt7hmzqK1RjSZFLXXcn2XXa-600-6588.png";
+      this.changeArticle(1)
     }
     this.innerAudioContext = wx.createInnerAudioContext()
   },
