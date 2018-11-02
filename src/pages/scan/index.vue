@@ -67,6 +67,8 @@ export default {
     },
     init() {
       this.showResult = false
+      this.src = ''
+      this.matchItem = []
     },
     takePhoto() {
       this.showDesc = false;
@@ -152,6 +154,12 @@ export default {
   },
   onShow() {
     wx.setStorageSync('firstPhoto',true);
+  },
+  onHide() {
+    this.init();
+  },
+  onUnload() {
+    this.init();
   }
 };
 </script>

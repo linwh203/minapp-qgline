@@ -1,24 +1,41 @@
 <template>
-  <div class="container">
+  <div class="container" :style="{height:bodyHeight}">
     <div class="index-tab">
-      <div class="index-tab-item icon-list" @click="bindTab('../list/main')">
-        <img src="../../assets/icon-index-list.png" alt="">
-      </div>
       <div class="index-tab-item icon-map" @click="bindTab('../map/main')">
-        <img src="../../assets/icon-index-map.png" alt="">
+        <img src="https://gw.alicdn.com/tfs/TB1hOhEmMDqK1RjSZSyXXaxEVXa-90-101.png" alt="">
+      </div>
+      <div class="index-tab-item icon-list" @click="showRoadName">
+        <img src="https://gw.alicdn.com/tfs/TB1gqFKmHvpK1RjSZFqXXcXUVXa-91-101.png" alt="">
       </div>
       <div class="index-tab-item icon-scan" @click="bindTab('../scan/main')">
-        <img src="../../assets/icon-index-scan.png" alt="">
+        <img src="https://gw.alicdn.com/tfs/TB1gWBKmHvpK1RjSZFqXXcXUVXa-91-101.png" alt="">
+      </div>
+      <div class="index-tab-item icon-audio" @click="playAudio">
+        <img src="https://gw.alicdn.com/tfs/TB1PStFmSzqK1RjSZFLXXcn2XXa-91-101.png" alt="">
       </div>
       <div class="index-tab-item icon-quiz" @click="bindTab('../quiz/main')">
-        <img src="../../assets/icon-index-quiz.png" alt="">
+        <img src="https://gw.alicdn.com/tfs/TB1mz8HmQvoK1RjSZFNXXcxMVXa-91-101.png" alt="">
+      </div>
+      <div class="index-tab-item icon-rule" @click="bindTab('../my-rule/main')">
+        <img src="https://gw.alicdn.com/tfs/TB1QrFHmSzqK1RjSZFHXXb3CpXa-91-100.png" alt="">
       </div>
       <div class="index-tab-item icon-my" @click="bindTab('../my/main')">
-        <img src="../../assets/icon-index-my.png" alt="">
+        <img src="https://gw.alicdn.com/tfs/TB1TXlImMHqK1RjSZFgXXa7JXXa-92-99.png" alt="">
       </div>
+      <div class="index-tab-line"></div>
     </div>
-    
-    <img src="../../assets/bg-index.jpg" alt="" class="index-bg">
+    <div scroll-y class="scroll" >
+      <div class="scroll-title">
+        <img :src="titleSrc" class="scroll-title-pic">
+        <img src="https://gw.alicdn.com/tfs/TB1ZJh6mSzqK1RjSZPxXXc4tVXa-245-52.png" class="scroll-title-text">
+        <img src="https://gw.alicdn.com/tfs/TB1jUCamRLoK1RjSZFuXXXn0XXa-343-214.png" class="scroll-title-body">
+      </div>
+      <div class="spot">
+        <div class="spot-item" v-for="(item,index) in fullSpot" :key="index">{{item}}</div>
+      </div>
+      <img src="https://gw.alicdn.com/tfs/TB1IvF1mSzqK1RjSZFHXXb3CpXa-580-9295.png" mode="widthFix" class="scroll-road">
+      <img src="https://gw.alicdn.com/tfs/TB1xbXBmSzqK1RjSZFpXXakSXXa-532-8080.png" mode="widthFix" class="scroll-bg">
+    </div>
   </div>
 </template>
 
@@ -28,8 +45,15 @@ import { config } from '../../utils/index';
 export default {
   data() {
     return {
-
+      titleSrc:'https://gw.alicdn.com/tfs/TB1K_SBi4jaK1RjSZFAXXbdLFXa-222-146.png',
+      fullSpot:[]
     };
+  },
+
+  computed: {
+    bodyHeight() {
+      return '200%'
+    }
   },
 
   components: {},
@@ -51,6 +75,12 @@ export default {
     },
     bindTab(url) {
       wx.navigateTo({ url: url });
+    },
+    showRoadName() {
+
+    },
+    playAudio() {
+
     },
     login(code) {
       const userInfo = wx.getStorageSync('userInfo');
@@ -79,7 +109,7 @@ export default {
     getSpot() {
       const self = this
       wx.request({
-        url: config.base + 'spot/list', //开发者服务器接口地址",
+        url: config.base + 'attraction/list', //开发者服务器接口地址",
         data: {
           lineId:config.lineId
         }, //请求的参数",
@@ -103,6 +133,9 @@ export default {
         this.login(res.code);
       }
     }); 
+    for(let i=1; i<89;i++){
+      this.fullSpot.push(i)
+    }
   },
   mounted() {
     this.getSpot();
@@ -119,113 +152,106 @@ export default {
     }
   },
   onShow() {
-    // wx.login({
-    //   success: (res) => {
-    //     console.log(res)
-    //     this.login(res.code);
-    //   }
-    // }); 
-    // this.getSpot();
   }
 };
 </script>
 
 <style scoped lang="less">
+// z-index: 右上角菜单，21,顶部标题图，21
 .container {
   position: relative;
+  overflow: hidden;
+}
+.spot{
+  width: 100%;
+  position: absolute;
+  top: 2.8%;
+  &-item{
+    width: 64rpx;
+    height: 64rpx;
+    line-height: 64rpx;
+    text-align: center;
+    color:#fff;
+    font-size: 34rpx;
+    background: url('https://gw.alicdn.com/tfs/TB1LC9gmH2pK1RjSZFsXXaNlXXa-60-70.png') no-repeat center/contain;
+    margin-bottom: 28rpx;
+  }
+}
+.scroll{
+  position: relative;
+  &-title{
+    width: 402rpx;
+    height: 234rpx;
+    position: fixed;
+    top:0.1%;  
+    left: 0;right: 0;margin:auto;
+    z-index: 21;
+    &-body{
+      width: 402rpx;
+      height: 230rpx;
+      position: absolute;
+      top: 68rpx;
+      z-index:22;
+    }
+    &-text{
+      width: 286rpx;
+      height: 60rpx;
+      position: absolute;
+      top: 180rpx;left: 0;right: 0;margin:auto;
+      z-index:23;
+    }
+    &-pic{
+      width: 210rpx;
+      height: 210rpx;
+      border-radius: 50%;
+      overflow: hidden;
+      position: absolute;
+      top: 0;left: 0;right: 0;margin:auto;
+      border:12rpx solid #292770;
+    }
+  }
+  &-road{
+    width:90%;
+    position: absolute;
+    top:2%;  
+
+  }
+  &-bg{
+    width: 100%;
+  }
 }
 .index-tab {
-  position: absolute;
-  bottom: 15rpx;
-  left: 0;
-  right: 0;
-  margin: auto;
+  position: fixed;
+  top: 15rpx;
+  right: 20rpx;
   display: flex;
+  flex-direction: column;
   justify-content: space-around;
   align-items: center;
+  z-index:21;
   &-item {
     width: 100rpx;
     height: 110rpx;
+    margin-bottom:36rpx;
+    position: relative;
+    z-index: 23;
   }
-}
-.index-list-padding{
-  position: absolute;
-  bottom: 220rpx;
-  left: 0;
-  height: 40px;
-  width: 100%;
-  background: transparent;
-}
-.index-list {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  background: rgba(0, 0, 0, 0.7);
-  &-box{
-    padding-top: 40rpx;
-    height: 180rpx;
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    align-items: center;
+  &-line {
+    width: 1px;
+    height:90%;
+    background-image: url('https://gw.alicdn.com/tfs/TB1B10KmFzqK1RjSZSgXXcpAVXa-2-762.png');
+    background-repeat: repeat-y;
+    background-size: cover;
+    background-position: center;
+    position: absolute;
+    top: 10rpx;
+    right: 32rpx;
+    z-index:22;
   }
-  &-item {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    &-img {
-      width: 120rpx;
-      height: 120rpx;
-      border-radius: 50%;
-      background: #fff;
-      margin-bottom: 12rpx;
-    }
-    &-title{
-      width: 160rpx;
-      color:#fff;
-      font-size:20rpx;
-      text-align: center;
-    }
+  img {
+    width: 100%;
+    height: 100%;
+    display: block;
   }
-  &-close{
-    width: 80rpx;
-    height: 80rpx;
-    border-radius: 50%;
-    position: fixed;;
-    bottom: 180rpx;
-    right: 74rpx;
-    z-index: 999;
-    background: rgba(0, 0, 0, .7);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    &-body{
-      width: 60rpx;
-      height: 60rpx;
-      border-radius: 50%;
-      background: rgba(0, 0, 0, 1);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      img{
-        width: 32rpx;
-        height: 32rpx;
-        display: block;
-      }
-    }
-  }
-}
-.index-bg {
-  width: 100%;
-  height: 100%;
-  display: block;
-}
-
-img {
-  width: 100%;
-  height: 100%;
-  display: block;
 }
 </style>

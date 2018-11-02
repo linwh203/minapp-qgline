@@ -19,9 +19,11 @@ export function formatTime (date) {
 }
 
 export const config = {
-  prefix: 'https://yxj.forestvisual.com',
-  base: 'https://yxj.forestvisual.com/guidewechat/',
-  lineId: 'D508727E-3A3E-48BE-9F1B-6EB2F4063B2C',
+  // prefix: 'https://yxj.forestvisual.com',
+  prefix: 'http://39.106.120.41:8499',
+  // base: 'https://yxj.forestvisual.com/guidewechat/',
+  base: 'http://39.106.120.41:8499/GuideWechat/',
+  lineId: 'F8F6CA62-2B02-4A09-AB50-0575321B0C89',
   appId: 'wx64104ee36c863058',
   appSecret: '1b3f1d4dc4d895247c60d0d426aca413'
 }

@@ -163,7 +163,7 @@ export default {
     getSpot() {
       const self = this
       wx.request({
-        url: config.base + 'spot/list', //开发者服务器接口地址",
+        url: config.base + 'attraction/list', //开发者服务器接口地址",
         data: {
           lineId:config.lineId
         }, //请求的参数",

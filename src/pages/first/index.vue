@@ -1,12 +1,12 @@
 <template>
   <div class="container">
     <div class="first-visit">
-      <img src="../../assets/bg-first-visit.jpg" alt="">
+      <img src="https://gw.alicdn.com/tfs/TB1QpJimSrqK1RjSZK9XXXyypXa-640-1136.png" alt="">
       <div class="close-btn" @click="bindNext"></div>
     </div>
     <div class="modal" v-if="motto">
       <div class="modal-container">
-        <img src="../../assets/bg-auth.png" alt="">
+        <img src="https://gw.alicdn.com/tfs/TB1zSxnmSzqK1RjSZPcXXbTepXa-544-700.png" alt="">
         <button class="auth-confirm" open-type="getUserInfo" @getuserinfo="bindGetUserInfo" @click="getUserInfo1">授权登录</button>
         <button class="auth-cancel" @click="cancelAuth">拒绝授权</button>
       </div>
