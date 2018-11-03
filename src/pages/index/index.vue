@@ -31,7 +31,11 @@
         <img src="https://gw.alicdn.com/tfs/TB1jUCamRLoK1RjSZFuXXXn0XXa-343-214.png" class="scroll-title-body">
       </div>
       <div class="spot">
+        <div class="spot-first">1</div>
         <div class="spot-item" v-for="(item,index) in fullSpot" :key="index">{{item}}</div>
+      </div>
+      <div class="spot-two">
+        <div class="spot-item" v-for="(item,index) in fullSpotTwo" :key="index">{{item}}</div>
       </div>
       <img src="https://gw.alicdn.com/tfs/TB1IvF1mSzqK1RjSZFHXXb3CpXa-580-9295.png" mode="widthFix" class="scroll-road">
       <img src="https://gw.alicdn.com/tfs/TB1xbXBmSzqK1RjSZFpXXakSXXa-532-8080.png" mode="widthFix" class="scroll-bg">
@@ -52,7 +56,10 @@ export default {
 
   computed: {
     bodyHeight() {
-      return '200%'
+      let l = this.fullSpot.length
+      let full_h = 1000,full_s = 89
+      let h = parseInt(l*full_h/full_s)
+      return `${h}%`
     }
   },
 
@@ -133,7 +140,7 @@ export default {
         this.login(res.code);
       }
     }); 
-    for(let i=1; i<89;i++){
+    for(let i=2; i<90;i++){
       this.fullSpot.push(i)
     }
   },
@@ -166,7 +173,9 @@ export default {
   width: 100%;
   position: absolute;
   top: 2.8%;
-  &-item{
+  &-first{
+    position: relative;
+    z-index:2;
     width: 64rpx;
     height: 64rpx;
     line-height: 64rpx;
@@ -174,7 +183,38 @@ export default {
     color:#fff;
     font-size: 34rpx;
     background: url('https://gw.alicdn.com/tfs/TB1LC9gmH2pK1RjSZFsXXaNlXXa-60-70.png') no-repeat center/contain;
-    margin-bottom: 28rpx;
+    margin-bottom: 56rpx;
+    margin-left: 400rpx;
+  }
+  &-item{
+    position: relative;
+    z-index:2;
+    width: 64rpx;
+    height: 64rpx;
+    line-height: 64rpx;
+    text-align: center;
+    color:#fff;
+    font-size: 34rpx;
+    background: url('https://gw.alicdn.com/tfs/TB1LC9gmH2pK1RjSZFsXXaNlXXa-60-70.png') no-repeat center/contain;
+    margin-bottom: 7.4%;
+  }
+  &-item:nth-of-type(6n+2){
+    margin-left: 520rpx;
+  }
+  &-item:nth-of-type(6n+3){
+    margin-left: 400rpx;
+  }
+  &-item:nth-of-type(6n+1){
+    margin-left: 400rpx;
+  }
+  &-item:nth-of-type(6n+4){
+    margin-left: 260rpx;
+  }
+  &-item:nth-of-type(6n){
+    margin-left: 260rpx;
+  }
+  &-item:nth-of-type(6n+5){
+    margin-left: 140rpx;
   }
 }
 .scroll{
