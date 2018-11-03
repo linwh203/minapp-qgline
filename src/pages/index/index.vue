@@ -31,11 +31,8 @@
         <img src="https://gw.alicdn.com/tfs/TB1jUCamRLoK1RjSZFuXXXn0XXa-343-214.png" class="scroll-title-body">
       </div>
       <div class="spot">
-        <div class="spot-first">1</div>
+        <div class="spot-first" :class="activeIndex == 1?'active':''">1</div>
         <div class="spot-item" v-for="(item,index) in fullSpot" :key="index">{{item}}</div>
-      </div>
-      <div class="spot-two">
-        <div class="spot-item" v-for="(item,index) in fullSpotTwo" :key="index">{{item}}</div>
       </div>
       <img src="https://gw.alicdn.com/tfs/TB1IvF1mSzqK1RjSZFHXXb3CpXa-580-9295.png" mode="widthFix" class="scroll-road">
       <img src="https://gw.alicdn.com/tfs/TB1xbXBmSzqK1RjSZFpXXakSXXa-532-8080.png" mode="widthFix" class="scroll-bg">
@@ -49,6 +46,7 @@ import { config } from '../../utils/index';
 export default {
   data() {
     return {
+      activeIndex:1,
       titleSrc:'https://gw.alicdn.com/tfs/TB1K_SBi4jaK1RjSZFAXXbdLFXa-222-146.png',
       fullSpot:[]
     };
@@ -185,6 +183,9 @@ export default {
     background: url('https://gw.alicdn.com/tfs/TB1LC9gmH2pK1RjSZFsXXaNlXXa-60-70.png') no-repeat center/contain;
     margin-bottom: 56rpx;
     margin-left: 400rpx;
+  }
+  &-first.active{
+    background: red;
   }
   &-item{
     position: relative;
