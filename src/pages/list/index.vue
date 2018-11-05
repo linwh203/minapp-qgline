@@ -29,7 +29,7 @@
     </div>
     <div class="article">
       <scroll-view scroll-y class="article-view" :scroll-top="scrollTop">
-        <img mode="widthFix" :src="mainPic">
+        <div v-html="content"></div>
       </scroll-view>
     </div>
     <div class="article-border"></div>
@@ -67,6 +67,8 @@ import {config} from '../../utils/index'
 export default {
   data() {
     return {
+      iconGroup:'https://gw.alicdn.com/tfs/TB1Mt5GnwHqK1RjSZFPXXcwapXa-601-129.png',
+      bgUrl:'https://gw.alicdn.com/tfs/TB1vzW6nxjaK1RjSZKzXXXVwXXa-640-1142.png',
       fromMap: false,
       showSub: false,
       innerAudioContext: null,
@@ -77,7 +79,9 @@ export default {
       scrollTop: 0,
       activeIndex: 1,
       sharebox: false,
-      listItem:[]
+      listItem:[],
+      content: "当你启程前往伊萨卡<br/>但愿你的道路漫长，<br/>充满奇迹，充满发现。<br/>莱斯特律戈涅斯巨人，独眼巨人，<br/>愤怒的波塞冬海神——不要怕他们：<br/>你将不会在途中碰到诸如此类的怪物，<br/>只要你高扬你的思想，<br/>只要有一种特殊的感觉，<br/>接触你的精神和肉体。<br/>莱斯特律戈涅斯巨人，独眼巨人，<br/>野蛮的波塞冬海神——你将不会跟他们遭遇<br/>除非你将他们一直带进你的灵魂，<br/>除非你的灵魂将他们树立在你的面前。<br/>但愿你的道路漫长。<br/>但愿那里有很多夏天的早晨，<br/>当你无比快乐和兴奋地<br/>进入你第一次见到的海港：<br/>但愿你在腓尼基人的贸易市场停步<br/>购买精美的物件，<br/>珍珠母和珊瑚，琥珀和黑檀，<br/>各式各样销魂的香水<br/>——你要多销魂就有多销魂：<br/>愿你走访众多埃及城市<br/>向那些有识之士讨教并继续讨教。<br/>让伊萨卡常在你心中，<br/>抵达那里是你此行的目的。<br/>但路上不要过于匆促，<br/>最好多延长几年，<br/>那时当你上得了岛你也就老了，<br/>一路所得已经教你富甲四方，<br/>用不着伊萨卡来让你财源滚滚。<br/>用伊萨卡赋予你如此神奇的旅行，<br/>没有它你可不会启程前来。<br/>现在它再也没有什么可以给你的了。<br/>而如果你发现它原来是这么穷，<br/>那可不是伊萨卡想愚弄你。<br/>既然那时你已经变得很聪慧，并且见多识广，<br/>你也就不会不明白，这些伊萨卡意味着什么。",
+      url: "/File/Download?fileName=DetailPhoto/01.jpg&fileType=QGLineFile"
     };
   },
   computed: {

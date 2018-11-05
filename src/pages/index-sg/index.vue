@@ -36,10 +36,10 @@
           <div @click="firstSpot">1</div> 
           <div class="spot-first-tri" v-if="activeIndex == 1"></div>
           <div class="spot-first-window" :style="{right:calcRight+'rpx'}" v-if="activeIndex == 1">
-            <div class="spot-first-window-pic"></div>
+            <img class="spot-first-window-pic" :src="prefix + currentSpot.spot_coverurl" v-if=currentSpot.spot_coverurl>
             <div class="spot-first-window-text">
-              <div class="spot-first-window-title">后水水水水哈哈哈</div>
-              <div class="spot-first-window-desc">89123年阿喀琉斯觉得逻辑开始了解阿斯兰的坑接口就</div>
+              <div class="spot-first-window-title">{{currentSpot.spot_title}}</div>
+              <div class="spot-first-window-desc">{{currentSpot.spot_describe}}</div>
             </div>
           </div>
         </div>
@@ -47,10 +47,10 @@
           <div @click="chooseSpot(item,index)">{{item}}</div> 
           <div class="spot-item-tri" v-if="activeIndex == index+2"></div>
           <div class="spot-item-window" :style="{right:calcRight+'rpx'}" v-if="activeIndex == index+2">
-            <div class="spot-item-window-pic"></div>
+            <img class="spot-item-window-pic" :src="prefix + currentSpot.spot_coverurl" v-if=currentSpot.spot_coverurl>
             <div class="spot-item-window-text">
-              <div class="spot-item-window-title">后水水水水哈哈哈</div>
-              <div class="spot-item-window-desc">89123年阿喀琉斯觉得逻辑开始了解阿斯兰的坑接口就</div>
+              <div class="spot-item-window-title">{{currentSpot.spot_title}}</div>
+              <div class="spot-item-window-desc">{{currentSpot.spot_describe}}</div>
             </div>
           </div>
         </div>
@@ -61,18 +61,13 @@
     <div class="cover" @click="showRoadSelect = false" v-if="showRoadSelect"></div>
     <div class="modal" v-if="showRoadSelect">
       <div class="modal-tab">
-        <div class="modal-tab-title" @click="tab1 = !tab1">
+        <div class="modal-tab-title" @click="bindTab('../index/main')">
           <img src="https://gw.alicdn.com/tfs/TB1uLyAnxjaK1RjSZKzXXXVwXXa-80-80.png" class="modal-tab-title-logo" >
           <div class="modal-tab-title-text">
             <div class="modal-tab-title-text-stage">第一段</div>
             <div class="modal-tab-title-text-name">自然研习径</div>
           </div>
           <img class="modal-tab-title-icon" :class="tab1?'':'rotate'" src="https://gw.alicdn.com/tfs/TB19EKcnpzqK1RjSZFvXXcB7VXa-22-25.png">
-        </div>
-        <div class="modal-tab-content" v-if=tab1>
-          <div class="modal-tab-content-item" v-for="(item,index) in natureList" :key="index">
-            {{item}}
-          </div>
         </div>
       </div>
       <div class="modal-tab">
@@ -83,6 +78,11 @@
             <div class="modal-tab-title-text-name">诗歌研习径</div>
           </div>
           <img class="modal-tab-title-icon" :class="tab2?'':'rotate'" src="https://gw.alicdn.com/tfs/TB19EKcnpzqK1RjSZFvXXcB7VXa-22-25.png">
+        </div>
+        <div class="modal-tab-content" v-if=tab2>
+          <div class="modal-tab-content-item" v-for="(item,index) in natureList" :key="index">
+            {{item}}
+          </div>
         </div>
       </div>
     </div>
@@ -95,16 +95,21 @@ import { config } from '../../utils/index';
 export default {
   data() {
     return {
+      prefix:config.prefix,
+      currentSpot:{
+        spot_coverurl:'',spot_title:'',spot_describe:'',spot_id:''
+      },
       fullHeight:'',
       activeIndex:1,
       toView:'spot1',
       titleSrc:'https://gw.alicdn.com/tfs/TB1zgmynAvoK1RjSZPfXXXPKFXa-349-154.png',
       fullSpot:[],
+      spotList:[],
       isIPX:false,
       showRoadSelect:false,
       tab1:false,
       tab2:false,
-      natureList:['滨海线研习段','二线关研习段','大岭古研习段','红花岭水库研习段','洞背村研习段']
+      natureList:['滨海二线关段','洞背村段','马峦山段','古村段']
     };
   },
 
@@ -172,9 +177,11 @@ export default {
     },
     chooseSpot(item,index){
       this.activeIndex == index + 2? this.activeIndex = -1 : this.activeIndex = index + 2
+      this.currentSpot = this.spotList[this.activeIndex-1]
     },
     firstSpot() {
       this.activeIndex = 1
+      this.currentSpot = this.spotList[0]
     },
     playAudio() {
 
@@ -214,8 +221,13 @@ export default {
         dataType: 'json', //如果设为json，会尝试对返回的数据做一次 JSON.parse
         success: res => {
           // console.log(res)
-          // self.GLOBAL.spot_list = res.data.data
-          this.setStorage('spotList',res.data.data)
+          const data = res.data.data
+          this.setStorage('spotList',data)
+          this.spotList = data
+          this.currentSpot = data[0]
+          for(let i=2; i<data.length;i++){
+            this.fullSpot.push(i)
+          }
         },
         fail: () => {},
         complete: () => {}
@@ -230,9 +242,7 @@ export default {
         this.login(res.code);
       }
     }); 
-    for(let i=2; i<84;i++){
-      this.fullSpot.push(i)
-    }
+    
     // this.scrollTo = 'spot' + parseInt(this.activeIndex + 2)
   },
   mounted() {
@@ -296,7 +306,7 @@ export default {
       &-pic{
         width: 136rpx;
         height: 134rpx;
-        background: red;
+        background: #fff;
         margin:12rpx 12rpx 0 32rpx;
       }
       &-text{
@@ -309,8 +319,9 @@ export default {
       }
       &-title{
         margin-top: 45rpx;
-        font-size: 30rpx;
+        font-size: 28rpx;
         line-height:40rpx;
+        white-space:nowrap;
       }
       &-desc{
         font-size: 20rpx;
@@ -377,8 +388,10 @@ export default {
       }
       &-title{
         margin-top: 45rpx;
-        font-size: 30rpx;
+        font-size: 28rpx;
         line-height:40rpx;
+        white-space:nowrap;
+        overflow: hidden;
       }
       &-desc{
         font-size: 20rpx;

@@ -2,7 +2,7 @@
   <div class="container">
     <video id="myVideo" :src="videoSrc" :poster="coverSrc" controls objectFit="cover" class="video-container" v-if="!showModal"></video>
     <cover-view class="reverse" @click="reverse">
-      <cover-image class="img" src="https://gw.alicdn.com/tfs/TB1An.ujNTpK1RjSZFMXXbG_VXa-114-101.png" />
+      <cover-image class="img" src="https://gw.alicdn.com/tfs/TB1WAqEnrvpK1RjSZPiXXbmwXXa-113-101.png" />
     </cover-view>
     <div class="modal" v-if="showModal">
       <div class="modal-top"><img src="../../assets/video-hint-1.png" alt=""></div>
