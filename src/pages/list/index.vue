@@ -27,38 +27,27 @@
         </div>
       </div>
     </div>
-    <div class="article">
-      <scroll-view scroll-y class="article-view" :scroll-top="scrollTop">
-        <div v-html="content"></div>
-      </scroll-view>
+    <div class="nav">
+      
     </div>
-    <div class="article-border"></div>
-    <scroll-view scroll-x class="index-list">
-      <div class="index-list-box">
-        <div class="index-list-item" v-for="(item,index) in listItem" :key=index>
-          <div class="index-list-item-img" :class="activeIndex == index+1 ? 'index-list-item-img-active':''" @click="changeArticle(index+1)">
-            <img :src="'../../assets/list-pic-'+(index+1)+'.png'" alt="">
-          </div>
-          <div class="index-list-item-title">{{item.spot_name}}</div>
-        </div>
-      </div>
-    </scroll-view>
-    <div class="index-list-close">
-      <div class="index-list-close-body" @click="bindTab">
-        <img src="../../assets/btn-close-list.png" alt="">
-      </div>
+    <div class="article" v-if="articleData[0]">
+      <div class="article-title">{{articleData[0].title}}</div>
+      <div class="article-text" v-html="articleData[0].content"></div>
+    </div>
+    <img class="article-img" :src="prefix + articleData[0].url" v-if="articleData[0]" mode="widthFix">
+    <div class="writer" v-if="articleData[1]">
+      <div class="writer-title">{{articleData[1].title}}</div>
+      <div class="writer-text">{{articleData[1].content}}</div>
     </div>
     <div class="share-box" v-if="sharebox">
       <div class="share-box-body">
         <div class="share-box-body-item">
           <button open-type="share" class="btn-share-origin"></button>
           <img src="../../assets/icon-share-weixin.png" alt="">
-          
         </div>
       </div>
       <div class="share-box-close" @click="hideShareBox">取消</div>
     </div>
-    <img src="../../assets/bg-index.jpg" alt="" class="index-bg">
   </div>
 </template>
 
@@ -67,8 +56,7 @@ import {config} from '../../utils/index'
 export default {
   data() {
     return {
-      iconGroup:'https://gw.alicdn.com/tfs/TB1Mt5GnwHqK1RjSZFPXXcwapXa-601-129.png',
-      bgUrl:'https://gw.alicdn.com/tfs/TB1vzW6nxjaK1RjSZKzXXXVwXXa-640-1142.png',
+      prefix:config.prefix,
       fromMap: false,
       showSub: false,
       innerAudioContext: null,
@@ -79,8 +67,10 @@ export default {
       scrollTop: 0,
       activeIndex: 1,
       sharebox: false,
-      listItem:[],
-      content: "当你启程前往伊萨卡<br/>但愿你的道路漫长，<br/>充满奇迹，充满发现。<br/>莱斯特律戈涅斯巨人，独眼巨人，<br/>愤怒的波塞冬海神——不要怕他们：<br/>你将不会在途中碰到诸如此类的怪物，<br/>只要你高扬你的思想，<br/>只要有一种特殊的感觉，<br/>接触你的精神和肉体。<br/>莱斯特律戈涅斯巨人，独眼巨人，<br/>野蛮的波塞冬海神——你将不会跟他们遭遇<br/>除非你将他们一直带进你的灵魂，<br/>除非你的灵魂将他们树立在你的面前。<br/>但愿你的道路漫长。<br/>但愿那里有很多夏天的早晨，<br/>当你无比快乐和兴奋地<br/>进入你第一次见到的海港：<br/>但愿你在腓尼基人的贸易市场停步<br/>购买精美的物件，<br/>珍珠母和珊瑚，琥珀和黑檀，<br/>各式各样销魂的香水<br/>——你要多销魂就有多销魂：<br/>愿你走访众多埃及城市<br/>向那些有识之士讨教并继续讨教。<br/>让伊萨卡常在你心中，<br/>抵达那里是你此行的目的。<br/>但路上不要过于匆促，<br/>最好多延长几年，<br/>那时当你上得了岛你也就老了，<br/>一路所得已经教你富甲四方，<br/>用不着伊萨卡来让你财源滚滚。<br/>用伊萨卡赋予你如此神奇的旅行，<br/>没有它你可不会启程前来。<br/>现在它再也没有什么可以给你的了。<br/>而如果你发现它原来是这么穷，<br/>那可不是伊萨卡想愚弄你。<br/>既然那时你已经变得很聪慧，并且见多识广，<br/>你也就不会不明白，这些伊萨卡意味着什么。",
+      spotList:[],
+      articleData:[],
+      spotLine:'',
+      currentIndex:0,
       url: "/File/Download?fileName=DetailPhoto/01.jpg&fileType=QGLineFile"
     };
   },
@@ -131,31 +121,23 @@ export default {
     hideShareBox() {
       this.sharebox = false
     },
-    changeArticle(id) {
+    loadDetail() {
       this.audioOff = true;
       if (this.innerAudioContext) { this.innerAudioContext.stop() }
-      let spot_id = ''
-      for(let i = 0;i < this.listItem.length; i++) {
-        if (this.listItem[i].sortNo == id) {
-          spot_id = this.listItem[i].spot_id
-        }
-      }
-      const currentId = parseInt(id)
-      this.activeIndex = currentId
+      let spot_id = this.spotList[this.currentIndex-1].spot_id
       wx.request({
-        url: config.base + 'spot/listdetail', //开发者服务器接口地址",
+        url: config.base + 'attraction/listdetail', //开发者服务器接口地址",
         data: {
-          spot_id: spot_id,
-          lineId: config.lineId
+          spot_id: spot_id
         }, //请求的参数",
         method: 'GET',
         dataType: 'json', //如果设为json，会尝试对返回的数据做一次 JSON.parse
         success: res => {
           console.log(res.data.data)
-          this.mainPic = config.prefix + res.data.data[0].image_url
+          this.articleData = res.data.data.items
           this.innerAudioContext = wx.createInnerAudioContext();
-          this.audioUrl = res.data.data[0].audio_url == null ? '' :  config.prefix + res.data.data[0].audio_url
-          this.videoUrl = res.data.data[0].video_url == null ? '' :  config.prefix + res.data.data[0].video_url
+          this.audioUrl = res.data.data.audio_url == null ? '' :  config.prefix + res.data.data.audio_url
+          this.videoUrl = res.data.data.video_url == null ? '' :  config.prefix + res.data.data.video_url
           if (this.audioUrl) {
             this.innerAudioContext.src = this.audioUrl
           }
@@ -164,10 +146,22 @@ export default {
         complete: () => {}
       });
     },
-    getSpot() {
-      const self = this
+    getSpot(line) {
+
+      let storageData , requestUrl
+      if(line == 'shige') {
+        storageData = wx.getStorageSync('PoetryList')
+        requestUrl = 'attraction/PoetryList'
+      } else {
+        storageData = wx.getStorageSync('NatureList');
+        requestUrl = 'attraction/NaturalList'
+      }
+      if(storageData){
+        this.spotList = storageData
+        return
+      }
       wx.request({
-        url: config.base + 'attraction/list', //开发者服务器接口地址",
+        url: config.base + requestUrl, //开发者服务器接口地址",
         data: {
           lineId:config.lineId
         }, //请求的参数",
@@ -175,33 +169,29 @@ export default {
         dataType: 'json', //如果设为json，会尝试对返回的数据做一次 JSON.parse
         success: res => {
           // console.log(res)
-          // self.GLOBAL.spot_list = res.data.data
-          this.listItem = res.data.data
-          this.setStorage('spotList',res.data.data)
+          const data = res.data.data
+          if(line == 'shige') {
+            this.setStorage('PoetryList',data)
+          } else {
+            this.setStorage('NatureList',data)
+          }
+          this.spotList = data
         },
         fail: () => {},
         complete: () => {}
       });
     }
   },
-  created() {},
-  mounted() {
-    // this.innerAudioContext.src = this.audioUrl;
-  },
   onLoad(option) {
-    if (wx.getStorageSync('spotList')) {
-      this.listItem = wx.getStorageSync('spotList');
+    const index = option.spot_index
+    if(index>89) {
+      this.spotLine = 'shige'
+      this.currentIndex = index - 89
     } else {
-      this.getSpot()
+      this.spotLine = 'ziran'
+      this.currentIndex = index
     }
-    if (option.from) {
-      this.fromMap = true
-      this.changeArticle(option.spot_index)
-    } else if (option.spot_index) {
-      this.changeArticle(option.spot_index)
-    } else {
-      this.changeArticle(1)
-    }
+    this.getSpot(this.spotLine)
     this.innerAudioContext = wx.createInnerAudioContext()
   },
   onHide() {
@@ -217,7 +207,7 @@ export default {
     // this.innerAudioContext = null
   },
   onShow() {
-    // console.log(1)
+    this.loadDetail()
     // this.changeArticle(1,this.listItem[0].spot_id)
     // this.innerAudioContext = wx.createInnerAudioContext();
   },
@@ -256,6 +246,9 @@ export default {
 }
 .container {
   position: relative;
+  background: url('https://gw.alicdn.com/tfs/TB1vzW6nxjaK1RjSZKzXXXVwXXa-640-1142.png') repeat-y top/cover;
+  color:#fff;
+  padding: 20rpx;
 }
 .sub-nav {
   position: absolute;
@@ -310,108 +303,42 @@ export default {
   }
 }
 .article {
-  position: absolute;
-  left: 20rpx;
-  right: 20rpx;
-  top: 20rpx;
-  margin: auto;
-  border-radius: 8rpx;
-  background: #fff;
-  overflow: hidden;
-  height: 84%;
-  &-view {
-    height: 100%;
-    img {
-      width: 100%;
-      height: auto;
-      display: block;
-    }
+  border:8rpx solid #fff;
+  padding:20rpx;
+  &-title{
+    text-align: center;
+    font-size: 32rpx;
+    margin: 40rpx 0;
   }
-  &-border {
-    height: 16rpx;
-    position: absolute;
-    left: 10rpx;
-    right: 10rpx;
-    top: 85%;
-    margin: auto;
-    border-radius: 8rpx;
-    background: #a97b4f;
+  &-text{
+    font-size: 24rpx;
+    line-height: 40rpx;
+  }
+  &-img{
+    border-left:8rpx solid #fff;
+    border-right:8rpx solid #fff;
+    height: 400rpx;
+    width: 97.7%;
   }
 }
-.index-list {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  background: rgba(0, 0, 0, 0.7);
-  img {
-    width: 100%;
-    height: 100%;
-    display: block;
+.writer{
+  border:8rpx solid #fff;
+  padding:20rpx;
+  margin-top: -12rpx;
+  &-title{
+    text-align: left;
+    font-size: 32rpx;
+    margin: 40rpx 0;
   }
-  &-box {
-    padding-top: 5%;
-    height: 20%;
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    align-items: center;
-  }
-  &-item {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    &-img {
-      width: 120rpx;
-      height: 120rpx;
-      border:2px solid #b28e69;
-      border-radius: 50%;
-      background: #fff;
-      margin-bottom: 12rpx;
-    }
-    &-img-active{
-      border:2px solid #00cbff;
-    }
-    &-title {
-      width: 160rpx;
-      color: #fff;
-      font-size: 20rpx;
-      text-align: center;
-    }
-  }
-  &-close {
-    width: 80rpx;
-    height: 80rpx;
-    border-radius: 50%;
-    position: fixed;
-    bottom: 12.5%;
-    right: 74rpx;
-    z-index: 999;
-    background: rgba(0, 0, 0, 0.7);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    &-body {
-      width: 60rpx;
-      height: 60rpx;
-      border-radius: 50%;
-      background: rgba(0, 0, 0, 1);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      img {
-        width: 32rpx;
-        height: 32rpx;
-        display: block;
-      }
-    }
+  &-text{
+    font-size: 24rpx;
+    line-height: 40rpx;
   }
 }
-.index-bg {
-  width: 100%;
-  height: 100%;
-  display: block;
+.nav{
+  height: 120rpx;
+  background: url('https://gw.alicdn.com/tfs/TB1Mt5GnwHqK1RjSZFPXXcwapXa-601-129.png') repeat-y top/cover;
+
 }
 .share-box{
   width: 100%;

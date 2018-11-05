@@ -35,7 +35,7 @@
         <div class="spot-first" :class="activeIndex == 1?'active':''" id="spot1">
           <div @click="firstSpot">1</div> 
           <div class="spot-first-tri" v-if="activeIndex == 1"></div>
-          <div class="spot-first-window" :style="{right:calcRight+'rpx'}" v-if="activeIndex == 1">
+          <div class="spot-first-window" :style="{right:calcRight+'rpx'}" v-if="activeIndex == 1" @click=goDetail>
             <img class="spot-first-window-pic" :src="prefix + currentSpot.spot_coverurl" v-if=currentSpot.spot_coverurl>
             <div class="spot-first-window-text">
               <div class="spot-first-window-title">{{currentSpot.spot_title}}</div>
@@ -46,7 +46,7 @@
         <div class="spot-item" v-for="(item,index) in fullSpot" :key="index" :class="activeIndex == index+2?'active':''" :id="'spot'+item">
           <div @click="chooseSpot(item,index)">{{item}}</div> 
           <div class="spot-item-tri" v-if="activeIndex == index+2"></div>
-          <div class="spot-item-window" :style="{right:calcRight+'rpx'}" v-if="activeIndex == index+2">
+          <div class="spot-item-window" :style="{right:calcRight+'rpx'}" v-if="activeIndex == index+2" @click=goDetail>
             <img class="spot-item-window-pic" :src="prefix + currentSpot.spot_coverurl" v-if=currentSpot.spot_coverurl>
             <div class="spot-item-window-text">
               <div class="spot-item-window-title">{{currentSpot.spot_title}}</div>
@@ -80,7 +80,7 @@
           <img class="modal-tab-title-icon" :class="tab2?'':'rotate'" src="https://gw.alicdn.com/tfs/TB19EKcnpzqK1RjSZFvXXcB7VXa-22-25.png">
         </div>
         <div class="modal-tab-content" v-if=tab2>
-          <div class="modal-tab-content-item" v-for="(item,index) in natureList" :key="index">
+          <div class="modal-tab-content-item" v-for="(item,index) in natureList" :key="index" @click="toSmallLine(index)">
             {{item}}
           </div>
         </div>
@@ -167,13 +167,39 @@ export default {
     bindTab(url) {
       wx.navigateTo({ url: url });
     },
+    goDetail() {
+      const index = parseInt(this.activeIndex + 89)
+      wx.navigateTo({ url: '../list/main?spot_index=' + index});
+    },
     showRoadName() {
       this.showRoadSelect = true;
-      // let t = parseFloat(this.fullHeight/89).toFixed(2)*this.activeIndex
-      // wx.pageScrollTo({
-      //   scrollTop: t,
-      //   duration: 0
-      // })
+    },
+    toSmallLine(index){
+      let lineNo = parseInt(index+1)
+      let top
+      switch(lineNo){
+        case 1:
+          top = 0;
+          this.activeIndex = 1;
+          break
+        case 2:
+          top = 750;
+          this.activeIndex = 15;
+          break
+        case 3:
+          top = 1760;
+          this.activeIndex = 34;
+          break
+        case 4:
+          top = 4000;
+          this.activeIndex = 71;
+          break
+      }
+      this.currentSpot = this.spotList[this.activeIndex-1]
+      wx.pageScrollTo({
+        scrollTop: top,
+        duration: 0
+      })
     },
     chooseSpot(item,index){
       this.activeIndex == index + 2? this.activeIndex = -1 : this.activeIndex = index + 2
@@ -212,8 +238,17 @@ export default {
     },
     getSpot() {
       const self = this
+      const storageData = wx.getStorageSync('PoetryList')
+      if(storageData){
+        this.spotList = storageData
+        this.currentSpot = storageData[0]
+        for(let i=2; i<=storageData.length;i++){
+          this.fullSpot.push(i)
+        }
+        return
+      }
       wx.request({
-        url: config.base + 'attraction/list', //开发者服务器接口地址",
+        url: config.base + 'attraction/PoetryList', //开发者服务器接口地址",
         data: {
           lineId:config.lineId
         }, //请求的参数",
@@ -222,10 +257,10 @@ export default {
         success: res => {
           // console.log(res)
           const data = res.data.data
-          this.setStorage('spotList',data)
+          this.setStorage('PoetryList',data)
           this.spotList = data
           this.currentSpot = data[0]
-          for(let i=2; i<data.length;i++){
+          for(let i=2; i<=data.length;i++){
             this.fullSpot.push(i)
           }
         },
@@ -375,7 +410,7 @@ export default {
       &-pic{
         width: 136rpx;
         height: 134rpx;
-        background: red;
+        background: #fff;
         margin:12rpx 12rpx 0 32rpx;
       }
       &-text{
@@ -553,6 +588,9 @@ export default {
       line-height: 80rpx;
       font-size:28rpx;
       background: #f6f7f6;
+      &-item:hover{
+        color:#a8368e;
+      }
     }
   }
 }
