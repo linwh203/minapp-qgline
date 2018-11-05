@@ -25,10 +25,10 @@
       </div>
       <div class="index-tab-line"></div>
     </div>
-    <scroll-view scroll-y class="scroll" :scroll-into-view="toView" >
+    <scroll-view scroll-y class="scroll" >
       <div class="scroll-title">
         <img :src="titleSrc" class="scroll-title-pic">
-        <img src="https://gw.alicdn.com/tfs/TB1ZJh6mSzqK1RjSZPxXXc4tVXa-245-52.png" class="scroll-title-text">
+        <img src="https://gw.alicdn.com/tfs/TB1xeuvnCzqK1RjSZFjXXblCFXa-272-54.png" class="scroll-title-text">
         <img src="https://gw.alicdn.com/tfs/TB1jUCamRLoK1RjSZFuXXXn0XXa-343-214.png" class="scroll-title-body">
       </div>
       <div class="spot">
@@ -55,8 +55,8 @@
           </div>
         </div>
       </div>
-      <img src="https://gw.alicdn.com/tfs/TB1IvF1mSzqK1RjSZFHXXb3CpXa-580-9295.png" mode="widthFix" class="scroll-road">
-      <img src="https://gw.alicdn.com/tfs/TB1xbXBmSzqK1RjSZFpXXakSXXa-532-8080.png" mode="widthFix" class="scroll-bg" @load=finishLoadImg>
+      <img src="https://gw.alicdn.com/tfs/TB1rXqxnq6qK1RjSZFmXXX0PFXa-580-8690.png" mode="widthFix" class="scroll-road">
+      <img src="https://gw.alicdn.com/tfs/TB1M91vnAvoK1RjSZFNXXcxMVXa-640-9094.png" mode="widthFix" class="scroll-bg" @load=finishLoadImg>
     </scroll-view>
     <div class="cover" @click="showRoadSelect = false" v-if="showRoadSelect"></div>
     <div class="modal" v-if="showRoadSelect">
@@ -76,7 +76,7 @@
         </div>
       </div>
       <div class="modal-tab">
-        <div class="modal-tab-title" @click="bindTab('../index-sg/main')">
+        <div class="modal-tab-title" @click="tab2 = !tab2">
           <img src="https://gw.alicdn.com/tfs/TB1WEmfnxTpK1RjSZFMXXbG_VXa-79-80.png" class="modal-tab-title-logo">
           <div class="modal-tab-title-text">
             <div class="modal-tab-title-text-stage">第二段</div>
@@ -98,7 +98,7 @@ export default {
       fullHeight:'',
       activeIndex:1,
       toView:'spot1',
-      titleSrc:'https://gw.alicdn.com/tfs/TB1K_SBi4jaK1RjSZFAXXbdLFXa-222-146.png',
+      titleSrc:'https://gw.alicdn.com/tfs/TB1zgmynAvoK1RjSZPfXXXPKFXa-349-154.png',
       fullSpot:[],
       isIPX:false,
       showRoadSelect:false,
@@ -230,7 +230,7 @@ export default {
         this.login(res.code);
       }
     }); 
-    for(let i=2; i<90;i++){
+    for(let i=2; i<84;i++){
       this.fullSpot.push(i)
     }
     // this.scrollTo = 'spot' + parseInt(this.activeIndex + 2)
