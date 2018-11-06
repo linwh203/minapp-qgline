@@ -4,15 +4,15 @@
     <img class="cameraArea" v-if="showResult" :src="src" />
     <div class="index-tab" style="color:#fff;font-size:24rpx;">
       <div class="index-tab-left">
-        <img src="../../assets/icon-scan-hint.png" @click="showDesc = !showDesc">
+        <img src="https://gw.alicdn.com/tfs/TB1Kbp8nHvpK1RjSZFqXXcXUVXa-80-80.png" @click="showDesc = !showDesc">
         <p>使用说明</p>
       </div>
       <div class="index-tab-mid">
-        <img src="../../assets/icon-scan-photo.png" @click="takePhoto">
+        <img src="https://gw.alicdn.com/tfs/TB1dCGdnNYaK1RjSZFnXXa80pXa-120-120.png" @click="takePhoto">
         <p>拍一拍</p>
       </div>
       <div class="index-tab-right">
-        <img src="../../assets/icon-scan-turn.png" @click="reverse">
+        <img src="https://gw.alicdn.com/tfs/TB1PDp6nQvoK1RjSZPfXXXPKFXa-80-80.png" @click="reverse">
         <p>镜头切换</p>
       </div>
     </div>

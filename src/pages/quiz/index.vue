@@ -1,49 +1,57 @@
 <template>
   <div class="container">
-    <scroll-view scroll-x class="index-list">
-      <div class="index-list-box">
-        <div class="index-list-item">
-          <div class="index-list-item-img" :class="activeIndex == 1 ? 'index-list-item-img-active':''" @click="startQuiz(1)">
-            <div class="stage"> 第<span class="stage-number">1</span>关 </div>
-          </div>
-          <div class="index-list-item-title">破壳而出</div>
+    <div class="top">
+      <open-data type="userAvatarUrl" class="userPic"></open-data>
+      <open-data type="userNickName" class="userName"></open-data>
+      <div class="top-btn">
+        <div class="top-btn-item">
+          <span>5</span>挑战次数
         </div>
-        <div class="index-list-item">
-          <div class="index-list-item-img" :class="activeIndex == 2 ? 'index-list-item-img-active':''" @click="startQuiz(2)">
-            <img src="https://gw.alicdn.com/tfs/TB1x8jwiY2pK1RjSZFsXXaNlXXa-64-79.png" class="unlock" v-if="score<1">
-            <div class="stage" v-else> 第<span class="stage-number">2</span>关 </div>
-          </div>
-          <div class="index-list-item-title">萌力担当</div>
+        <div class="top-btn-item">
+          <span>?</span>挑战规则
         </div>
-        <div class="index-list-item">
-          <div class="index-list-item-img" :class="activeIndex == 3 ? 'index-list-item-img-active':''" @click="startQuiz(3)">
-            <img src="https://gw.alicdn.com/tfs/TB1x8jwiY2pK1RjSZFsXXaNlXXa-64-79.png" class="unlock" v-if="score<2">
-            <div class="stage" v-else> 第<span class="stage-number">3</span>关 </div>
-          </div>
-          <div class="index-list-item-title">虫虫小将</div>
+      </div>
+    </div>
+    <div class="share"></div>
+    <scroll-view scroll-y class="index-list">
+      <div class="index-list-item">
+        <div class="index-list-item-img" @click="startQuiz(1)">
+          <img src="https://gw.alicdn.com/tfs/TB1.Wl8nFzqK1RjSZSgXXcpAVXa-608-208.png">
         </div>
-        <div class="index-list-item">
-          <div class="index-list-item-img" :class="activeIndex == 4 ? 'index-list-item-img-active':''" @click="startQuiz(4)">
-            <img src="https://gw.alicdn.com/tfs/TB1x8jwiY2pK1RjSZFsXXaNlXXa-64-79.png" class="unlock" v-if="score<3">
-            <div class="stage" v-else> 第<span class="stage-number">4</span>关 </div>
+      </div>
+      <div class="index-list-item">
+        <div class="index-list-item-img" @click="startQuiz(2)">
+          <img src="https://gw.alicdn.com/tfs/TB1Wx5XnNTpK1RjSZFMXXbG_VXa-608-208.png">
+          <div class="index-list-item-lock" v-if="score<1">
+            <img src="https://gw.alicdn.com/tfs/TB19UOdnRLoK1RjSZFuXXXn0XXa-23-29.png">
           </div>
-          <div class="index-list-item-title">舞林萌主</div>
         </div>
-        <div class="index-list-item">
-          <div class="index-list-item-img" :class="activeIndex == 5 ? 'index-list-item-img-active':''" @click="startQuiz(5)">
-            <img src="https://gw.alicdn.com/tfs/TB1x8jwiY2pK1RjSZFsXXaNlXXa-64-79.png" class="unlock" v-if="score<4">
-            <div class="stage" v-else> 第<span class="stage-number">5</span>关 </div>
+      </div>
+      <div class="index-list-item">
+        <div class="index-list-item-img" @click="startQuiz(3)">
+          <img src="https://gw.alicdn.com/tfs/TB1bOh6nIbpK1RjSZFyXXX_qFXa-608-208.png">
+          <div class="index-list-item-lock" v-if="score<2">
+            <img src="https://gw.alicdn.com/tfs/TB19UOdnRLoK1RjSZFuXXXn0XXa-23-29.png">
           </div>
-          <div class="index-list-item-title">一代虫师</div>
+        </div>
+      </div>
+      <div class="index-list-item">
+        <div class="index-list-item-img" @click="startQuiz(4)">
+          <img src="https://gw.alicdn.com/tfs/TB1kNN.nQvoK1RjSZFDXXXY3pXa-608-208.png">
+          <div class="index-list-item-lock" v-if="score<3">
+            <img src="https://gw.alicdn.com/tfs/TB19UOdnRLoK1RjSZFuXXXn0XXa-23-29.png">
+          </div>
+        </div>
+      </div>
+      <div class="index-list-item">
+        <div class="index-list-item-img" @click="startQuiz(5)">
+          <img src="https://gw.alicdn.com/tfs/TB1An43nNTpK1RjSZR0XXbEwXXa-608-208.png">
+          <div class="index-list-item-lock" v-if="score<4">
+            <img src="https://gw.alicdn.com/tfs/TB19UOdnRLoK1RjSZFuXXXn0XXa-23-29.png">
+          </div>
         </div>
       </div>
     </scroll-view>
-    <div class="index-list-close">
-      <div class="index-list-close-body" @click="bindTab">
-        <img src="../../assets/btn-close-list.png" alt="">
-      </div>
-    </div>
-    <img src="../../assets/bg-index.jpg" alt="" class="index-bg">
   </div>
 </template>
 
@@ -52,6 +60,21 @@ import { config } from '../../utils/index'
 export default {
   data() {
     return {
+      cross:'https://gw.alicdn.com/tfs/TB14yqPnNTpK1RjSZFKXXa2wXXa-60-132.png',
+      notice:'https://gw.alicdn.com/tfs/TB1.U9SnMHqK1RjSZJnXXbNLpXa-460-700.png',
+      shareBg:'https://gw.alicdn.com/tfs/TB1IrOQnFYqK1RjSZLeXXbXppXa-460-832.png',
+      shareBtn:'https://gw.alicdn.com/tfs/TB1qxG6nNYaK1RjSZFnXXa80pXa-340-80.png',
+      chiLun:'https://gw.alicdn.com/tfs/TB1L2OWnQvoK1RjSZPfXXXPKFXa-292-292.png',
+      biaoQian:'https://gw.alicdn.com/tfs/TB1VLiZnNTpK1RjSZFMXXbG_VXa-96-21.png',
+      daTiBg:'https://gw.alicdn.com/tfs/TB1ASuUnMHqK1RjSZJnXXbNLpXa-640-1084.png',
+      gou:'https://gw.alicdn.com/tfs/TB1_2ORnRLoK1RjSZFuXXXn0XXa-36-25.png',
+      dacha:'https://gw.alicdn.com/tfs/TB1c4eWnHrpK1RjSZTEXXcWAVXa-30-29.png',
+      failMsg:'https://gw.alicdn.com/tfs/TB1RLqUnFzqK1RjSZFvXXcB7VXa-460-700.png',
+      failMsgNoChance:'https://gw.alicdn.com/tfs/TB1tIq0nQvoK1RjSZFDXXXY3pXa-460-700.png',
+      failMsgBtn:'https://gw.alicdn.com/tfs/TB1Rn9UnHvpK1RjSZPiXXbmwXXa-340-80.png',
+      failIcon:'https://gw.alicdn.com/tfs/TB1Lg9UnHPpK1RjSZFFXXa5PpXa-328-251.png',
+      successIcon:'https://gw.alicdn.com/tfs/TB1iq1VnMTqK1RjSZPhXXXfOFXa-328-251.png',
+      coin:'https://gw.alicdn.com/tfs/TB1fLeZnQvoK1RjSZFwXXciCFXa-43-44.png',
       userCode:'',
       score:''
     };
@@ -72,22 +95,7 @@ export default {
     
   },
   mounted() {
-    // this.userCode = wx.getStorageSync('userCode');
-    // wx.request({
-    //   url: config.base + 'quiz/getcheckpoint', 
-    //   data: {
-    //     LineId: config.lineId,
-    //     token: this.userCode
-    //   }, 
-    //   method: 'GET',
-    //   dataType: 'json', 
-    //   success: res => {
-    //     console.log(res.data)
-    //     this.score = res.data.data
-    //   },
-    //   fail: () => {},
-    //   complete: () => {}
-    // });
+
   },
   onShow() {
     this.userCode = wx.getStorageSync('userCode');
@@ -111,116 +119,69 @@ export default {
 </script>
 
 <style scoped lang="less">
+.top{
+  height: 270rpx;
+  background: #6998cc;
+  border-radius: 10rpx;
+  margin:0 6rpx 20rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.userPic{
+  width: 110rpx;
+  height: 110rpx;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 4rpx solid #fff;
+  margin-bottom: 10rpx;
+}
+.userName{
+  color:#fff;
+  font-size: 30rpx;
+}
+.share{
+  width: 126rpx;
+  height: 66rpx;
+  position: absolute;
+  right: 0;
+  top: 80rpx;
+  background: url('https://gw.alicdn.com/tfs/TB1m0X7nHPpK1RjSZFFXXa5PpXa-113-60.png') no-repeat top/cover;
+}
 .container {
   position: relative;
-}
-.index-tab {
-  position: absolute;
-  bottom: 15rpx;
-  left: 0;
-  right: 0;
-  margin: auto;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  &-item {
-    width: 100rpx;
-    height: 110rpx;
-    img {
-      width: 100%;
-      height: 100%;
-      display: block;
-    }
-  }
-}
-.index-bg {
-  width: 100%;
-  height: 100%;
-  display: block;
+  padding:20rpx;
+  background: url('https://gw.alicdn.com/tfs/TB1o6t.nMHqK1RjSZFPXXcwapXa-640-1033.png') no-repeat top/cover;
 }
 .index-list {
-  position: absolute;
-  bottom: 0;
-  left: 0;
   width: 100%;
-  background: rgba(0, 0, 0, 0.7);
   img {
     width: 100%;
     height: 100%;
     display: block;
   }
-  &-box {
-    padding-top: 40rpx;
-    padding-left: 14rpx;
-    height: 180rpx;
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    align-items: center;
-  }
   &-item {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    position: relative;
     &-img {
-      width: 138rpx;
-      height: 138rpx;
-      border-radius: 50%;
-      margin: 0 20rpx 4rpx;
-      background: url('https://gw.alicdn.com/tfs/TB17GHAi6TpK1RjSZKPXXa3UpXa-135-135.png') no-repeat center/cover;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
+      width: 100%;
+      height: 234rpx;
+      margin: 0 0 20rpx;
     }
-    &-img-active{
-      border:2px solid #00cbff;
-    }
-    &-title {
-      width: 160rpx;
-      color: #fff;
-      font-size: 24rpx;
-      text-align: center;
-      overflow: hidden;
-    }
-  }
-  &-close {
-    width: 80rpx;
-    height: 80rpx;
-    border-radius: 50%;
-    position: fixed;
-    bottom: 180rpx;
-    right: 74rpx;
-    z-index: 999;
-    background: rgba(0, 0, 0, 0.7);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    &-body {
-      width: 60rpx;
-      height: 60rpx;
-      border-radius: 50%;
-      background: rgba(0, 0, 0, 1);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      img {
-        width: 32rpx;
+    &-lock{
+      img{
+        width: 26rpx;
         height: 32rpx;
-        display: block;
       }
-    }
-  }
-  .unlock{
-    width: 64rpx;
-    height: 78rpx;
-  }
-  .stage{
-    color:#567d17;
-    font-size: 24rpx;
-    &-number{
-      font-size: 80rpx;
+      width: 76rpx;
+      height: 70rpx;
+      position: absolute;
+      top: 0;right: 0;
+      background: rgba(0, 0, 0, .5);
+      border-bottom-left-radius: 40rpx;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
   }
 }

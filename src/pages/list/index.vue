@@ -1,34 +1,15 @@
 <template>
   <div class="container">
-    <div class="sub-nav">
-      <div class="sub-nav-line"></div>
-      <div class="sub-nav-btn">
-        <div class="sub-nav-btn-in" @click="displaySub">
-          <img src="../../assets/icon-list-show.png" alt="" class="btn-show" :class="showSub?'':'reverse'">
-        </div>
-      </div>
-      <div class="sub-nav-line" v-if="showSub && audioUrl != ''"></div>
-      <div class="sub-nav-btn" v-if="showSub && audioUrl != ''">
-        <div class="sub-nav-btn-in " @click="playAudio">
-          <img src="../../assets/icon-list-audio.png" alt="" class="btn-audio" v-if="audioOff">
-          <img src="../../assets/icon-list-audio-play.png" alt="" class="btn-audio" v-else>
-        </div>
-      </div>
-      <div class="sub-nav-line" v-if="showSub && videoUrl != ''"></div>
-      <div class="sub-nav-btn" v-if="showSub && videoUrl != ''">
-        <div class="sub-nav-btn-in " @click="goVideo">
-          <img src="../../assets/icon-list-video.png" alt="" class="btn-video">
-        </div>
-      </div>
-      <div class="sub-nav-line" v-if="showSub"></div>
-      <div class="sub-nav-btn" v-if="showSub">
-        <div class="sub-nav-btn-in ">
-          <img src="../../assets/icon-list-share.png" alt="" class="btn-share" @click="showShareBox">
-        </div>
-      </div>
-    </div>
     <div class="nav">
-      
+      <div class="nav-line"></div>
+      <div class="nav-content">
+        <div class="nav-item audio" @click="playAudio"></div>
+        <div class="nav-item video" @click="goVideo"></div>
+        <div class="nav-item note" v-if="false"></div>
+        <div class="nav-item share" @click="showShareBox"></div>
+      </div>
+      <div class="nav-line"></div>
+      <div class="nav-border"></div>
     </div>
     <div class="article" v-if="articleData[0]">
       <div class="article-title">{{articleData[0].title}}</div>
@@ -65,12 +46,12 @@ export default {
       audioUrl: '',
       mainPic: "",
       scrollTop: 0,
-      activeIndex: 1,
+      init: false,
       sharebox: false,
       spotList:[],
       articleData:[],
       spotLine:'',
-      currentIndex:0,
+      currentIndex:1,
       url: "/File/Download?fileName=DetailPhoto/01.jpg&fileType=QGLineFile"
     };
   },
@@ -124,7 +105,7 @@ export default {
     loadDetail() {
       this.audioOff = true;
       if (this.innerAudioContext) { this.innerAudioContext.stop() }
-      let spot_id = this.spotList[this.currentIndex-1].spot_id
+      let spot_id = this.spotList[this.currentIndex-1].spot_id 
       wx.request({
         url: config.base + 'attraction/listdetail', //开发者服务器接口地址",
         data: {
@@ -183,6 +164,7 @@ export default {
     }
   },
   onLoad(option) {
+    console.log('onload')
     const index = option.spot_index
     if(index>89) {
       this.spotLine = 'shige'
@@ -198,6 +180,7 @@ export default {
     this.audioOff = true;
     this.showSub = false;
     this.innerAudioContext.stop();
+    this.init = true
     // this.innerAudioContext = null
   },
   onUnload() {
@@ -207,12 +190,17 @@ export default {
     // this.innerAudioContext = null
   },
   onShow() {
-    this.loadDetail()
-    // this.changeArticle(1,this.listItem[0].spot_id)
+    if(this.init){
+      this.loadDetail()
+    }
     // this.innerAudioContext = wx.createInnerAudioContext();
   },
+  onReady() {
+    console.log('onReady')
+    this.loadDetail()
+  },
   onShareAppMessage(result) {
-    let title = "儿童研习径";
+    let title = "青谷研习径";
     let path = "/pages/list/main?spot_index=" + this.activeIndex;
     let imageUrl = "../../assets/list-pic-1.png";
     // let desc = '这里是描述哦'
@@ -337,8 +325,61 @@ export default {
 }
 .nav{
   height: 120rpx;
-  background: url('https://gw.alicdn.com/tfs/TB1Mt5GnwHqK1RjSZFPXXcwapXa-601-129.png') repeat-y top/cover;
-
+  display: flex;
+  align-items: center;
+  position: relative;
+  &-content{
+    width: 70%;
+    margin-left: 1.5%;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+  }
+  &-item{
+    width: 92rpx;
+    height: 86rpx;
+    margin-bottom: 15rpx;
+    position: relative;
+  }
+  &-line{
+    height: 8rpx;
+    width: 15%;
+    background: #fff;
+  }
+  .audio{
+    background: url('https://gw.alicdn.com/tfs/TB1rngUnAvoK1RjSZPfXXXPKFXa-91-83.png') no-repeat center/cover;
+  }
+  .audio:after,.video:after,.note::after{
+    content:'';
+    position: absolute;
+    width: 12rpx;
+    height: 12rpx;
+    border-radius: 50%;
+    background: #fff;
+    right: -26rpx;top: 44rpx;
+  }
+  .video{
+    margin-left: 6%;
+    background: url('https://gw.alicdn.com/tfs/TB1h8sSnwHqK1RjSZJnXXbNLpXa-92-83.png') no-repeat center/cover;
+  }
+  .note{
+    margin-left: 6%;
+    background: url('https://gw.alicdn.com/tfs/TB1B3U6nxjaK1RjSZFAXXbdLFXa-91-83.png') no-repeat center/cover;
+  }
+  .share{
+    margin-left: 6%;
+    background: url('https://gw.alicdn.com/tfs/TB1B.35nxYaK1RjSZFnXXa80pXa-91-83.png') no-repeat center/cover;
+  }
+  &-border{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 97.7%;
+    height: 56rpx;
+    border-left:8rpx solid #fff;
+    border-right:8rpx solid #fff;
+    // border-top:8rpx solid #fff;
+  }
 }
 .share-box{
   width: 100%;

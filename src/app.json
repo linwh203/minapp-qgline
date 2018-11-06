@@ -1,10 +1,10 @@
 {
   "pages": [
+    "pages/quiz/main",
+
     "pages/index-sg/main",
     "pages/index/main",
     
-    "pages/scan/main",
-    "pages/quiz/main",
     "pages/my-reward/main",
     "pages/quizdetail/main",
     "pages/my-msg/main",
@@ -13,7 +13,7 @@
     "pages/first/main",
     "pages/list/main",
     "pages/video/main",
-    
+    "pages/scan/main",
     "pages/my/main",
     "pages/my-rule/main",
     "pages/my-statement/main",

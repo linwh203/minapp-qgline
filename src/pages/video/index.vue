@@ -20,7 +20,7 @@ export default {
       fullSize: false,
       showModal: false,
       coverSrc:
-        "https://gw.alicdn.com/tfs/TB1IegWhkPoK1RjSZKbXXX1IXXa-640-1008.jpg",
+        "https://gw.alicdn.com/tfs/TB1EEXbnQvoK1RjSZFNXXcxMVXa-640-1008.png",
       videoSrc:''
         // "http://wxsnsdy.tc.qq.com/105/20210/snsdyvideodownload?filekey=30280201010421301f0201690402534804102ca905ce620b1241b726bc41dcff44e00204012882540400&bizid=1023&hy=SH&fileparam=302c020101042530230204136ffd93020457e3c4ff02024ef202031e8d7f02030f42400204045a320a0201000400"
     };
@@ -84,7 +84,7 @@ export default {
   width: 100%;
   height: 100%;
   // background: rgba(0,0,0,.6);
-  background: url("https://gw.alicdn.com/tfs/TB1IegWhkPoK1RjSZKbXXX1IXXa-640-1008.jpg")
+  background: url("https://gw.alicdn.com/tfs/TB1b9hcnQPoK1RjSZKbXXX1IXXa-640-1008.png")
     no-repeat top/cover;
   z-index: 999;
   &-top {
