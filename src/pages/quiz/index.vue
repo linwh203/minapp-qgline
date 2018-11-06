@@ -7,12 +7,12 @@
         <div class="top-btn-item">
           <span>5</span>挑战次数
         </div>
-        <div class="top-btn-item">
+        <div class="top-btn-item" @click="showRule">
           <span>?</span>挑战规则
         </div>
       </div>
     </div>
-    <div class="share"></div>
+    <button open-type="share" class="share"></button>
     <scroll-view scroll-y class="index-list">
       <div class="index-list-item">
         <div class="index-list-item-img" @click="startQuiz(1)">
@@ -52,6 +52,10 @@
         </div>
       </div>
     </scroll-view>
+    <div class="cover" v-if="showCover"></div>
+    <div class="ruleLayer" v-if="ruleLayer">
+      <div class="close" @click="closeLayer"></div>
+    </div>
   </div>
 </template>
 
@@ -60,8 +64,6 @@ import { config } from '../../utils/index'
 export default {
   data() {
     return {
-      cross:'https://gw.alicdn.com/tfs/TB14yqPnNTpK1RjSZFKXXa2wXXa-60-132.png',
-      notice:'https://gw.alicdn.com/tfs/TB1.U9SnMHqK1RjSZJnXXbNLpXa-460-700.png',
       shareBg:'https://gw.alicdn.com/tfs/TB1IrOQnFYqK1RjSZLeXXbXppXa-460-832.png',
       shareBtn:'https://gw.alicdn.com/tfs/TB1qxG6nNYaK1RjSZFnXXa80pXa-340-80.png',
       chiLun:'https://gw.alicdn.com/tfs/TB1L2OWnQvoK1RjSZPfXXXPKFXa-292-292.png',
@@ -76,18 +78,85 @@ export default {
       successIcon:'https://gw.alicdn.com/tfs/TB1iq1VnMTqK1RjSZPhXXXfOFXa-328-251.png',
       coin:'https://gw.alicdn.com/tfs/TB1fLeZnQvoK1RjSZFwXXciCFXa-43-44.png',
       userCode:'',
-      score:''
+      score:'',
+      showCover:false,
+      ruleLayer:false
     };
   },
 
   components: {},
 
   methods: {
+    setStorage(key, val) {
+      try {
+        wx.setStorageSync(key,val)
+      } catch(e) {
+        wx.setStorage(key,val)
+      }
+    },
+    getStorage(key) {
+      try {
+        wx.getStorageSync(key)
+      } catch(e) {
+        wx.getStorage(key)
+      }
+    },
     bindTab(e) {
       wx.navigateTo({ url: "../index/main" });
     },
     startQuiz(id) {
       wx.navigateTo({ url: "../quizdetail/main?checkpoint=" + id });
+    },
+    login(code) {
+      const userInfo = wx.getStorageSync('userInfo');
+      wx.request({
+        url: config.base + 'wxlogin/login',
+        data: {
+          code: code,
+          lineId: config.lineId,
+          nickName: userInfo.nickName,
+          avatarUrl: userInfo.avatarUrl,
+          city: userInfo.city,
+          province: userInfo.province,
+          country: userInfo.country
+        }, 
+        method: 'GET',
+        dataType: 'json', 
+        success: res => {
+          // console.log('login',res.data.data)
+          const userCode = res.data.data
+          this.setStorage('userCode',userCode)
+          this.loadCheckPoint(userCode)
+        },
+        fail: err => {
+          console.log('hasError',err)
+        }
+      });
+    },
+    loadCheckPoint(userCode){
+      wx.request({
+        url: config.base + 'quiz/getcheckpoint', 
+        data: {
+          LineId: config.lineId,
+          token: userCode
+        }, 
+        method: 'GET',
+        dataType: 'json', 
+        success: res => {
+          console.log(res.data)
+          this.score = res.data.data
+        },
+        fail: () => {},
+        complete: () => {}
+      });
+    },
+    showRule() {
+      this.showCover = true;
+      this.ruleLayer = true;
+    },
+    closeLayer() {
+      this.showCover = false;
+      this.ruleLayer = false;
     }
   },
 
@@ -98,22 +167,31 @@ export default {
 
   },
   onShow() {
-    this.userCode = wx.getStorageSync('userCode');
-    wx.request({
-      url: config.base + 'quiz/getcheckpoint', 
-      data: {
-        LineId: config.lineId,
-        token: this.userCode
-      }, 
-      method: 'GET',
-      dataType: 'json', 
+    wx.login({
+      success: (res) => {
+        console.log(res)
+        this.login(res.code);
+      }
+    }); 
+    // this.userCode = wx.getStorageSync('userCode');
+    
+  },
+  onShareAppMessage(result) {
+    let title = "青谷研习径";
+    let path = "/pages/list/main?spot_index=" + this.activeIndex;
+    let imageUrl = "https://gw.alicdn.com/tfs/TB1K_SBi4jaK1RjSZFAXXbdLFXa-222-146.png";
+    return {
+      title,
+      path,
+      imageUrl,
+      // desc,
       success: res => {
-        console.log(res.data)
-        this.score = res.data.data
+        console.log("success", res);
       },
-      fail: () => {},
-      complete: () => {}
-    });
+      fail(e) {
+        console.log(e);
+      }
+    };
   }
 };
 </script>
@@ -128,6 +206,32 @@ export default {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  &-btn{
+    width: 90%;
+    color:#fff;
+    font-size:24rpx;
+    display: flex;
+    justify-content: space-between;
+    &-item{
+      width: 164rpx;
+      height: 46rpx;
+      border-radius: 20rpx;
+      background: rgba(0, 0, 0, .3);
+      display: flex;
+      align-items: center;
+      span{
+        width: 30rpx;
+        height: 30rpx;
+        line-height: 30rpx;
+        text-align: center;
+        display: block;
+        background: #fff;
+        color:#496a8e;
+        border-radius: 50%;
+        margin:0 10rpx;
+      }
+    }
+  }
 }
 .userPic{
   width: 110rpx;
@@ -185,5 +289,31 @@ export default {
     }
   }
 }
+.cover{
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  background: rgba(0,0,0,.5);
+  z-index:80;
+  top: 0;
+  left: 0;
+}
+.ruleLayer{
+  width: 500rpx;
+  height: 740rpx;
+  position: fixed;
+  z-index:81;
+  top: 20%;
+  left: 0;right: 0;margin:auto;
+  background: url('https://gw.alicdn.com/tfs/TB1.U9SnMHqK1RjSZJnXXbNLpXa-460-700.png') no-repeat top/cover;
 
+}
+.close{
+  width: 70rpx;
+  height: 142rpx;
+  background: url('https://gw.alicdn.com/tfs/TB14yqPnNTpK1RjSZFKXXa2wXXa-60-132.png') no-repeat top/cover;
+  position: absolute;
+  right: 0;top: -130rpx;
+  z-index: 81;
+}
 </style>

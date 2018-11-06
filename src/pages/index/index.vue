@@ -224,12 +224,12 @@ export default {
   },
 
   created() {
-    wx.login({
-      success: (res) => {
-        console.log(res)
-        this.login(res.code);
-      }
-    }); 
+    // wx.login({
+    //   success: (res) => {
+    //     console.log(res)
+    //     this.login(res.code);
+    //   }
+    // }); 
     for(let i=2; i<90;i++){
       this.fullSpot.push(i)
     }

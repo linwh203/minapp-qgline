@@ -271,12 +271,12 @@ export default {
   },
 
   created() {
-    wx.login({
-      success: (res) => {
-        console.log(res)
-        this.login(res.code);
-      }
-    }); 
+    // wx.login({
+    //   success: (res) => {
+    //     console.log(res)
+    //     this.login(res.code);
+    //   }
+    // }); 
     
     // this.scrollTo = 'spot' + parseInt(this.activeIndex + 2)
   },
