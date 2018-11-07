@@ -29,13 +29,19 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 0,
+			"current": 1,
 			"list": [
 				{
 					"id": 0,
 					"name": "知识图",
 					"pathName": "pages/list/main",
 					"query": "spot_index=90"
+				},
+				{
+					"id": -1,
+					"name": "问答",
+					"pathName": "pages/quizdetail/main",
+					"query": "checkpoint=1"
 				}
 			]
 		}

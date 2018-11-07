@@ -1,19 +1,19 @@
 <template>
   <div class="container">
-    <div class="section">
+    <div class="section textarea">
       <textarea auto-height placeholder="请输入遇到的问题与建议..." v-model="text"/>
+    </div>
+    <div class="contact">
+       <input type="number" placeholder="留下联系方式，便于我们联系你" v-model="contact"/>
     </div>
     <div class="section imgList" v-if="imgList.length>0">
       <div class="img-item" v-for="(item,index) in imgList" :key="index">
         <img :src="item" >
       </div>
     </div>
-    <div class="section flex" v-if="imgList.length<9">
+    <div class="flex" v-if="imgList.length<9">
       <img src="../../assets/icon-my-suggest.png" class="upload" @click="upload">
       <div class="upload-text">上传照片</div>
-    </div>
-    <div class="contact">
-       <input type="number" placeholder="留下联系方式，便于我们联系你" v-model="contact"/>
     </div>
     <div class="submit" @click="submit">
       确定提交
@@ -143,6 +143,7 @@ export default {
 <style scoped lang="less">
 .container{
   background: #f3f3f3;
+  padding:20rpx;
 }
 .section{
   background: #fff;
@@ -150,23 +151,29 @@ export default {
   min-height:160rpx;
   font-size:26rpx;
 }
+.textarea{
+  height: 300rpx;
+}
 .upload{
   width: 140rpx;
   height: 140rpx;
   display: block;
   &-text{
     color:#909090;
-    margin-left:20rpx;
+    font-size:26rpx;
+    position: absolute;
+    bottom: 0;
+    left: 20rpx;
   }
 }
 .imgList{
   display: flex;
   flex-wrap: wrap;
+  margin-bottom:10rpx;
 }
 .img-item{
   margin-right:20rpx;
-  margin-bottom:30rpx;
-  border:1px solid #e9e9e9;
+  margin-bottom:10rpx;
   img{
     width: 110rpx;
     height: 140rpx;
@@ -178,15 +185,14 @@ export default {
   padding:20rpx;
   font-size:26rpx;
   background: #fff;
-  border-top:1px solid #e0e0e0;
-  border-bottom:1px solid #e0e0e0;
+  margin-bottom:30rpx;
 }
 .submit{
   width: 700rpx;
   line-height: 90rpx;
   text-align: center;
-  background: #53c6f7;
-  border-radius: 30rpx;
+  background: #292770;
+  border-radius: 18rpx;
   margin: 70rpx auto;
   color:#fff;
 }
@@ -194,7 +200,8 @@ export default {
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  border-bottom:1px solid #e0e0e0;
+  position: relative;
+
 }
 
 </style>

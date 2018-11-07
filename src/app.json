@@ -1,15 +1,15 @@
 {
   "pages": [
     
+    "pages/index/main",
+    "pages/index-sg/main",
+    
     "pages/quiz/main",
     "pages/quizdetail/main",
-    "pages/index-sg/main",
-    "pages/index/main",
-    
     "pages/my-reward/main",
-    
     "pages/my-msg/main",
     "pages/map/main",
+    "pages/map-sg/main",
     "pages/paint/main",
     "pages/first/main",
     "pages/list/main",

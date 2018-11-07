@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <scroll-view scroll-y class="article-view">
-      <img mode="widthFix" src="https://gw.alicdn.com/tfs/TB1oSl5k4TpK1RjSZFMXXbG_VXa-640-1554.png">
+      <img mode="widthFix" src="https://gw.alicdn.com/tfs/TB1T_WPn9zqK1RjSZFLXXcn2XXa-640-1530.png">
     </scroll-view>
   </div>
 </template>

@@ -14,7 +14,7 @@
       <div class="index-tab-item icon-audio" @click="playAudio">
         <img src="https://gw.alicdn.com/tfs/TB1PStFmSzqK1RjSZFLXXcn2XXa-91-101.png" alt="">
       </div>
-      <div class="index-tab-item icon-quiz" @click="bindTab('../quiz/main')">
+      <div class="index-tab-item icon-quiz" @click="bindTab('../quiz/main')" v-if="false">
         <img src="https://gw.alicdn.com/tfs/TB1mz8HmQvoK1RjSZFNXXcxMVXa-91-101.png" alt="">
       </div>
       <div class="index-tab-item icon-rule" @click="bindTab('../my-rule/main')">
@@ -35,11 +35,11 @@
         <div class="spot-first" :class="activeIndex == 1?'active':''" id="spot1">
           <div @click="firstSpot">1</div> 
           <div class="spot-first-tri" v-if="activeIndex == 1"></div>
-          <div class="spot-first-window" :style="{right:calcRight+'rpx'}" v-if="activeIndex == 1">
-            <div class="spot-first-window-pic"></div>
+          <div class="spot-first-window" :style="{right:calcRight+'rpx'}" v-if="activeIndex == 1" @click=goDetail>
+            <img class="spot-first-window-pic" :src="prefix + currentSpot.spot_coverurl" v-if=currentSpot.spot_coverurl>
             <div class="spot-first-window-text">
-              <div class="spot-first-window-title">后水水水水哈哈哈</div>
-              <div class="spot-first-window-desc">89123年阿喀琉斯觉得逻辑开始了解阿斯兰的坑接口就</div>
+              <div class="spot-first-window-title">{{currentSpot.spot_title}}</div>
+              <div class="spot-first-window-desc">{{currentSpot.spot_describe}}</div>
             </div>
           </div>
         </div>
@@ -47,10 +47,10 @@
           <div @click="chooseSpot(item,index)">{{item}}</div> 
           <div class="spot-item-tri" v-if="activeIndex == index+2"></div>
           <div class="spot-item-window" :style="{right:calcRight+'rpx'}" v-if="activeIndex == index+2">
-            <div class="spot-item-window-pic"></div>
+            <img class="spot-item-window-pic" :src="prefix + currentSpot.spot_coverurl" v-if=currentSpot.spot_coverurl>
             <div class="spot-item-window-text">
-              <div class="spot-item-window-title">后水水水水哈哈哈</div>
-              <div class="spot-item-window-desc">89123年阿喀琉斯觉得逻辑开始了解阿斯兰的坑接口就</div>
+              <div class="spot-item-window-title">{{currentSpot.spot_title}}</div>
+              <div class="spot-item-window-desc">{{currentSpot.spot_describe}}</div>
             </div>
           </div>
         </div>
@@ -70,7 +70,7 @@
           <img class="modal-tab-title-icon" :class="tab1?'':'rotate'" src="https://gw.alicdn.com/tfs/TB19EKcnpzqK1RjSZFvXXcB7VXa-22-25.png">
         </div>
         <div class="modal-tab-content" v-if=tab1>
-          <div class="modal-tab-content-item" v-for="(item,index) in natureList" :key="index">
+          <div class="modal-tab-content-item" v-for="(item,index) in natureList" :key="index"  @click="toSmallLine(index)">
             {{item}}
           </div>
         </div>
@@ -95,6 +95,10 @@ import { config } from '../../utils/index';
 export default {
   data() {
     return {
+      prefix:config.prefix,
+      currentSpot:{
+        spot_coverurl:'',spot_title:'',spot_describe:'',spot_id:''
+      },
       fullHeight:'',
       activeIndex:1,
       toView:'spot1',
@@ -162,19 +166,51 @@ export default {
     bindTab(url) {
       wx.navigateTo({ url: url });
     },
+    goDetail(){
+      const index = parseInt(this.activeIndex)
+      wx.navigateTo({ url: '../list/main?spot_index=' + index});
+    },
     showRoadName() {
       this.showRoadSelect = true;
-      // let t = parseFloat(this.fullHeight/89).toFixed(2)*this.activeIndex
-      // wx.pageScrollTo({
-      //   scrollTop: t,
-      //   duration: 0
-      // })
+    },
+    toSmallLine(index){
+      let lineNo = parseInt(index+1)
+      let top
+      switch(lineNo){
+        case 1:
+          top = 0;
+          this.activeIndex = 1;
+          break
+        case 2:
+          top = 1100;
+          this.activeIndex = 20;
+          break
+        case 3:
+          top = 1800;
+          this.activeIndex = 32;
+          break
+        case 4:
+          top = 2700;
+          this.activeIndex = 47;
+          break
+        case 5:
+          top = 3700;
+          this.activeIndex = 64;
+          break
+      }
+      this.currentSpot = this.spotList[this.activeIndex-1]
+      wx.pageScrollTo({
+        scrollTop: top,
+        duration: 0
+      })
     },
     chooseSpot(item,index){
       this.activeIndex == index + 2? this.activeIndex = -1 : this.activeIndex = index + 2
+      this.currentSpot = this.spotList[this.activeIndex-1]
     },
     firstSpot() {
       this.activeIndex = 1
+      this.currentSpot = this.spotList[0]
     },
     playAudio() {
 
@@ -205,8 +241,17 @@ export default {
     },
     getSpot() {
       const self = this
+      const storageData = wx.getStorageSync('NatureList')
+      if(storageData){
+        this.spotList = storageData
+        this.currentSpot = storageData[0]
+        for(let i=2; i<=storageData.length;i++){
+          this.fullSpot.push(i)
+        }
+        return
+      }
       wx.request({
-        url: config.base + 'attraction/list', //开发者服务器接口地址",
+        url: config.base + 'attraction/NaturalList', //开发者服务器接口地址",
         data: {
           lineId:config.lineId
         }, //请求的参数",
@@ -215,7 +260,13 @@ export default {
         success: res => {
           // console.log(res)
           // self.GLOBAL.spot_list = res.data.data
-          this.setStorage('spotList',res.data.data)
+         const data = res.data.data
+          this.setStorage('NatureList',data)
+          this.spotList = data
+          this.currentSpot = data[0]
+          for(let i=2; i<=data.length;i++){
+            this.fullSpot.push(i)
+          }
         },
         fail: () => {},
         complete: () => {}
@@ -230,9 +281,6 @@ export default {
     //     this.login(res.code);
     //   }
     // }); 
-    for(let i=2; i<90;i++){
-      this.fullSpot.push(i)
-    }
     // this.scrollTo = 'spot' + parseInt(this.activeIndex + 2)
   },
   mounted() {
@@ -296,7 +344,7 @@ export default {
       &-pic{
         width: 136rpx;
         height: 134rpx;
-        background: red;
+        background: #fff;
         margin:12rpx 12rpx 0 32rpx;
       }
       &-text{
@@ -309,8 +357,9 @@ export default {
       }
       &-title{
         margin-top: 45rpx;
-        font-size: 30rpx;
+        font-size: 28rpx;
         line-height:40rpx;
+        white-space:nowrap;
       }
       &-desc{
         font-size: 20rpx;
@@ -364,7 +413,7 @@ export default {
       &-pic{
         width: 136rpx;
         height: 134rpx;
-        background: red;
+        background: #fff;
         margin:12rpx 12rpx 0 32rpx;
       }
       &-text{
@@ -377,8 +426,9 @@ export default {
       }
       &-title{
         margin-top: 45rpx;
-        font-size: 30rpx;
+        font-size: 28rpx;
         line-height:40rpx;
+        white-space:nowrap;
       }
       &-desc{
         font-size: 20rpx;

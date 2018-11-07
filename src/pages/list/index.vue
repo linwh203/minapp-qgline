@@ -3,7 +3,7 @@
     <div class="nav">
       <div class="nav-line"></div>
       <div class="nav-content">
-        <div class="nav-item audio" @click="playAudio"></div>
+        <div class="nav-item" :class="audioOff?'pause':'audio'" @click="playAudio"></div>
         <div class="nav-item video" @click="goVideo"></div>
         <div class="nav-item note" v-if="false"></div>
         <div class="nav-item share" @click="showShareBox"></div>
@@ -18,7 +18,7 @@
     <img class="article-img" :src="prefix + articleData[0].url" v-if="articleData[0]" mode="widthFix">
     <div class="writer" v-if="articleData[1]">
       <div class="writer-title">{{articleData[1].title}}</div>
-      <div class="writer-text">{{articleData[1].content}}</div>
+      <div class="writer-text" v-html="articleData[1].content"></div>
     </div>
     <div class="share-box" v-if="sharebox">
       <div class="share-box-body">
@@ -94,6 +94,16 @@ export default {
       }
     },
     goVideo() {
+      if(!this.videoUrl){
+        wx.showToast({
+          title: '暂无视频', //提示的内容,
+          icon:'none',
+          duration: 2000, //延迟时间,
+          mask: true, //显示透明蒙层，防止触摸穿透,
+          success: res => {}
+        });
+        return
+      }
       wx.navigateTo({ url: "../video/main?video_url=" + this.videoUrl });
     },
     showShareBox() {
@@ -349,7 +359,10 @@ export default {
   .audio{
     background: url('https://gw.alicdn.com/tfs/TB1rngUnAvoK1RjSZPfXXXPKFXa-91-83.png') no-repeat center/cover;
   }
-  .audio:after,.video:after,.note::after{
+  .pause{
+    background: url('https://gw.alicdn.com/tfs/TB1A5HfnYvpK1RjSZPiXXbmwXXa-91-84.png') no-repeat center/cover;  
+  }
+  .audio:after,.video:after,.note:after,.pause:after{
     content:'';
     position: absolute;
     width: 12rpx;

@@ -56,6 +56,10 @@
     <div class="ruleLayer" v-if="ruleLayer">
       <div class="close" @click="closeLayer"></div>
     </div>
+    <div class="shareLayer" v-if="shareLayer">
+      <div class="shareBtn" @click="closeLayer"></div>
+      <div class="close" @click="closeLayer"></div>
+    </div>
   </div>
 </template>
 
@@ -64,23 +68,11 @@ import { config } from '../../utils/index'
 export default {
   data() {
     return {
-      shareBg:'https://gw.alicdn.com/tfs/TB1IrOQnFYqK1RjSZLeXXbXppXa-460-832.png',
-      shareBtn:'https://gw.alicdn.com/tfs/TB1qxG6nNYaK1RjSZFnXXa80pXa-340-80.png',
-      chiLun:'https://gw.alicdn.com/tfs/TB1L2OWnQvoK1RjSZPfXXXPKFXa-292-292.png',
-      biaoQian:'https://gw.alicdn.com/tfs/TB1VLiZnNTpK1RjSZFMXXbG_VXa-96-21.png',
-      daTiBg:'https://gw.alicdn.com/tfs/TB1ASuUnMHqK1RjSZJnXXbNLpXa-640-1084.png',
-      gou:'https://gw.alicdn.com/tfs/TB1_2ORnRLoK1RjSZFuXXXn0XXa-36-25.png',
-      dacha:'https://gw.alicdn.com/tfs/TB1c4eWnHrpK1RjSZTEXXcWAVXa-30-29.png',
-      failMsg:'https://gw.alicdn.com/tfs/TB1RLqUnFzqK1RjSZFvXXcB7VXa-460-700.png',
-      failMsgNoChance:'https://gw.alicdn.com/tfs/TB1tIq0nQvoK1RjSZFDXXXY3pXa-460-700.png',
-      failMsgBtn:'https://gw.alicdn.com/tfs/TB1Rn9UnHvpK1RjSZPiXXbmwXXa-340-80.png',
-      failIcon:'https://gw.alicdn.com/tfs/TB1Lg9UnHPpK1RjSZFFXXa5PpXa-328-251.png',
-      successIcon:'https://gw.alicdn.com/tfs/TB1iq1VnMTqK1RjSZPhXXXfOFXa-328-251.png',
-      coin:'https://gw.alicdn.com/tfs/TB1fLeZnQvoK1RjSZFwXXciCFXa-43-44.png',
       userCode:'',
       score:'',
       showCover:false,
-      ruleLayer:false
+      ruleLayer:false,
+      shareLayer:false
     };
   },
 
@@ -105,6 +97,9 @@ export default {
       wx.navigateTo({ url: "../index/main" });
     },
     startQuiz(id) {
+      if(this.score<id-1){
+        return 
+      }
       wx.navigateTo({ url: "../quizdetail/main?checkpoint=" + id });
     },
     login(code) {
@@ -157,6 +152,7 @@ export default {
     closeLayer() {
       this.showCover = false;
       this.ruleLayer = false;
+      this.shareLayer = false;
     }
   },
 
@@ -187,6 +183,8 @@ export default {
       // desc,
       success: res => {
         console.log("success", res);
+        this.showCover = true;
+        this.shareLayer = true;
       },
       fail(e) {
         console.log(e);
@@ -256,7 +254,7 @@ export default {
 .container {
   position: relative;
   padding:20rpx;
-  background: url('https://gw.alicdn.com/tfs/TB1o6t.nMHqK1RjSZFPXXcwapXa-640-1033.png') no-repeat top/cover;
+  background: url('https://gw.alicdn.com/tfs/TB1.nJ1nVzqK1RjSZFvXXcB7VXa-640-1008.png') no-repeat top/cover;
 }
 .index-list {
   width: 100%;
@@ -300,13 +298,30 @@ export default {
 }
 .ruleLayer{
   width: 500rpx;
-  height: 740rpx;
+  height: 760rpx;
   position: fixed;
   z-index:81;
   top: 20%;
   left: 0;right: 0;margin:auto;
   background: url('https://gw.alicdn.com/tfs/TB1.U9SnMHqK1RjSZJnXXbNLpXa-460-700.png') no-repeat top/cover;
 
+}
+.shareLayer{
+  width: 500rpx;
+  height: 764rpx;
+  position: fixed;
+  z-index:81;
+  top: 20%;
+  left: 0;right: 0;margin:auto;
+  background: url('https://gw.alicdn.com/tfs/TB1YThon4TpK1RjSZR0XXbEwXXa-460-700.png') no-repeat top/contain;
+}
+.shareBtn{
+  position: absolute;
+  bottom: 40rpx;
+  left: 0;right: 0;margin:auto;
+  width: 360rpx;
+  height: 85rpx;
+  background: url('https://gw.alicdn.com/tfs/TB1qxG6nNYaK1RjSZFnXXa80pXa-340-80.png') no-repeat top/cover;
 }
 .close{
   width: 70rpx;

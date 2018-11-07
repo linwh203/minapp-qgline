@@ -1,34 +1,27 @@
 <template>
   <div class="container">
+    <div class="user">
+      <open-data type="userAvatarUrl" class="userPic"></open-data>
+    </div>
     <open-data type="userNickName" class="userName"></open-data>
     <div class="my-tab">
       <div class="my-tab-body">
-        <div class="my-tab-body-item" @click="bindTab('../my-rule/main')">
-          <img src="https://gw.alicdn.com/tfs/TB1hhdWk7voK1RjSZPfXXXPKFXa-179-133.png" class="my-tab-body-item-icon"/>
-          <div class="my-tab-body-item-name">行山礼仪</div>
+        <div class="my-tab-body-item" @click="bindTab('../my-msg/main')">
+          <img src="https://gw.alicdn.com/tfs/TB1Z6iGn6TpK1RjSZKPXXa3UpXa-74-66.png" class="my-tab-body-item-icon"/>
+          <div class="my-tab-body-item-name">消息中心</div>
         </div>
         <div class="my-tab-body-item" @click="bindTab('../my-statement/main')">
-          <img src="https://gw.alicdn.com/tfs/TB1AjlUkZbpK1RjSZFyXXX_qFXa-179-133.png" class="my-tab-body-item-icon"/>
+          <img src="https://gw.alicdn.com/tfs/TB1aCaInVzqK1RjSZFoXXbfcXXa-71-65.png" class="my-tab-body-item-icon"/>
           <div class="my-tab-body-item-name">法律声明</div>
         </div>
       </div>
       <div class="my-tab-body">
-        <div class="my-tab-body-item" @click="bindTab('../my-reward/main')">
-          <img src="https://gw.alicdn.com/tfs/TB1VPxWk9zqK1RjSZFjXXblCFXa-179-132.png" class="my-tab-body-item-icon"/>
-          <div class="my-tab-body-item-name">个人成就</div>
-        </div>
-        <div class="my-tab-body-item" @click="bindTab('../my-msg/main')">
-          <img src="https://gw.alicdn.com/tfs/TB1PVF0k7zoK1RjSZFlXXai4VXa-178-132.png" class="my-tab-body-item-icon"/>
-          <div class="my-tab-body-item-name">消息中心</div>
-        </div>
-      </div>
-      <div class="my-tab-body">
         <div class="my-tab-body-item" @click="bindTab('../my-suggest/main')">
-          <img src="https://gw.alicdn.com/tfs/TB145NVk3TqK1RjSZPhXXXfOFXa-179-132.png" class="my-tab-body-item-icon"/>
+          <img src="https://gw.alicdn.com/tfs/TB1BEeMn7voK1RjSZPfXXXPKFXa-74-66.png" class="my-tab-body-item-icon"/>
           <div class="my-tab-body-item-name">意见反馈</div>
         </div>
         <div class="my-tab-body-item" @click="bindTab('../my-about/main')">
-          <img src="https://gw.alicdn.com/tfs/TB17p40k7zoK1RjSZFlXXai4VXa-179-132.png" class="my-tab-body-item-icon"/>
+          <img src="https://gw.alicdn.com/tfs/TB1fZ9Gn4TpK1RjSZR0XXbEwXXa-74-65.png" class="my-tab-body-item-icon"/>
           <div class="my-tab-body-item-name">关于我们</div>
         </div>
       </div>
@@ -69,39 +62,57 @@ export default {
   width: 100%;
   height: 100%;
   position: relative;
-  background: url('https://gw.alicdn.com/tfs/TB1_p0GkZfpK1RjSZFOXXa6nFXa-640-1008.png') no-repeat top/cover;
+  background: url('https://gw.alicdn.com/tfs/TB1AUCOnW6qK1RjSZFmXXX0PFXa-640-1016.png') no-repeat top/cover;
   .center();
 }
+.userPic{
+  width: 150rpx;
+  height: 150rpx;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 4rpx solid #fff;
+}
+.user{
+  width: 180rpx;
+  height: 180rpx;
+  border-radius: 50%;
+  background: rgba(255,255,255,.2);
+  border:1px solid #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10rpx;
+  margin-top: 20rpx;
+}
 .userName{
-  padding:0 60rpx;
-  line-height: 70rpx;
-  background: #ff9899;
   color:#fff;
-  border-radius: 38rpx;
-  position: absolute;
-  top: 24%;
+  font-size: 30rpx;
 }
 .my-tab{
   position: absolute;
-  top: 40%;
+  top: 32%;
   width: 100%;
   &-body{
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin: 0 105rpx;
+    margin: 25rpx 25rpx;
     &-item{
-      .center();
-      width: 210rpx;
+      display: flex;
+      align-items: center;
+      width: 330rpx;
+      height: 120rpx;
       margin-bottom: 36rpx;
+      background: url('https://gw.alicdn.com/tfs/TB1OCOLn6TpK1RjSZKPXXa3UpXa-290-130.png') no-repeat top/cover;
       &-icon{
-        width: 210rpx;
-        height: 156rpx;
+        width: 72rpx;
+        height: 65rpx;
         display: block;
+        margin:0 40rpx 0 25rpx;
       }
       &-name{
-        font-size:26rpx;
-        color:#3f2306;
+        font-size:30rpx;
+        color:#000;
       }
     }
   }

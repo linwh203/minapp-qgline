@@ -1,7 +1,7 @@
 <template>
   <movable-area class="container">
     <movable-view class="index-bg" direction="all" :x="x" :y="y" @change="startTouch">
-      <img class="mapImg" src="https://gw.alicdn.com/tfs/TB1JlSPn7zoK1RjSZFlXXai4VXa-2835-2835.jpg" alt="" >
+      <img class="mapImg" src="https://gw.alicdn.com/tfs/TB1S7GHn8LoK1RjSZFuXXXn0XXa-3753-3753.jpg" alt="" >
       <img class="userIcon" id="usericon" src="../../assets/icon-avator.png" v-bind:style="{ top: userLat + 'rpx',left: userLng + 'rpx'}">
       <div class="spot" v-for="(item,index) in spotList" :key="item.sortNo">
         <div class="spot-icon" :class="'icon-'+item.sortNo" v-if="activeSpot == index" @click="showWindow(index)">
