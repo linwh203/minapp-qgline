@@ -46,7 +46,7 @@
         <div class="spot-item" v-for="(item,index) in fullSpot" :key="index" :class="activeIndex == index+2?'active':''" :id="'spot'+item">
           <div @click="chooseSpot(item,index)">{{item}}</div> 
           <div class="spot-item-tri" v-if="activeIndex == index+2"></div>
-          <div class="spot-item-window" :style="{right:calcRight+'rpx'}" v-if="activeIndex == index+2">
+          <div class="spot-item-window" :style="{right:calcRight+'rpx'}" v-if="activeIndex == index+2" @click=goDetail>
             <img class="spot-item-window-pic" :src="prefix + currentSpot.spot_coverurl" v-if=currentSpot.spot_coverurl>
             <div class="spot-item-window-text">
               <div class="spot-item-window-title">{{currentSpot.spot_title}}</div>
@@ -167,7 +167,7 @@ export default {
       wx.navigateTo({ url: url });
     },
     goDetail(){
-      const index = parseInt(this.activeIndex)
+      const index = parseInt(this.activeIndex-1)
       wx.navigateTo({ url: '../list/main?spot_index=' + index});
     },
     showRoadName() {

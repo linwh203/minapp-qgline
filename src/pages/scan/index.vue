@@ -98,7 +98,7 @@ export default {
       });
     },
     postPhoto(imgList) {
-      
+      const code = wx.getStorageSync('userCode');
       wx.request({
         url: config.base + 'identify/photo', //开发者服务器接口地址",
         data: {
@@ -106,7 +106,7 @@ export default {
           lineId: config.lineId
         }, //请求的参数",
         header:{
-          token: this.userCode
+          token: code
         },
         method: 'POST',
         dataType: 'json', //如果设为json，会尝试对返回的数据做一次 JSON.parse
@@ -139,7 +139,32 @@ export default {
     },
     error(e) {
       console.log(e.detail)
-    }
+    },
+    login(code) {
+      wx.request({
+        url: config.base + 'wxlogin/login',
+        data: {
+          code: code,
+          lineId: config.lineId
+        }, 
+        method: 'GET',
+        dataType: 'json', 
+        success: res => {
+          // console.log('login',res.data.data)
+          this.setStorage('userCode',res.data.data)
+        },
+        fail: err => {
+          console.log('hasError',err)
+        }
+      });
+    },
+    setStorage(key, val) {
+      try {
+        wx.setStorageSync(key,val)
+      } catch(e) {
+        wx.setStorage(key,val)
+      }
+    },
   },
 
   created() {
@@ -151,6 +176,12 @@ export default {
       this.showDesc = true
       setTimeout(()=>{this.showDesc = false},2000)
     }
+    wx.login({
+      success: (res) => {
+        console.log(res)
+        this.login(res.code);
+      }
+    }); 
   },
   onShow() {
     wx.setStorageSync('firstPhoto',true);

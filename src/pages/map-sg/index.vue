@@ -2,48 +2,43 @@
   <movable-area class="container">
     <movable-view class="index-bg" direction="all" :x="x" :y="y" @change="startTouch">
       <img class="mapImg" src="https://gw.alicdn.com/tfs/TB1S7GHn8LoK1RjSZFuXXXn0XXa-3753-3753.jpg" alt="" >
-      <img class="userIcon" id="usericon" src="../../assets/icon-avator.png" v-bind:style="{ top: userLat + 'rpx',left: userLng + 'rpx'}">
       <div class="spot" v-for="(item,index) in spotList" :key="item.sortNo">
-        <div class="spot-icon" :class="'icon-'+item.sortNo" v-if="activeSpot == index" @click="showWindow(index)">
-          <img class="active-spot" src="https://gw.alicdn.com/tfs/TB1aICmi6DpK1RjSZFrXXa78VXa-30-24.png" />
+        <div class="spot-icon" :class="activeSpot == index?'changeBG':''" @click="showWindow(index)" :style="{top:item.top+'rpx',left:item.left+'rpx'}">
+          <span >{{item.sortNo}}</span>
+          <div class="spot-item-window" :class="'window-'+item.sortNo" v-if="activeWindow == index" @click="viewDetail(item)">
+            <img class="spot-item-window-pic" :src="prefix + item.spot_coverurl" v-if=item.spot_coverurl>
+            <div class="spot-item-window-text">
+              <div class="spot-item-window-title">{{item.spot_title}}</div>
+              <div class="spot-item-window-desc">{{item.spot_describe}}</div>
+            </div>
+          </div>
         </div>
-        <div class="spot-icon" :class="'icon-'+item.sortNo" v-else @click="showWindow(index)">{{item.sortNo}}</div>
-        <div class="spot-window" :class="'window-'+item.sortNo" v-if="activeWindow == index" @click="viewDetail(item)">
-          <div class="spot-window-text">{{item.spot_name}}</div>
-          <img class="spot-window-img" :src="prefix + item.spot_image" />
-        </div>
+
       </div>
     </movable-view>
-    <div class="map-sub">
-      <div class="map-sub-line"></div>
-      <div class="map-sub-btn">
-        <div class="map-sub-btn-in" @click="showNear">
-          <img src="../../assets/icon-map-gps.png" alt="" class="btn-show">
-        </div>
+    <div class="index-tab">
+      <div class="index-tab-item icon-map" >
+        <img src="https://gw.alicdn.com/tfs/TB1hOhEmMDqK1RjSZSyXXaxEVXa-90-101.png" alt="">
       </div>
-      <div class="map-sub-line"></div>
-      <div class="map-sub-btn">
-        <div class="map-sub-btn-in " @click="bindTab('../paint/main')">
-          <img src="../../assets/icon-map-pic.png" alt="" class="btn-audio" >
-        </div>
+      <div class="index-tab-item icon-list" @click="bindTab('../index-sg/main')">
+        <img src="https://gw.alicdn.com/tfs/TB1gqFKmHvpK1RjSZFqXXcXUVXa-91-101.png">
       </div>
-    </div>
-    <div class="map-tab">
-      <div class="map-tab-item icon-list" @click="bindTab('../index/main')">
-        <img src="../../assets/icon-index-list.png" alt="">
+      <div class="index-tab-item icon-scan" @click="bindTab('../scan/main')">
+        <img src="https://gw.alicdn.com/tfs/TB1gWBKmHvpK1RjSZFqXXcXUVXa-91-101.png" alt="">
       </div>
-      <div class="map-tab-item icon-map" @click="bindTab('../map/main')">
-        <img src="../../assets/icon-index-map.png" alt="">
+      <div class="index-tab-item icon-audio" @click="playAudio" v-if="false">
+        <img src="https://gw.alicdn.com/tfs/TB1PStFmSzqK1RjSZFLXXcn2XXa-91-101.png" alt="">
       </div>
-      <div class="map-tab-item icon-scan" @click="bindTab('../scan/main')">
-        <img src="../../assets/icon-index-scan.png" alt="">
+      <div class="index-tab-item icon-quiz" @click="bindTab('../quiz/main')" v-if="false">
+        <img src="https://gw.alicdn.com/tfs/TB1mz8HmQvoK1RjSZFNXXcxMVXa-91-101.png" alt="">
       </div>
-      <div class="map-tab-item icon-quiz" @click="bindTab('../quiz/main')">
-        <img src="../../assets/icon-index-quiz.png" alt="">
+      <div class="index-tab-item icon-rule" @click="bindTab('../my-rule/main')">
+        <img src="https://gw.alicdn.com/tfs/TB1QrFHmSzqK1RjSZFHXXb3CpXa-91-100.png" alt="">
       </div>
-      <div class="map-tab-item icon-my" @click="bindTab('../my/main')">
-        <img src="../../assets/icon-index-my.png" alt="">
+      <div class="index-tab-item icon-my" @click="bindTab('../my/main')">
+        <img src="https://gw.alicdn.com/tfs/TB1TXlImMHqK1RjSZFgXXa7JXXa-92-99.png" alt="">
       </div>
+      <div class="index-tab-line"></div>
     </div>
   </movable-area>
 </template>
@@ -60,73 +55,35 @@ export default {
       x:0,
       y:0, 
       mapStart:{
-        lng:114.49358,
-        lat:22.61034
+        lng:114.34078932,
+        lat:22.62330383
       },
       mapEnd:{
-        lng:114.50023,
-        lat:22.59959
+        lng:114.36021924,
+        lat:22.60493338
+      },
+      Xstart:{
+        lng:114.34078932,
+        lat:22.62330383
+      },
+      Xend:{
+        lng:114.34078932,
+        lat:22.60493338
+      },
+      Ystart:{
+        lng:114.34078932,
+        lat:22.62330383
+      },
+      Yend:{
+        lng:114.36021924,
+        lat:22.62330383
       },
       nearSpot:0,
       prefix:config.prefix
     };
   },
   computed: {
-     userLat(){
-      //  top
-      switch(this.nearSpot){
-        case 0 :
-          return 720
-        case 1 :
-          return 700
-        case 2 :
-          return 550
-        case 3 :
-          return 400
-        case 4 :
-          return 400
-        case 5 :
-          return 800
-        case 6 :
-          return 1030
-        case 7 :
-          return 1350
-        case 8 :
-          return 1600
-        case 9 :
-          return 1400
-        case 10 :
-          return 1050
-      }
-    },
-    userLng(){
-      // left
-      switch(this.nearSpot){
-        case 0 :
-          return 450
-        case 1 :
-          return 470
-        case 2 :
-          return 500
-        case 3 :
-          return 500
-        case 4 :
-          return 800
-        case 5 :
-          return 780
-        case 6 :
-          return 750
-        case 7 :
-          return 650
-        case 8 :
-          return 850
-        case 9 :
-          return 500
-        case 10 :
-          return 370
-      }
-    }
-   
+
   },
 
   components: {},
@@ -146,6 +103,23 @@ export default {
         wx.getStorage(key)
       }
     },
+    distance(item){
+      let x = this.locate(this.Xstart,this.Xend)
+      let y = this.locate(this.Ystart,this.Yend)
+      let width = 3753
+      let spotX = {},spotY = {}
+      spotX.lng = this.Xstart.lng
+      spotX.lat = item.latitude
+      let left = this.locate(this.Xstart,spotX)
+      spotY.lng = item.longitude
+      spotY.lat = this.Ystart.lat
+      let top = this.locate(this.Ystart,spotY)
+      let result = {
+        top:left*width/x,
+        left:top*width/y
+      }
+      return result
+    },
     showNear() {
       if(this.nearSpot == 0) {
         this.showWindow(this.nearSpot)
@@ -157,55 +131,45 @@ export default {
       wx.navigateTo({ url: url });
     },
     viewDetail(item) {
-      console.log(item)
-      const spotId = item.spot_id
-      const spot_index = item.sortNo
-      wx.navigateTo({ url: '../list/main?spot_id=' + spotId + '&spot_index=' + spot_index + '&from=map'});
+      const index = this.activeSpot<0?89:parseInt(this.activeSpot)+89
+      wx.navigateTo({ url: '../list/main?spot_index=' + index});
     },
     showWindow(index) {
       this.activeWindow == index ? this.activeWindow = -1 : this.activeWindow = index;
-      this.activeSpot = index ? this.activeSpot = -1 : this.activeSpot = index;
-      switch(index){
-        case 0:
-          this.x = -100
-          this.y = -200
-          break
-        case 1:
-          this.x = -100
-          this.y = -200
-          break
-        case 2:
-          this.x = -100
-          this.y = -100
-          break
-        case 3:
-          this.x = -150
-          this.y = -80
-          break
-        case 4:
-          this.x = -100
-          this.y = -200
-          break
-        case 5:
-          this.x = -100
-          this.y = -200
-          break
-        case 6:
-          this.x = -200
-          this.y = -400
-          break
-        case 7:
-          this.x = -200
-          this.y = -400
-          break
-        case 8:
-          this.x = -100
-          this.y = -400
-          break
-        case 9:
-          this.x = -100
-          this.y = -300
-          break
+      this.activeSpot == index ? this.activeSpot = -1 : this.activeSpot = index;
+      if(index<12){
+        this.x = -1400
+        this.y = -900
+      }else if(index<15 && index>11){
+        this.x = -300
+        this.y = -1900
+      }else if(index==15){
+        this.x = -1199
+        this.y = -247
+      }else if(index>15&&index<=33){
+        this.x = -176
+        this.y = -455
+      }else if(index>33&&index<=40){
+        this.x = -307
+        this.y = -138
+      }else if(index>40&&index<=51){
+        this.x = -485
+        this.y = -276
+      }else if(index>51&&index<=59){
+        this.x = -590
+        this.y = -676
+      }else if(index>59&&index<=66){
+        this.x = -772
+        this.y = -739
+      }else if(index>66&&index<=73){
+        this.x = -1022
+        this.y = -384
+      }else if(index>73&&index<=81){
+        this.x = -1199
+        this.y = -247
+      }else if(index==82){
+        this.x = -176
+        this.y = -455
       }
     },
     locate(point1,point2) {
@@ -252,8 +216,18 @@ export default {
     },
     getSpot() {
       const self = this
+      const storageData = wx.getStorageSync('PoetryList')
+      if(storageData){
+        storageData.forEach((item,index) => {
+          let result = this.distance(item)
+            item.top = result.top
+            item.left = result.left
+          });
+        this.spotList = storageData
+        return
+      }
       wx.request({
-        url: config.base + 'spot/list', //开发者服务器接口地址",
+        url: config.base + 'attraction/PoetryList', //开发者服务器接口地址",
         data: {
           lineId:config.lineId
         }, //请求的参数",
@@ -261,9 +235,14 @@ export default {
         dataType: 'json', //如果设为json，会尝试对返回的数据做一次 JSON.parse
         success: res => {
           // console.log(res)
-          // self.GLOBAL.spot_list = res.data.data
-          this.spotList = res.data.data
-          this.setStorage('spotList',res.data.data)
+          let data = res.data.data
+          this.setStorage('PoetryList',data)
+          data.forEach(item => {
+            let result = this.distance(item)
+            item.top = result.top
+            item.left = result.left
+          });
+          this.spotList = data
         },
         fail: () => {},
         complete: () => {}
@@ -271,33 +250,15 @@ export default {
     }
   },
   created() {
-    if (this.getStorage('spotList')) {
-      this.spotList = this.getStorage('spotList');
-    } else {
-      // this.getSpot()
-    }
-    wx.getLocation({
-      type: 'wgs84', //默认为 wgs84 返回 gps 坐标，gcj02 返回可用于wx.openLocation的坐标,
-      success: res => {
-        console.info("getLocation success: ", res);
-        const latitude = res.latitude
-        const longitude = res.longitude
-        const speed = res.speed
-        const accuracy = res.accuracy
-        this.narrowSpot(latitude,longitude)
-      },
-      fail: () => {
-        console.log("getLocation failed")
-      }
-    });
+    this.getSpot()
   },
   mounted() {
-   this.locate(this.mapStart,this.mapEnd)
+
   },
   onReady() {
     
-    this.x = -100
-    this.y = -200
+    this.x = -1400
+    this.y = -900
   }
 };
 </script>
@@ -322,6 +283,7 @@ export default {
   width: 100%;
   position: relative;
   z-index:2;
+  margin-top: 20rpx;
 }
 .map-tab {
   height: 150rpx;
@@ -348,19 +310,10 @@ export default {
 .index-bg {
   width: auto;
   height: auto;
-  padding-bottom:138rpx;
   background: #d1a77f;
-  position: relative;
   .mapImg{
-    // width: 1560rpx;
-    // height: 2640rpx;
-    width: 1180rpx;
-    height: 2000rpx;
-  }
-  .userIcon{
-    width: 80rpx;
-    height: 120rpx;
-    position:absolute;
+    width: 3753rpx;
+    height: 3753rpx;
   }
 }
 .spot-window{
@@ -392,139 +345,93 @@ export default {
   margin:auto;
 }
 .spot-icon{
-  width: 60rpx;
-  height: 46rpx;
-  line-height: 40rpx;
-  background: url('https://gw.alicdn.com/tfs/TB1dOumi4TpK1RjSZFMXXbG_VXa-64-46.png') no-repeat center/cover;
+  width: 36rpx;
+  height: 36rpx;
+  line-height: 36rpx;
+  background: yellow;
   position: absolute;
   z-index: 888;
   text-align: center;
+  color:#292770;
+  font-size:28rpx;
+  border-radius: 50%;
+  border:1px solid #a8368e;
+  // border:1px solid yellow;
+}
+.changeBG{
+  background: #a8368e;
   color:#fff;
-  font-size:30rpx;
+  border:yellow;
 }
-.icon-five{
-  left:810rpx;
-  top:880rpx;
-}
-.icon-1{
-  left:500rpx;
-  top:770rpx;
-}
-.window-1{
-  left: 412rpx;
-  top: 500rpx;
-}
-.icon-2{
-  left:510rpx;
-  top:620rpx;
-}
-.window-2{
-  left: 412rpx;
-  top: 350rpx;
-}
-.icon-3{
-  left:525rpx;
-  top:500rpx;
-}
-.window-3{
-  left: 412rpx;
-  top: 230rpx;
-}
-.icon-4{
-  left:830rpx;
-  top:480rpx;
-}
-.window-4{
-  left: 730rpx;
-  top: 210rpx;
-}
-.icon-5{
-  left:806rpx;
-  top:870rpx;
-}
-.window-5{
-  left: 700rpx;
-  top: 600rpx;
-}
-.icon-6{
-  left:790rpx;
-  top:1100rpx;
-}
-.window-6{
-  left: 690rpx;
-  top: 830rpx;
-}
-.icon-7{
-  left:670rpx;
-  top:1430rpx;
-}
-.window-7{
-  left: 580rpx;
-  top: 1160rpx;
-}
-.icon-8{
-  left:870rpx;
-  top:1690rpx;
-}
-.window-8{
-  left: 770rpx;
-  top: 1410rpx;
-}
-.icon-9{
-  left:510rpx;
-  top:1480rpx;
-}
-.window-9{
-  left: 410rpx;
-  top: 1200rpx;
-}
-.icon-10{
-  left:400rpx;
-  top:1140rpx;
-}
-.window-10{
-  left: 300rpx;
-  top: 870rpx;
-}
-.map-sub {
+.index-tab {
   position: fixed;
-  top: 0;
-  right: 25rpx;
+  top: 15rpx;
+  right: 20rpx;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: space-around;
   align-items: center;
-  z-index: 66;
+  z-index:21;
+  &-item {
+    width: 100rpx;
+    height: 110rpx;
+    margin-bottom:36rpx;
+    position: relative;
+    z-index: 23;
+  }
   &-line {
-    width: 2px;
-    height: 38rpx;
-    background: #9e7044;
+    width: 1px;
+    height:90%;
+    background-image: url('https://gw.alicdn.com/tfs/TB1B10KmFzqK1RjSZSgXXcpAVXa-2-762.png');
+    background-repeat: repeat-y;
+    background-size: cover;
+    background-position: center;
+    position: absolute;
+    top: 10rpx;
+    right: 32rpx;
+    z-index:22;
   }
-  &-btn {
-    width: 66rpx;
-    height: 66rpx;
-    border-radius: 50%;
-    border: 2rpx solid #9e7044;
-    background: #f6ca47;
-    .center();
-    &-in {
-      width: 50rpx;
-      height: 50rpx;
-      border-radius: 50%;
-      border: 2rpx solid #9e7044;
-      background: #f7eec5;
-      position: relative;
-      .center();
-    }
+  img {
+    width: 100%;
+    height: 100%;
+    display: block;
   }
-  
-  .btn-show {
-    width: 30rpx;
-    height: 30rpx;
+}
+.spot-item-window{
+  width: 522rpx;
+  height: 176rpx;
+  border-bottom:1px solid #c7c7c7;
+  background: url('https://gw.alicdn.com/tfs/TB1PHRpnCzqK1RjSZPxXXc4tVXa-1809-607.png') no-repeat center/contain;
+  position:absolute;
+  bottom: 60rpx;
+  left: -90rpx;
+  z-index:30;
+  display: flex;
+  &-pic{
+    width: 136rpx;
+    height: 134rpx;
+    background: #fff;
+    margin:12rpx 12rpx 0 32rpx;
   }
-  .btn-audio {
-    width: 34rpx;
-    height: 28rpx;
+  &-text{
+    width: 280rpx;
+    display: flex;
+    flex-direction: column;
+    color:#101010;
+    text-align: left;
+    overflow: hidden;
+  }
+  &-title{
+    margin-top: 45rpx;
+    font-size: 28rpx;
+    line-height:40rpx;
+    white-space:nowrap;
+    overflow: hidden;
+  }
+  &-desc{
+    font-size: 20rpx;
+    color:#6f6f6f;
+    line-height:30rpx;
   }
 }
 </style>

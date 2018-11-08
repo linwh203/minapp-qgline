@@ -30,6 +30,8 @@
 </template>
 
 <script>
+import { config } from '../../utils/index';
+
 export default {
   data() {
     return {
@@ -42,12 +44,42 @@ export default {
   methods: {
     bindTab(url) {
       wx.navigateTo({ url: url });
-    }
+    },
+    login(code) {
+      wx.request({
+        url: config.base + 'wxlogin/login',
+        data: {
+          code: code,
+          lineId: config.lineId
+        }, 
+        method: 'GET',
+        dataType: 'json', 
+        success: res => {
+          // console.log('login',res.data.data)
+          this.setStorage('userCode',res.data.data)
+        },
+        fail: err => {
+          console.log('hasError',err)
+        }
+      });
+    },
+    setStorage(key, val) {
+      try {
+        wx.setStorageSync(key,val)
+      } catch(e) {
+        wx.setStorage(key,val)
+      }
+    },
   },
 
-  created() {
-    
-  }
+   onLoad() {
+    wx.login({
+      success: (res) => {
+        console.log(res)
+        this.login(res.code);
+      }
+    }); 
+  },
 };
 </script>
 
@@ -102,7 +134,8 @@ export default {
       align-items: center;
       width: 330rpx;
       height: 120rpx;
-      margin-bottom: 36rpx;
+      margin-bottom: 20rpx;
+      margin-top: 20rpx;
       background: url('https://gw.alicdn.com/tfs/TB1OCOLn6TpK1RjSZKPXXa3UpXa-290-130.png') no-repeat top/cover;
       &-icon{
         width: 72rpx;

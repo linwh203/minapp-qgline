@@ -1,20 +1,18 @@
 {
   "pages": [
-    
     "pages/index/main",
     "pages/index-sg/main",
-    
+    "pages/map/main",
+    "pages/map-sg/main",
     "pages/quiz/main",
     "pages/quizdetail/main",
     "pages/my-reward/main",
     "pages/my-msg/main",
-    "pages/map/main",
-    "pages/map-sg/main",
+    "pages/scan/main",
     "pages/paint/main",
     "pages/first/main",
     "pages/list/main",
     "pages/video/main",
-    "pages/scan/main",
     "pages/my/main",
     "pages/my-rule/main",
     "pages/my-statement/main",

@@ -115,7 +115,7 @@ export default {
     loadDetail() {
       this.audioOff = true;
       if (this.innerAudioContext) { this.innerAudioContext.stop() }
-      let spot_id = this.spotList[this.currentIndex-1].spot_id 
+      let spot_id = this.spotList[this.currentIndex].spot_id 
       wx.request({
         url: config.base + 'attraction/listdetail', //开发者服务器接口地址",
         data: {
@@ -174,9 +174,9 @@ export default {
     }
   },
   onLoad(option) {
-    console.log('onload')
     const index = option.spot_index
-    if(index>89) {
+    console.log(index)
+    if(index>=89) {
       this.spotLine = 'shige'
       this.currentIndex = index - 89
     } else {
