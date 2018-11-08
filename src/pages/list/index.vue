@@ -11,14 +11,16 @@
       <div class="nav-line"></div>
       <div class="nav-border"></div>
     </div>
-    <div class="article" v-if="articleData[0]">
-      <div class="article-title">{{articleData[0].title}}</div>
-      <div class="article-text" v-html="articleData[0].content"></div>
-    </div>
-    <img class="article-img" :src="prefix + articleData[0].url" v-if="articleData[0]" mode="widthFix">
-    <div class="writer" v-if="articleData[1]">
-      <div class="writer-title">{{articleData[1].title}}</div>
-      <div class="writer-text" v-html="articleData[1].content"></div>
+    <div class="main" v-for="(item,index) in articleData" :key="index">
+      <div class="article" v-if="item">
+        <div class="article-title">{{item.title}}</div>
+        <div class="article-text" v-html="item.content"></div>
+      </div>
+      <img class="article-img" :src="prefix + item.url" v-if="item.url" mode="widthFix">
+      <!-- <div class="writer" v-if="articleData[1]">
+        <div class="writer-title">{{articleData[1].title}}</div>
+        <div class="writer-text" v-html="articleData[1].content"></div>
+      </div> -->
     </div>
     <div class="share-box" v-if="sharebox">
       <div class="share-box-body">
@@ -300,6 +302,9 @@ export default {
     height: 28rpx;
   }
 }
+.main{
+  margin-top: -18rpx;
+}
 .article {
   border:8rpx solid #fff;
   padding:20rpx;
@@ -315,6 +320,7 @@ export default {
   &-img{
     border-left:8rpx solid #fff;
     border-right:8rpx solid #fff;
+    border-bottom:8rpx solid #fff;
     height: 400rpx;
     width: 97.7%;
   }
