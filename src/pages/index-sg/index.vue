@@ -118,6 +118,7 @@ export default {
       let l = this.fullSpot.length
       let full_h,full_s = 89
       this.isIPX? full_h = 780:full_h=940
+      // full_h = 780
       let h = parseInt(l*full_h/full_s)
       return `${h}%`
     },
@@ -242,6 +243,7 @@ export default {
       if(storageData){
         this.spotList = storageData
         this.currentSpot = storageData[0]
+        this.fullSpot.length = 0
         for(let i=2; i<=storageData.length;i++){
           this.fullSpot.push(i)
         }
@@ -260,6 +262,7 @@ export default {
           this.setStorage('PoetryList',data)
           this.spotList = data
           this.currentSpot = data[0]
+          this.fullSpot.length = 0
           for(let i=2; i<=data.length;i++){
             this.fullSpot.push(i)
           }

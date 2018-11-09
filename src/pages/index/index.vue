@@ -12,7 +12,8 @@
         <img src="https://gw.alicdn.com/tfs/TB1gWBKmHvpK1RjSZFqXXcXUVXa-91-101.png" alt="">
       </div>
       <div class="index-tab-item icon-audio" @click="playAudio">
-        <img src="https://gw.alicdn.com/tfs/TB1PStFmSzqK1RjSZFLXXcn2XXa-91-101.png" alt="">
+        <img src="https://gw.alicdn.com/tfs/TB1PStFmSzqK1RjSZFLXXcn2XXa-91-101.png" alt="" v-if="!isPlaying">
+        <img src="https://gw.alicdn.com/tfs/TB1mMsUomzqK1RjSZFLXXcn2XXa-91-101.png" alt="" v-if="isPlaying">
       </div>
       <div class="index-tab-item icon-quiz" @click="bindTab('../quiz/main')" v-if="false">
         <img src="https://gw.alicdn.com/tfs/TB1mz8HmQvoK1RjSZFNXXcxMVXa-91-101.png" alt="">
@@ -105,6 +106,7 @@ export default {
       titleSrc:'https://gw.alicdn.com/tfs/TB1K_SBi4jaK1RjSZFAXXbdLFXa-222-146.png',
       fullSpot:[],
       isIPX:false,
+      isPlaying:false,
       showRoadSelect:false,
       tab1:false,
       tab2:false,
@@ -117,6 +119,7 @@ export default {
       let l = this.fullSpot.length
       let full_h,full_s = 89
       this.isIPX? full_h = 780:full_h=940
+      // full_h = 780
       let h = parseInt(l*full_h/full_s)
       return `${h}%`
     },
@@ -245,6 +248,7 @@ export default {
       if(storageData){
         this.spotList = storageData
         this.currentSpot = storageData[0]
+        this.fullSpot.length = 0
         for(let i=2; i<=storageData.length;i++){
           this.fullSpot.push(i)
         }
@@ -264,6 +268,7 @@ export default {
           this.setStorage('NatureList',data)
           this.spotList = data
           this.currentSpot = data[0]
+          this.fullSpot.length = 0
           for(let i=2; i<=data.length;i++){
             this.fullSpot.push(i)
           }
