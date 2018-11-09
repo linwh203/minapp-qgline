@@ -3,7 +3,7 @@
     <div class="nav">
       <div class="nav-line"></div>
       <div class="nav-content">
-        <div class="nav-item" :class="audioOff?'pause':'audio'" @click="playAudio"></div>
+        <div class="nav-item" :class="audioOff?'audio':'pause'" @click="playAudio"></div>
         <div class="nav-item video" @click="goVideo"></div>
         <div class="nav-item note" v-if="false"></div>
         <div class="nav-item share" @click="showShareBox"></div>

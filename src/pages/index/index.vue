@@ -107,6 +107,7 @@ export default {
       fullSpot:[],
       isIPX:false,
       isPlaying:false,
+      innerAudioContext:wx.createInnerAudioContext(),
       showRoadSelect:false,
       tab1:false,
       tab2:false,
@@ -216,7 +217,31 @@ export default {
       this.currentSpot = this.spotList[0]
     },
     playAudio() {
-
+      // console.log(this.currentSpot.spot_id)
+      if(this.isPlaying){
+        this.innerAudioContext.stop()
+        this.isPlaying = false
+        return
+      }
+      wx.request({
+        url: config.base + 'attraction/listdetail', //开发者服务器接口地址",
+        data: {
+          spot_id: this.currentSpot.spot_id
+        }, //请求的参数",
+        method: 'GET',
+        dataType: 'json', //如果设为json，会尝试对返回的数据做一次 JSON.parse
+        success: res => {
+          console.log(res.data.data)
+          this.audioUrl = res.data.data.audio_url == null ? '' :  config.prefix + res.data.data.audio_url
+          if (this.audioUrl) {
+            this.innerAudioContext.src = this.audioUrl
+            this.innerAudioContext.play()
+            this.isPlaying = true
+          }
+        },
+        fail: () => {},
+        complete: () => {}
+      });
     },
     login(code) {
       const userInfo = wx.getStorageSync('userInfo');
@@ -311,6 +336,11 @@ export default {
     // this.toView = 'spot12'
   },
   onShow() {
+
+  },
+  onHide() {
+    this.isPlaying = false
+    this.innerAudioContext.stop()
   }
 };
 </script>
