@@ -71,7 +71,7 @@
             {{currentQuiz.tooltip}}
           </div>
           <div class="hint-close" @click="closeHint">
-            <img src="../../assets/btn-close-list.png" alt="">
+            <!-- <img src="../../assets/btn-close-list.png" alt=""> -->
           </div>
         </div>
         <div class="hint answer" v-if="showAnswer">
@@ -83,19 +83,19 @@
             {{wrongAnswer?'重新回答':'下一题'}}
           </div>
           <div class="hint-close" @click="closeAnswer">
-            <img src="../../assets/btn-close-list.png" alt="">
+            <!-- <img src="../../assets/btn-close-list.png" alt=""> -->
           </div>
         </div>
         <div class="hint finish" v-if="showFinish">
           <div class="finish-title">恭喜你，闯关成功</div>
-          <img src="../../assets/icon-reward.png" class="finish-icon">
+          <!-- <img src="../../assets/icon-reward.png" class="finish-icon"> -->
           <div class="finish-text">获得:1个勋章</div>
           <div class="finish-btns">
             <div class="finish-btns-left" @click="bindTab('../quiz/main')">继续闯关</div>
             <div class="finish-btns-right" @click="bindTab('../my-reward/main')">查看成就</div>
           </div>
           <div class="hint-close" @click="bindTab('../quiz/main')">
-            <img src="../../assets/btn-close-list.png" alt="">
+            <!-- <img src="../../assets/btn-close-list.png" alt=""> -->
           </div>
         </div>
       </div>
@@ -104,7 +104,7 @@
       <div class="largeImg">
         <img :src="prefix+largeSrc">
         <div class="hint-close" @click="showLarge = false">
-            <img src="../../assets/btn-close-list.png" alt="">
+            <!-- <img src="../../assets/btn-close-list.png" alt=""> -->
           </div>
       </div>
     </div>

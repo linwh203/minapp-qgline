@@ -331,7 +331,7 @@ export default {
     font-size: 34rpx;
     background: url('https://gw.alicdn.com/tfs/TB1LC9gmH2pK1RjSZFsXXaNlXXa-60-70.png') no-repeat center/contain;
     margin-bottom: 56rpx;
-    margin-left: 400rpx;
+    margin-left: 55%;
     &-window{
       width: 522rpx;
       height: 176rpx;
@@ -447,22 +447,22 @@ export default {
     }
   }
   &-item:nth-of-type(6n+2){
-    margin-left: 520rpx;
+    margin-left: 68%;
   }
   &-item:nth-of-type(6n+3){
-    margin-left: 400rpx;
+    margin-left: 52%;
   }
   &-item:nth-of-type(6n+1){
-    margin-left: 400rpx;
+    margin-left: 55.3%;
   }
   &-item:nth-of-type(6n+4){
-    margin-left: 260rpx;
+    margin-left: 35%;
   }
   &-item:nth-of-type(6n){
-    margin-left: 260rpx;
+    margin-left: 38%;
   }
   &-item:nth-of-type(6n+5){
-    margin-left: 140rpx;
+    margin-left: 21%;
   }
 }
 .scroll{

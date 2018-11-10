@@ -49,7 +49,7 @@
             <!-- <div class="my-tab-btm-item-time">(******)</div> -->
           </div>
         </div>
-        <img src="../../assets/bg-my-reward.png" class="my-tab-btm-bg">
+        <!-- <img src="../../assets/bg-my-reward.png" class="my-tab-btm-bg"> -->
       </div>
     </div>
   </div>
