@@ -2,13 +2,13 @@
 <div class="mainContainer">
   <div class="container" v-if="!showCountdown">
     <div class="quiz-top">
-      <div class="quiz-top-mid">挑战 第{{index+1}}/5关</div>
+      <div class="quiz-top-mid">挑战 第{{index+1}}/{{questionList.length}}关</div>
     </div>
     <div class="user">
       <open-data type="userAvatarUrl" class="userPic"></open-data>
       <open-data type="userNickName" class="userName"></open-data>
     </div>
-    <div class="quiz-status">已连续答对 {{rightCount}}/5题</div>
+    <div class="quiz-status">已连续答对 {{rightCount}}/{{questionList.length}}题</div>
     <div class="quiz-title" v-if="!quizSuccess && !quizFail">{{currentQuiz.title}}</div>
     <div class="quiz-choice" v-if="!quizSuccess && !quizFail">
       <div class="quiz-choice-body" v-if="currentQuiz.answer_list.length>0">
@@ -126,6 +126,7 @@
 
 <script>
 import { config } from "../../utils/index";
+import { setTimeout } from 'timers';
 export default {
   data() {
     return {
@@ -192,7 +193,7 @@ export default {
   },
   computed: {
     rightAnswer(){
-      return this.currentQuiz.right_answer
+      return this.currentQuiz.right_answer-1
     }
   },
   components: {},
@@ -206,10 +207,24 @@ export default {
       if(this.choiceIndex == this.rightAnswer){
         this.showRight = this.choiceIndex
         this.showWrong = -1
+        this.index ++
+        if(this.index == this.questionList.length){
+          this.quizSuccess = true
+          return
+        }
+        setTimeout(()=>{
+          this.currentQuiz = this.questionList[this.index];
+          this.init()
+        },800)
       } else {
         this.showRight = this.rightAnswer
         this.showWrong = this.choiceIndex
       }
+    },
+    init(){
+      this.choiceIndex = -1
+      this.showRight = -1
+      this.rightCount ++
     },
     submitAnswer() {
       this.showAnswer = true;
@@ -407,6 +422,8 @@ export default {
 }
 .quiz-title{
   font-size: 36rpx;
+  padding: 0 40rpx;
+  text-align: center;
 }
 .quiz-top {
   width: 100%;
