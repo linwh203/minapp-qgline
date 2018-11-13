@@ -4,7 +4,9 @@
       <div class="nav-line"></div>
       <div class="nav-content">
         <div class="nav-item" :class="audioOff?'audio':'pause'" @click="playAudio"></div>
+        <div class="point"></div>
         <div class="nav-item video" @click="goVideo"></div>
+        <div class="point"></div>
         <div class="nav-item note" v-if="false"></div>
         <div class="nav-item share" @click="showShareBox"></div>
       </div>
@@ -37,46 +39,44 @@
 </template>
 
 <script>
-import {config} from '../../utils/index'
+import { config } from "../../utils/index";
 export default {
   data() {
     return {
-      prefix:config.prefix,
+      prefix: config.prefix,
       fromMap: false,
       showSub: false,
       innerAudioContext: null,
-      videoUrl:'',
+      videoUrl: "",
       audioOff: true,
-      audioUrl: '',
+      audioUrl: "",
       mainPic: "",
       scrollTop: 0,
       init: false,
       sharebox: false,
-      spotList:[],
-      articleData:[],
-      spotLine:'',
-      currentIndex:1,
+      spotList: [],
+      articleData: [],
+      spotLine: "",
+      currentIndex: 1,
       url: "/File/Download?fileName=DetailPhoto/01.jpg&fileType=QGLineFile"
     };
   },
-  computed: {
-
-  },
+  computed: {},
   components: {},
 
   methods: {
     setStorage(key, val) {
       try {
-        wx.setStorageSync(key,val)
-      } catch(e) {
-        wx.setStorage(key,val)
+        wx.setStorageSync(key, val);
+      } catch (e) {
+        wx.setStorage(key, val);
       }
     },
     getStorage(key) {
       try {
-        wx.getStorageSync(key)
-      } catch(e) {
-        wx.getStorage(key)
+        wx.getStorageSync(key);
+      } catch (e) {
+        wx.getStorage(key);
       }
     },
     bindTab() {
@@ -98,54 +98,62 @@ export default {
       }
     },
     goVideo() {
-      if(!this.videoUrl){
+      if (!this.videoUrl) {
         wx.showToast({
-          title: '暂无视频', //提示的内容,
-          icon:'none',
+          title: "暂无视频", //提示的内容,
+          icon: "none",
           duration: 2000, //延迟时间,
           mask: true, //显示透明蒙层，防止触摸穿透,
           success: res => {}
         });
-        return
+        return;
       }
       wx.navigateTo({ url: "../video/main?video_url=" + this.videoUrl });
     },
     showShareBox() {
-      this.sharebox = true
+      this.sharebox = true;
     },
     hideShareBox() {
-      this.sharebox = false
+      this.sharebox = false;
     },
-    formatDetail(items){
-      let diver = '《';
-      return items.map((n,i)=>{
-        if(i===0){
+    formatDetail(items) {
+      let diver = "《";
+      return items.map((n, i) => {
+        if (i === 0) {
           let arr = n.title.split(diver);
-          return Object.assign(n,{author:arr[0],title:diver+arr[1]});
+          return Object.assign(n, { author: arr[0], title: diver + arr[1] });
         }
         return n;
-      })
+      });
     },
     loadDetail() {
       this.audioOff = true;
-      if (this.innerAudioContext) { this.innerAudioContext.stop() }
-      let spot_id = this.spotList[this.currentIndex].spot_id 
+      if (this.innerAudioContext) {
+        this.innerAudioContext.stop();
+      }
+      let spot_id = this.spotList[this.currentIndex].spot_id;
       wx.request({
-        url: config.base + 'attraction/listdetail', //开发者服务器接口地址",
+        url: config.base + "attraction/listdetail", //开发者服务器接口地址",
         data: {
           spot_id: spot_id
         }, //请求的参数",
-        method: 'GET',
-        dataType: 'json', //如果设为json，会尝试对返回的数据做一次 JSON.parse
+        method: "GET",
+        dataType: "json", //如果设为json，会尝试对返回的数据做一次 JSON.parse
         success: res => {
-          console.log(res.data.data)
+          console.log(res.data.data);
           // this.articleData = res.data.data.items
           this.articleData = this.formatDetail(res.data.data.items);
           this.innerAudioContext = wx.createInnerAudioContext();
-          this.audioUrl = res.data.data.audio_url == null ? '' :  config.prefix + res.data.data.audio_url
-          this.videoUrl = res.data.data.video_url == null ? '' :  config.prefix + res.data.data.video_url
+          this.audioUrl =
+            res.data.data.audio_url == null
+              ? ""
+              : config.prefix + res.data.data.audio_url;
+          this.videoUrl =
+            res.data.data.video_url == null
+              ? ""
+              : config.prefix + res.data.data.video_url;
           if (this.audioUrl) {
-            this.innerAudioContext.src = this.audioUrl
+            this.innerAudioContext.src = this.audioUrl;
           }
         },
         fail: () => {},
@@ -153,35 +161,34 @@ export default {
       });
     },
     getSpot(line) {
-
-      let storageData , requestUrl
-      if(line == 'shige') {
-        storageData = wx.getStorageSync('PoetryList')
-        requestUrl = 'attraction/PoetryList'
+      let storageData, requestUrl;
+      if (line == "shige") {
+        storageData = wx.getStorageSync("PoetryList");
+        requestUrl = "attraction/PoetryList";
       } else {
-        storageData = wx.getStorageSync('NatureList');
-        requestUrl = 'attraction/NaturalList'
+        storageData = wx.getStorageSync("NatureList");
+        requestUrl = "attraction/NaturalList";
       }
-      if(storageData){
-        this.spotList = storageData
-        return
+      if (storageData) {
+        this.spotList = storageData;
+        return;
       }
       wx.request({
         url: config.base + requestUrl, //开发者服务器接口地址",
         data: {
-          lineId:config.lineId
+          lineId: config.lineId
         }, //请求的参数",
-        method: 'GET',
-        dataType: 'json', //如果设为json，会尝试对返回的数据做一次 JSON.parse
+        method: "GET",
+        dataType: "json", //如果设为json，会尝试对返回的数据做一次 JSON.parse
         success: res => {
           // console.log(res)
-          const data = this. res.data.data
-          if(line == 'shige') {
-            this.setStorage('PoetryList',data)
+          const data = this.res.data.data;
+          if (line == "shige") {
+            this.setStorage("PoetryList", data);
           } else {
-            this.setStorage('NatureList',data)
+            this.setStorage("NatureList", data);
           }
-          this.spotList = data
+          this.spotList = data;
         },
         fail: () => {},
         complete: () => {}
@@ -189,23 +196,23 @@ export default {
     }
   },
   onLoad(option) {
-    const index = option.spot_index
-    console.log(index)
-    if(index>=89) {
-      this.spotLine = 'shige'
-      this.currentIndex = index - 89
+    const index = option.spot_index;
+    console.log(index);
+    if (index >= 89) {
+      this.spotLine = "shige";
+      this.currentIndex = index - 89;
     } else {
-      this.spotLine = 'ziran'
-      this.currentIndex = index
+      this.spotLine = "ziran";
+      this.currentIndex = index;
     }
-    this.getSpot(this.spotLine)
-    this.innerAudioContext = wx.createInnerAudioContext()
+    this.getSpot(this.spotLine);
+    this.innerAudioContext = wx.createInnerAudioContext();
   },
   onHide() {
     this.audioOff = true;
     this.showSub = false;
     this.innerAudioContext.stop();
-    this.init = true
+    this.init = true;
     // this.innerAudioContext = null
   },
   onUnload() {
@@ -215,14 +222,14 @@ export default {
     // this.innerAudioContext = null
   },
   onShow() {
-    if(this.init){
-      this.loadDetail()
+    if (this.init) {
+      this.loadDetail();
     }
     // this.innerAudioContext = wx.createInnerAudioContext();
   },
   onReady() {
-    console.log('onReady')
-    this.loadDetail()
+    console.log("onReady");
+    this.loadDetail();
   },
   onShareAppMessage(result) {
     let title = "青谷研习径";
@@ -259,8 +266,9 @@ export default {
 }
 .container {
   position: relative;
-  background: url('https://gw.alicdn.com/tfs/TB1vzW6nxjaK1RjSZKzXXXVwXXa-640-1142.png') repeat-y top/cover;
-  color:#fff;
+  background: url("https://gw.alicdn.com/tfs/TB1vzW6nxjaK1RjSZKzXXXVwXXa-640-1142.png")
+    repeat-y top/cover;
+  color: #fff;
   padding: 20rpx;
 }
 .sub-nav {
@@ -294,7 +302,7 @@ export default {
       .center();
     }
   }
-  
+
   .btn-show {
     width: 30rpx;
     height: 16rpx;
@@ -315,115 +323,129 @@ export default {
     height: 28rpx;
   }
 }
-.main{
+.main {
   margin-top: -18rpx;
 }
 .article {
-  border:8rpx solid #fff;
-  padding:20rpx;
-  &-author{
+  border: 8rpx solid #fff;
+  padding: 20rpx;
+  &-author {
     text-align: center;
     font-size: 32rpx;
     margin: 40rpx 0 10rpx;
   }
-  &-title{
+  &-title {
     text-align: center;
     font-size: 32rpx;
     margin-bottom: 40rpx;
   }
-  &-title-full{
+  &-title-full {
     text-align: center;
     font-size: 32rpx;
     margin: 40rpx 0;
   }
-  &-text{
+  &-text {
     font-size: 24rpx;
     line-height: 40rpx;
   }
-  &-img{
-    border-left:8rpx solid #fff;
-    border-right:8rpx solid #fff;
-    border-bottom:8rpx solid #fff;
+  &-img {
+    border-left: 8rpx solid #fff;
+    border-right: 8rpx solid #fff;
+    border-bottom: 8rpx solid #fff;
     height: 400rpx;
     width: 97.7%;
   }
 }
-.writer{
-  border:8rpx solid #fff;
-  padding:20rpx;
+.writer {
+  border: 8rpx solid #fff;
+  padding: 20rpx;
   margin-top: -12rpx;
-  &-title{
+  &-title {
     text-align: left;
     font-size: 32rpx;
     margin: 40rpx 0;
   }
-  &-text{
+  &-text {
     font-size: 24rpx;
     line-height: 40rpx;
   }
 }
-.nav{
+.nav {
   height: 120rpx;
   display: flex;
   align-items: center;
   position: relative;
-  &-content{
+  &-content {
     width: 70%;
-    margin-left: 1.5%;
+    // margin-left: 1.5%;
     display: flex;
     align-items: center;
-    justify-content: space-around;
+    justify-content: space-between;
   }
-  &-item{
+  &-item {
     width: 92rpx;
     height: 86rpx;
     margin-bottom: 15rpx;
     position: relative;
   }
-  &-line{
+  &-line {
     height: 8rpx;
     width: 15%;
     background: #fff;
   }
-  .audio{
-    background: url('https://gw.alicdn.com/tfs/TB1rngUnAvoK1RjSZPfXXXPKFXa-91-83.png') no-repeat center/cover;
+  .audio {
+    background: url("https://gw.alicdn.com/tfs/TB1rngUnAvoK1RjSZPfXXXPKFXa-91-83.png")
+      no-repeat center/cover;
   }
-  .pause{
-    background: url('https://gw.alicdn.com/tfs/TB1A5HfnYvpK1RjSZPiXXbmwXXa-91-84.png') no-repeat center/cover;  
+  .pause {
+    background: url("https://gw.alicdn.com/tfs/TB1A5HfnYvpK1RjSZPiXXbmwXXa-91-84.png")
+      no-repeat center/cover;
   }
-  .audio:after,.video:after,.note:after,.pause:after{
-    content:'';
-    position: absolute;
+  // .audio:after,.video:after,.note:after,.pause:after{
+  //   content:'';
+  //   position: absolute;
+  //   width: 12rpx;
+  //   height: 12rpx;
+  //   border-radius: 50%;
+  //   background: #fff;
+  //   right: -26rpx;top: 44rpx;
+  // }
+  .point {
     width: 12rpx;
     height: 12rpx;
     border-radius: 50%;
     background: #fff;
-    right: -26rpx;top: 44rpx;
+    right: -26rpx;
+    top: 44rpx;
   }
-  .video{
-    margin-left: 6%;
-    background: url('https://gw.alicdn.com/tfs/TB1h8sSnwHqK1RjSZJnXXbNLpXa-92-83.png') no-repeat center/cover;
+  .video {
+    // margin-left: 6%;
+    background: url("https://gw.alicdn.com/tfs/TB1h8sSnwHqK1RjSZJnXXbNLpXa-92-83.png")
+      no-repeat center/cover;
   }
-  .note{
-    margin-left: 6%;
-    background: url('https://gw.alicdn.com/tfs/TB1B3U6nxjaK1RjSZFAXXbdLFXa-91-83.png') no-repeat center/cover;
+  .note {
+    // margin-left: 6%;
+    background: url("https://gw.alicdn.com/tfs/TB1B3U6nxjaK1RjSZFAXXbdLFXa-91-83.png")
+      no-repeat center/cover;
   }
-  .share{
-    margin-left: 6%;
-    background: url('https://gw.alicdn.com/tfs/TB1B.35nxYaK1RjSZFnXXa80pXa-91-83.png') no-repeat center/cover;
+  .share {
+    // margin-left: 6%;
+    background: url("https://gw.alicdn.com/tfs/TB1B.35nxYaK1RjSZFnXXa80pXa-91-83.png")
+      no-repeat center/cover;
+    transform: translateX(12rpx);
   }
-  &-border{
+  &-border {
     position: absolute;
     bottom: 0;
     left: 0;
     width: 97.7%;
     height: 56rpx;
-    border-left:8rpx solid #fff;
-    border-right:8rpx solid #fff;
+    border-left: 8rpx solid #fff;
+    border-right: 8rpx solid #fff;
     // border-top:8rpx solid #fff;
   }
 }
-.share-box{
+.share-box {
   width: 100%;
   height: 320rpx;
   background: #fff;
@@ -434,23 +456,23 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  &-body{
+  &-body {
     height: 220rpx;
     .center();
-    &-item{
+    &-item {
       position: relative;
-      img{
+      img {
         width: 144rpx;
         height: 168rpx;
         display: block;
       }
     }
   }
-  &-close{
+  &-close {
     width: 100%;
     height: 100rpx;
     background: #efefef;
-    color:#000;
+    color: #000;
     font-size: 34rpx;
     text-align: center;
     line-height: 98rpx;
@@ -463,9 +485,9 @@ export default {
   width: 144rpx;
   height: 168rpx;
   background: transparent;
-  border:none;
+  border: none;
 }
 .btn-share-origin::after {
   border: 0;
-} 
+}
 </style>
