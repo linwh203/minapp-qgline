@@ -553,8 +553,8 @@ export default {
   align-items: center;
   z-index: 21;
   &-item {
-    width: 100rpx;
-    height: 110rpx;
+    width: 120rpx;
+    height: 130rpx;
     margin-bottom: 36rpx;
     position: relative;
     z-index: 23;
