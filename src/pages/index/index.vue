@@ -427,7 +427,7 @@ export default {
   }
   &-item{
     position: relative;
-    z-index:99;
+    z-index:30;
     width: 64rpx;
     height: 64rpx;
     line-height: 64rpx;

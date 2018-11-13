@@ -32,14 +32,14 @@
         <img src="https://gw.alicdn.com/tfs/TB1jUCamRLoK1RjSZFuXXXn0XXa-343-214.png" class="scroll-title-body">
       </div>
       <div class="spot">
-        <div class="spot-first" :class="activeIndex == 1?'active':''" id="spot1">
+        <div class="spot-item" :class="activeIndex == 1?'active':''" id="spot1">
           <div @click="firstSpot">1</div> 
-          <div class="spot-first-tri" v-if="activeIndex == 1"></div>
-          <div class="spot-first-window" :style="{right:calcRight+'rpx'}" v-if="activeIndex == 1" @click=goDetail>
-            <img class="spot-first-window-pic" :src="prefix + currentSpot.spot_coverurl" v-if=currentSpot.spot_coverurl>
-            <div class="spot-first-window-text">
-              <div class="spot-first-window-title">{{currentSpot.spot_title}}</div>
-              <div class="spot-first-window-desc">{{currentSpot.spot_describe}}</div>
+          <div class="spot-item-tri" v-if="activeIndex == 1"></div>
+          <div class="spot-item-window" :style="{right:calcRight+'rpx'}" v-if="activeIndex == 1" @click=goDetail>
+            <img class="spot-item-window-pic" :src="prefix + currentSpot.spot_coverurl" v-if=currentSpot.spot_coverurl>
+            <div class="spot-item-window-text">
+              <div class="spot-item-window-title">{{currentSpot.spot_title}}</div>
+              <div class="spot-item-window-desc">{{currentSpot.spot_describe}}</div>
             </div>
           </div>
         </div>
@@ -392,7 +392,7 @@ export default {
   }
   &-item{
     position: relative;
-    z-index:2;
+    z-index:30;
     width: 64rpx;
     height: 64rpx;
     line-height: 64rpx;

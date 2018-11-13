@@ -13,9 +13,11 @@
     </div>
     <div class="main" v-for="(item,index) in articleData" :key="index">
       <div class="article" v-if="item">
-        <div class="article-title">{{item.title}}</div>
+        <div wx-if="item.author" class="article-author">{{item.author}}</div>
+        <div :class="item.author ? 'article-title' : 'article-title-full'" >{{item.title}}</div>
         <div class="article-text" v-html="item.content"></div>
       </div>
+     
       <img class="article-img" :src="prefix + item.url" v-if="item.url" mode="widthFix">
       <!-- <div class="writer" v-if="articleData[1]">
         <div class="writer-title">{{articleData[1].title}}</div>
@@ -114,6 +116,16 @@ export default {
     hideShareBox() {
       this.sharebox = false
     },
+    formatDetail(items){
+      let diver = '《';
+      return items.map((n,i)=>{
+        if(i===0){
+          let arr = n.title.split(diver);
+          return Object.assign(n,{author:arr[0],title:diver+arr[1]});
+        }
+        return n;
+      })
+    },
     loadDetail() {
       this.audioOff = true;
       if (this.innerAudioContext) { this.innerAudioContext.stop() }
@@ -127,7 +139,8 @@ export default {
         dataType: 'json', //如果设为json，会尝试对返回的数据做一次 JSON.parse
         success: res => {
           console.log(res.data.data)
-          this.articleData = res.data.data.items
+          // this.articleData = res.data.data.items
+          this.articleData = this.formatDetail(res.data.data.items);
           this.innerAudioContext = wx.createInnerAudioContext();
           this.audioUrl = res.data.data.audio_url == null ? '' :  config.prefix + res.data.data.audio_url
           this.videoUrl = res.data.data.video_url == null ? '' :  config.prefix + res.data.data.video_url
@@ -162,7 +175,7 @@ export default {
         dataType: 'json', //如果设为json，会尝试对返回的数据做一次 JSON.parse
         success: res => {
           // console.log(res)
-          const data = res.data.data
+          const data = this. res.data.data
           if(line == 'shige') {
             this.setStorage('PoetryList',data)
           } else {
@@ -308,7 +321,17 @@ export default {
 .article {
   border:8rpx solid #fff;
   padding:20rpx;
+  &-author{
+    text-align: center;
+    font-size: 32rpx;
+    margin: 40rpx 0 10rpx;
+  }
   &-title{
+    text-align: center;
+    font-size: 32rpx;
+    margin-bottom: 40rpx;
+  }
+  &-title-full{
     text-align: center;
     font-size: 32rpx;
     margin: 40rpx 0;
