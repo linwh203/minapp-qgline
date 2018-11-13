@@ -15,8 +15,14 @@
     </div>
     <div class="main" v-for="(item,index) in articleData" :key="index">
       <div class="article" v-if="item">
-        <div wx-if="item.author" class="article-author">{{item.author}}</div>
-        <div :class="item.author ? 'article-title' : 'article-title-full'" >{{item.title}}</div>
+        <div v-if="item.author">
+          <div class="article-author">{{item.author}}</div>
+          <div class="article-title">{{item.title}}</div>
+
+        </div>
+        <div v-else>
+          <div class="article-title-full" >{{item.title}}</div>
+        </div>
         <div class="article-text" v-html="item.content"></div>
       </div>
      
@@ -119,7 +125,7 @@ export default {
     formatDetail(items) {
       let diver = "《";
       return items.map((n, i) => {
-        if (i === 0) {
+        if (i === 0 && n.title.indexOf(diver) >= 0) {
           let arr = n.title.split(diver);
           return Object.assign(n, { author: arr[0], title: diver + arr[1] });
         }
