@@ -1,11 +1,11 @@
 {
   "pages": [
-    "pages/quiz/main",
+   
     "pages/index/main",
     "pages/index-sg/main",
     "pages/map/main",
     "pages/map-sg/main",
-    
+    "pages/quiz/main",
     "pages/quizdetail/main",
     "pages/my-reward/main",
     "pages/my-msg/main",

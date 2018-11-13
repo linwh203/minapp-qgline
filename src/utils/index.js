@@ -19,9 +19,9 @@ export function formatTime (date) {
 }
 
 export const config = {
-  // prefix: 'https://yxj.forestvisual.com',
+  // prefix: 'https://etx.forestvisual.com',
   prefix: 'http://39.106.120.41:8498',
-  // base: 'https://yxj.forestvisual.com/guidewechat/',
+  // base: 'https://etx.forestvisual.com/guidewechat/',
   base: 'http://39.106.120.41:8498/GuideWechat/',
   lineId: 'F8F6CA62-2B02-4A09-AB50-0575321B0C89',
   appId: 'wx64104ee36c863058',
