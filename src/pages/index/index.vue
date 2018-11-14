@@ -182,6 +182,7 @@ export default {
       wx.navigateTo({ url: url });
     },
     goDetail() {
+      // 备注:因为二维码从1开始计数,所以放到list中再去-1
       const index = parseInt(this.activeIndex);
       wx.navigateTo({ url: "../list/main?spot_index=" + index });
     },
