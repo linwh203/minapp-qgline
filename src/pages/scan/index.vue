@@ -22,7 +22,7 @@
     <div class="result-tab" v-if="showResult">
       <scroll-view scroll-x class="result-tab-scroll" :scroll-into-view="toView">
         <div class="result-tab-box">
-          <div class="result-tab-item" v-for="(item,index) in matchItem" :key="index" :id="'result'+index">
+          <div @click="toWebview(item.detail_url)" class="result-tab-item" v-for="(item,index) in matchItem" :key="index" :id="'result'+index">
             <div class="result-tab-item-name">{{item.name}}</div>
             <div class="result-tab-item-desc">{{item.desc}}</div>
             <div class="result-tab-item-pic active">
@@ -37,6 +37,9 @@
       <cover-view>拍照识别物种：对准你好奇的物种，</cover-view>
       <cover-view>点击拍一拍吧！</cover-view>
     </cover-view>
+    <div class="webview" v-if="showWebview">
+        <web-view :src="webviewUrl" />
+    </div>
   </div>
 </template>
 
@@ -52,13 +55,20 @@ export default {
       showResult: false,
       userCode: "",
       matchItem: [],
-      toView: "result0"
+      toView: "result0",
+      showWebview: false,
+      webviewUrl: ""
     };
   },
 
   components: {},
 
   methods: {
+    toWebview(url) {
+      console.log("show webview");
+      this.webviewUrl = url;
+      this.showWebview = true;
+    },
     bindTab(e) {
       console.log(e.currentTarget);
     },
@@ -79,7 +89,6 @@ export default {
         quality: "high",
         success: res => {
           this.src = res.tempImagePath;
-          console.log("拍照结果", this.src);
           this.showResult = true;
           this.upload(res.tempImagePath);
           // this.postPhoto(res.tempImagePath)
@@ -192,6 +201,7 @@ export default {
   },
   onShow() {
     wx.setStorageSync("firstPhoto", true);
+    this.showWebview = false;
   },
   onHide() {
     this.init();
@@ -336,5 +346,8 @@ img {
   &-item:nth-of-type(1) {
     padding-left: 100rpx;
   }
+}
+
+.webview {
 }
 </style>
