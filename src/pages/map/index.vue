@@ -85,6 +85,10 @@ export default {
   components: {},
 
   methods: {
+    startTouch(e, u) {
+      this._x = e.x;
+      this._y = e.y;
+    },
     setStorage(key, val) {
       try {
         wx.setStorageSync(key, val);
@@ -131,6 +135,11 @@ export default {
       this.activeSpot == index
         ? (this.activeSpot = -1)
         : (this.activeSpot = index);
+      this.x = this._x;
+      this.y = this._y;
+      console.log(this.spotList);
+      console.log(this.spotList[index]);
+      return;
       if (index < 12) {
         this.x = -1400;
         this.y = -900;
@@ -407,6 +416,12 @@ export default {
     font-size: 20rpx;
     color: #6f6f6f;
     line-height: 30rpx;
+    word-break: break-all;
+    text-overflow: ellipsis;
+    display: -webkit-box; /** 对象作为伸缩盒子模型显示 **/
+    -webkit-box-orient: vertical; /** 设置或检索伸缩盒对象的子元素的排列方式 **/
+    -webkit-line-clamp: 2; /** 显示的行数 **/
+    overflow: hidden; /** 隐藏超出的内容 **/
   }
 }
 </style>
