@@ -1,16 +1,18 @@
 <template>
   <div class="container">
     <div class="nav">
-      <div class="nav-line"></div>
-      <div class="nav-content">
-        <div class="nav-item" :class="audioOff?'audio':'pause'" @click="playAudio"></div>
-        <div class="point"></div>
-        <div class="nav-item video" @click="goVideo"></div>
-        <div class="point"></div>
-        <div class="nav-item note" v-if="false"></div>
-        <div class="nav-item share" @click="showShareBox"></div>
+      <div class="top">
+        <div class="nav-line"></div>
+        <div class="nav-content">
+          <div class="nav-item" :class="audioOff?'audio':'pause'" @click="playAudio"></div>
+          <div class="point"></div>
+          <div class="nav-item video" @click="goVideo"></div>
+          <div class="point"></div>
+          <div class="nav-item note" v-if="false"></div>
+          <div class="nav-item share" @click="showShareBox"></div>
+        </div>
+        <div class="nav-line"></div>
       </div>
-      <div class="nav-line"></div>
       <div class="nav-border"></div>
     </div>
     <div class="main" v-for="(item,index) in articleData" :key="index">
@@ -335,24 +337,24 @@ export default {
 .article {
   border: 8rpx solid #fff;
   padding: 20rpx;
+  font-size: 36rpx;
+  background-color: rgb(23, 25, 74);
   &-author {
     text-align: center;
-    font-size: 32rpx;
     margin: 40rpx 0 10rpx;
   }
   &-title {
     text-align: center;
-    font-size: 32rpx;
     margin-bottom: 40rpx;
   }
   &-title-full {
     text-align: center;
-    font-size: 32rpx;
     margin: 40rpx 0;
   }
   &-text {
-    font-size: 24rpx;
-    line-height: 40rpx;
+    font-size: 28rpx;
+    line-height: 50rpx;
+    letter-spacing: 2rpx;
   }
   &-img {
     border-left: 8rpx solid #fff;
@@ -376,11 +378,15 @@ export default {
     line-height: 40rpx;
   }
 }
+
 .nav {
-  height: 120rpx;
-  display: flex;
-  align-items: center;
+  @h: 140rpx;
+  height: @h;
   position: relative;
+  .top {
+    display: flex;
+    align-items: center;
+  }
   &-content {
     width: 70%;
     // margin-left: 1.5%;
@@ -442,13 +448,13 @@ export default {
   }
   &-border {
     position: absolute;
-    bottom: 0;
+    top: 38%;
     left: 0;
-    width: 97.7%;
-    height: 56rpx;
+    width: 100%;
+    box-sizing: border-box;
+    height: @h / 2;
     border-left: 8rpx solid #fff;
     border-right: 8rpx solid #fff;
-    // border-top:8rpx solid #fff;
   }
 }
 .share-box {
