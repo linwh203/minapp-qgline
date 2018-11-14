@@ -110,6 +110,7 @@ export default {
         "https://gw.alicdn.com/tfs/TB1K_SBi4jaK1RjSZFAXXbdLFXa-222-146.png",
       fullSpot: [],
       isIPX: false,
+      isIPXS: false,
       isPlaying: false,
       innerAudioContext: wx.createInnerAudioContext(),
       showRoadSelect: false,
@@ -130,9 +131,15 @@ export default {
       let l = this.fullSpot.length;
       let full_h,
         full_s = 89;
-      this.isIPX ? (full_h = 780) : (full_h = 940);
+      full_h = 940;
+      if (this.isIPX) {
+        full_h = 780;
+      } else if (this.isIPXS) {
+        full_h = 780;
+      }
       // full_h = 780
       let h = parseInt(l * full_h / full_s);
+      console.log("h", h);
       return `${h}%`;
     },
     calcRight() {
@@ -347,8 +354,13 @@ export default {
     }
     wx.getSystemInfo({
       success: res => {
+        console.log("model", res.model);
         if (res.model == "iPhone X") {
           this.isIPX = true;
+        }
+        if (res.model.indexOf("iPhone11") >= 0) {
+          console.log("model is iphone xs");
+          this.isIPXS = true;
         }
       }
     });
