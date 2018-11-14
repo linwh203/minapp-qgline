@@ -218,6 +218,8 @@ export default {
         scrollTop: top,
         duration: 0
       });
+      this.showRoadSelect = false;
+      this.tab1 = false;
     },
     chooseSpot(item, index) {
       this.activeIndex == index + 2
