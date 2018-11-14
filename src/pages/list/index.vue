@@ -202,14 +202,14 @@ export default {
     }
   },
   onLoad(option) {
-    const index = option.spot_index;
+    const index = option.spot_index - 1;
     console.log(index);
     if (index >= 89) {
       this.spotLine = "shige";
-      this.currentIndex = index - 89 - 1;
+      this.currentIndex = index - 89;
     } else {
       this.spotLine = "ziran";
-      this.currentIndex = index - 1;
+      this.currentIndex = index;
     }
     this.getSpot(this.spotLine);
     this.innerAudioContext = wx.createInnerAudioContext();
