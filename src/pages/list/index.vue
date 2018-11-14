@@ -206,10 +206,10 @@ export default {
     console.log(index);
     if (index >= 89) {
       this.spotLine = "shige";
-      this.currentIndex = index - 89;
+      this.currentIndex = index - 89 - 1;
     } else {
       this.spotLine = "ziran";
-      this.currentIndex = index;
+      this.currentIndex = index - 1;
     }
     this.getSpot(this.spotLine);
     this.innerAudioContext = wx.createInnerAudioContext();
