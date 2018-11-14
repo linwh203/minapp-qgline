@@ -181,7 +181,7 @@ export default {
       wx.navigateTo({ url: url });
     },
     goDetail() {
-      const index = parseInt(this.activeIndex + 88);
+      const index = parseInt(this.activeIndex + 89);
       wx.navigateTo({ url: "../list/main?spot_index=" + index });
     },
     showRoadName() {
