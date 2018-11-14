@@ -26,7 +26,7 @@
             <div class="result-tab-item-name">{{item.name}}</div>
             <div class="result-tab-item-desc">{{item.desc}}</div>
             <div class="result-tab-item-pic active">
-              <img :src="src" >
+              <img :src="item.reference_url" >
               <div class="result-tab-item-pic-hint">匹配度:{{item.match}}%</div>
             </div>
          </div>
