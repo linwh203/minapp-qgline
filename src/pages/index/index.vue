@@ -628,7 +628,7 @@ export default {
     background-position: center;
     position: absolute;
     top: 10rpx;
-    right: 32rpx;
+    right: 39rpx;
     z-index: 22;
   }
   img {
