@@ -1,9 +1,9 @@
 <template>
   <movable-area class="container">
-    <movable-view class="index-bg" direction="all" :x="x" :y="y" @change="startTouch">
+    <movable-view class="index-bg" scale="true" scale-max="2" scale-min="1" direction="all"  @scale="startScale" @change="startTouch">
       <img class="mapImg" src="https://gw.alicdn.com/tfs/TB1JlSPn7zoK1RjSZFlXXai4VXa-2835-2835.jpg" alt="" >
-        <div class="spot-icon" :class="activeSpot == index?'changeBG':''" v-for="(item,index) in spotList" :key="item.sortNo"
-              @click="showWindow(index)" :style="{top:item.top+'rpx',left:item.left+'rpx'}">
+        <div class="spot-icon"  :class="activeSpot == index?'changeBG':''" v-for="(item,index) in spotList" :key="item.sortNo"
+              @click="showWindow(index)" :style="{top:item.top+'rpx',left:item.left+'rpx',transform:'scale('+spotScale+')'}">
           <span >{{item.sortNo}}</span>
           <div class="spot-item-window" :class="'window-'+item.sortNo" v-if="activeWindow == index" @click="viewDetail(item)">
             <img class="spot-item-window-pic" :src="prefix + item.spot_coverurl" v-if=item.spot_coverurl>
@@ -77,7 +77,10 @@ export default {
         lat: 22.63737202
       },
       nearSpot: 0,
-      prefix: config.prefix
+      prefix: config.prefix,
+      // 当前地图的spot的缩放比例,跟地图的scale成为反比
+      spotScale: 1,
+      _tScale: undefined
     };
   },
   computed: {},
@@ -85,9 +88,27 @@ export default {
   components: {},
 
   methods: {
-    startTouch(e, u) {
-      this._x = e.x;
-      this._y = e.y;
+    startScale(e) {
+      let detail = e.mp.detail;
+      let scale = detail.scale;
+      console.log("start scale", scale);
+      this._x = detail.x;
+      this._y = detail.y;
+      this._spotScale = 1 / scale;
+
+      if (this._tScale) {
+        clearTimeout(this._tScale);
+      }
+      this._tScale = setTimeout(() => {
+        this.spotScale = this._spotScale;
+        this.x = this._x;
+        this.y = this._y;
+      }, 100);
+    },
+    startTouch(e) {
+      let detail = e.mp.detail;
+      this._x = detail.x;
+      this._y = detail.y;
     },
     setStorage(key, val) {
       try {
