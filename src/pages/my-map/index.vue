@@ -1,46 +1,8 @@
 <template>
-  <movable-area class="container">
-    <movable-view class="index-bg" direction="all" scale="true" scale-max="2" scale-min="1" @change="startTouch">
-      <img class="mapImg" src="https://gw.alicdn.com/tfs/TB1S7GHn8LoK1RjSZFuXXXn0XXa-3753-3753.jpg" alt="" >
-      <div class="spot" v-for="(item,index) in spotList" :key="item.sortNo">
-        <div class="spot-icon" :class="activeSpot == index?'changeBG':''" @click="showWindow(index)" :style="{top:item.top+'rpx',left:item.left+'rpx'}">
-          <span >{{item.sortNo}}</span>
-          <div class="spot-item-window" :class="'window-'+item.sortNo" v-if="activeWindow == index" @click="viewDetail(item)">
-            <img class="spot-item-window-pic" :src="prefix + item.spot_coverurl" v-if=item.spot_coverurl>
-            <div class="spot-item-window-text">
-              <div class="spot-item-window-title">{{item.spot_title}}</div>
-              <div class="spot-item-window-desc">{{item.spot_describe}}</div>
-            </div>
-          </div>
-        </div>
+  <div class="container" :style="{height:bodyHeight}">
+    <map id="map" :longitude="lng" :latitude="lat" scale="18" :controls="controls" @controltap="controltap" :markers="markers" @markertap="markertap" :polyline="polyline" @regionchange="regionchange" show-location style="width: 100%; height: 100%;"></map>
 
-      </div>
-    </movable-view>
-    <div class="index-tab">
-      <div class="index-tab-item icon-map" >
-        <img src="https://gw.alicdn.com/tfs/TB1hOhEmMDqK1RjSZSyXXaxEVXa-90-101.png" alt="">
-      </div>
-      <div class="index-tab-item icon-list" @click="bindTab('../index-sg/main')">
-        <img src="https://gw.alicdn.com/tfs/TB1gqFKmHvpK1RjSZFqXXcXUVXa-91-101.png">
-      </div>
-      <div class="index-tab-item icon-scan" @click="bindTab('../scan/main')">
-        <img src="https://gw.alicdn.com/tfs/TB1gWBKmHvpK1RjSZFqXXcXUVXa-91-101.png" alt="">
-      </div>
-      <div class="index-tab-item icon-audio" @click="playAudio" v-if="false">
-        <img src="https://gw.alicdn.com/tfs/TB1PStFmSzqK1RjSZFLXXcn2XXa-91-101.png" alt="">
-      </div>
-      <div class="index-tab-item icon-quiz" @click="bindTab('../quiz/main')" v-if="false">
-        <img src="https://gw.alicdn.com/tfs/TB1mz8HmQvoK1RjSZFNXXcxMVXa-91-101.png" alt="">
-      </div>
-      <div class="index-tab-item icon-rule" @click="bindTab('../my-rule/main')">
-        <img src="https://gw.alicdn.com/tfs/TB1QrFHmSzqK1RjSZFHXXb3CpXa-91-100.png" alt="">
-      </div>
-      <div class="index-tab-item icon-my" @click="bindTab('../my/main')">
-        <img src="https://gw.alicdn.com/tfs/TB1TXlImMHqK1RjSZFgXXa7JXXa-92-99.png" alt="">
-      </div>
-      <div class="index-tab-line"></div>
-    </div>
-  </movable-area>
+  </div>
 </template>
 
 <script>
@@ -49,37 +11,13 @@ import { config } from "../../utils/index";
 export default {
   data() {
     return {
-      spotList: [],
-      activeSpot: 0,
-      activeWindow: -1,
-      x: 0,
-      y: 0,
-      mapStart: {
-        lng: 114.34078932,
-        lat: 22.62330383
-      },
-      mapEnd: {
-        lng: 114.36021924,
-        lat: 22.60493338
-      },
-      Xstart: {
-        lng: 114.34078932,
-        lat: 22.62330383
-      },
-      Xend: {
-        lng: 114.34078932,
-        lat: 22.60493338
-      },
-      Ystart: {
-        lng: 114.34078932,
-        lat: 22.62330383
-      },
-      Yend: {
-        lng: 114.36021924,
-        lat: 22.62330383
-      },
-      nearSpot: 0,
-      prefix: config.prefix
+      //  longitude: 113.3245211,
+      //   latitude: 23.10229
+      lng: 114.32751775,
+      lat: 22.63737202,
+      controls: [],
+      markers: [],
+      polyline: []
     };
   },
   computed: {},
@@ -87,6 +25,28 @@ export default {
   components: {},
 
   methods: {
+    startScale(e) {
+      let detail = e.mp.detail;
+      let scale = detail.scale;
+      console.log("start scale", scale);
+      this._x = detail.x;
+      this._y = detail.y;
+      this._spotScale = 1 / scale;
+
+      if (this._tScale) {
+        clearTimeout(this._tScale);
+      }
+      this._tScale = setTimeout(() => {
+        this.spotScale = this._spotScale;
+        this.x = this._x;
+        this.y = this._y;
+      }, 100);
+    },
+    startTouch(e) {
+      let detail = e.mp.detail;
+      this._x = detail.x;
+      this._y = detail.y;
+    },
     setStorage(key, val) {
       try {
         wx.setStorageSync(key, val);
@@ -119,18 +79,11 @@ export default {
       };
       return result;
     },
-    showNear() {
-      if (this.nearSpot == 0) {
-        this.showWindow(this.nearSpot);
-      } else {
-        this.showWindow(this.nearSpot - 1);
-      }
-    },
     bindTab(url) {
       wx.navigateTo({ url: url });
     },
     viewDetail(item) {
-      const index = this.activeSpot < 0 ? 89 : parseInt(this.activeSpot) + 89;
+      const index = this.activeSpot < 0 ? 0 : this.activeSpot;
       wx.navigateTo({ url: "../list/main?spot_index=" + index });
     },
     showWindow(index) {
@@ -140,6 +93,11 @@ export default {
       this.activeSpot == index
         ? (this.activeSpot = -1)
         : (this.activeSpot = index);
+      this.x = this._x;
+      this.y = this._y;
+      console.log(this.spotList);
+      console.log(this.spotList[index]);
+      return;
       if (index < 12) {
         this.x = -1400;
         this.y = -900;
@@ -199,47 +157,32 @@ export default {
       // console.log(s)
       return s;
     },
-    narrowSpot(userlat, userlng) {
-      const userPoint = {
-        lat: userlat,
-        lng: userlng
-      };
-      let distance1 = 0;
-      let distance2 = 0;
-      let nearSpot = 1;
-      const self = this;
-      for (let i = 0; i < this.spotList.length; i++) {
-        let spotPoint = {
-          lat: self.spotList[i].latitude,
-          lng: self.spotList[i].longitude
-        };
-        if (i == 0) {
-          distance1 = self.locate(userPoint, spotPoint);
-        } else {
-          distance2 = self.locate(userPoint, spotPoint);
-        }
-        if (distance1 < distance2) {
-          distance1 = distance2;
-          nearSpot = self.spotList[i].sortNo;
-        }
-      }
-      this.nearSpot = nearSpot;
-      // console.log(nearSpot)
-    },
     getSpot() {
       const self = this;
-      const storageData = wx.getStorageSync("PoetryList");
-      if (storageData) {
-        storageData.forEach((item, index) => {
-          let result = this.distance(item);
-          item.top = result.top;
-          item.left = result.left;
+      const storageData = wx.getStorageSync("NatureList");
+      let processData = data => {
+        this.markers = data.map((item, index) => {
+          console.log(index);
+          return {
+            id: index,
+            title: item.spot_title,
+            longitude: item.longitude,
+            latitude: item.latitude,
+            // callout: {
+            //   content: item.spot_title
+            // },
+            label: {
+              content: item.spot_name
+            }
+          };
         });
-        this.spotList = storageData;
+      };
+      if (storageData) {
+        processData(storageData);
         return;
       }
       wx.request({
-        url: config.base + "attraction/PoetryList", //开发者服务器接口地址",
+        url: config.base + "attraction/NaturalList", //开发者服务器接口地址",
         data: {
           lineId: config.lineId
         }, //请求的参数",
@@ -248,13 +191,8 @@ export default {
         success: res => {
           // console.log(res)
           let data = res.data.data;
-          this.setStorage("PoetryList", data);
-          data.forEach(item => {
-            let result = this.distance(item);
-            item.top = result.top;
-            item.left = result.left;
-          });
-          this.spotList = data;
+          this.setStorage("NatureList", data);
+          processData(data);
         },
         fail: () => {},
         complete: () => {}
@@ -262,6 +200,7 @@ export default {
     }
   },
   created() {
+    console.log("create");
     this.getSpot();
   },
   mounted() {},
@@ -443,6 +382,12 @@ export default {
     font-size: 20rpx;
     color: #6f6f6f;
     line-height: 30rpx;
+    word-break: break-all;
+    text-overflow: ellipsis;
+    display: -webkit-box; /** 对象作为伸缩盒子模型显示 **/
+    -webkit-box-orient: vertical; /** 设置或检索伸缩盒对象的子元素的排列方式 **/
+    -webkit-line-clamp: 2; /** 显示的行数 **/
+    overflow: hidden; /** 隐藏超出的内容 **/
   }
 }
 </style>

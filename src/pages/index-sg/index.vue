@@ -55,7 +55,8 @@
           </div>
         </div>
       </div>
-      <img src="https://gw.alicdn.com/tfs/TB1rXqxnq6qK1RjSZFmXXX0PFXa-580-8690.png" mode="widthFix" class="scroll-road">
+      <!-- <img src="https://gw.alicdn.com/tfs/TB1rXqxnq6qK1RjSZFmXXX0PFXa-580-8690.png" mode="widthFix" class="scroll-road"> -->
+      <img src="https://etx.forestvisual.com/File/Download?fileName=poetry/poetry.png&fileType=QGLineFile" mode="widthFix" class="scroll-road">
       <img src="https://gw.alicdn.com/tfs/TB1M91vnAvoK1RjSZFNXXcxMVXa-640-9094.png" mode="widthFix" class="scroll-bg" @load=finishLoadImg>
     </scroll-view>
     <div class="cover" @click="showRoadSelect = false" v-if="showRoadSelect"></div>
@@ -145,7 +146,7 @@ export default {
         case 1:
           return -120;
         case 2:
-          return 0;
+          return -16;
         case 3:
           return -116;
         case 4:

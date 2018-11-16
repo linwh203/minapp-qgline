@@ -1,6 +1,5 @@
 {
   "pages": [
-   
     "pages/index/main",
     "pages/index-sg/main",
     "pages/map/main",
@@ -9,6 +8,7 @@
     "pages/quizdetail/main",
     "pages/my-reward/main",
     "pages/my-msg/main",
+    "pages/my-map/main",
     "pages/scan/main",
     "pages/paint/main",
     "pages/first/main",

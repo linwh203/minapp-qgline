@@ -89,6 +89,7 @@ export default {
 
   methods: {
     startScale(e) {
+      return;
       let detail = e.mp.detail;
       let scale = detail.scale;
       console.log("start scale", scale);

@@ -153,7 +153,8 @@ export default {
         case 1:
           return -120;
         case 2:
-          return 0;
+          // 处女座说,必须调整,所以0改成-16
+          return -16;
         case 3:
           return -116;
         case 4:
