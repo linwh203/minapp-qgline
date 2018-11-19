@@ -12,7 +12,8 @@
         <img src="https://gw.alicdn.com/tfs/TB1gWBKmHvpK1RjSZFqXXcXUVXa-91-101.png" alt="">
       </div>
       <div class="index-tab-item icon-audio" @click="playAudio">
-        <img src="https://gw.alicdn.com/tfs/TB1PStFmSzqK1RjSZFLXXcn2XXa-91-101.png" alt="">
+        <img src="https://gw.alicdn.com/tfs/TB1PStFmSzqK1RjSZFLXXcn2XXa-91-101.png" alt="" v-if="!isPlaying">
+        <img src="https://gw.alicdn.com/tfs/TB1mMsUomzqK1RjSZFLXXcn2XXa-91-101.png" alt="" v-if="isPlaying">
       </div>
       <div class="index-tab-item icon-quiz" @click="bindTab('../quiz/main')" v-if="false">
         <img src="https://gw.alicdn.com/tfs/TB1mz8HmQvoK1RjSZFNXXcxMVXa-91-101.png" alt="">
@@ -112,6 +113,8 @@ export default {
       spotList: [],
       isIPX: false,
       isIPXS: false,
+      isPlaying: false,
+      innerAudioContext: wx.createInnerAudioContext(),
       showRoadSelect: false,
       tab1: false,
       tab2: false,
@@ -227,7 +230,36 @@ export default {
       this.activeIndex = 1;
       this.currentSpot = this.spotList[0];
     },
-    playAudio() {},
+    playAudio() {
+      // console.log(this.currentSpot.spot_id)
+      if (this.isPlaying) {
+        this.innerAudioContext.stop();
+        this.isPlaying = false;
+        return;
+      }
+      wx.request({
+        url: config.base + "attraction/listdetail", //开发者服务器接口地址",
+        data: {
+          spot_id: this.currentSpot.spot_id
+        }, //请求的参数",
+        method: "GET",
+        dataType: "json", //如果设为json，会尝试对返回的数据做一次 JSON.parse
+        success: res => {
+          console.log(res.data.data);
+          this.audioUrl =
+            res.data.data.audio_url == null
+              ? ""
+              : config.prefix + res.data.data.audio_url;
+          if (this.audioUrl) {
+            this.innerAudioContext.src = this.audioUrl;
+            this.innerAudioContext.play();
+            this.isPlaying = true;
+          }
+        },
+        fail: () => {},
+        complete: () => {}
+      });
+    },
     login(code) {
       const userInfo = wx.getStorageSync("userInfo");
       wx.request({
@@ -325,7 +357,11 @@ export default {
   onReady() {
     // this.toView = 'spot12'
   },
-  onShow() {}
+  onShow() {},
+  onHide() {
+    this.isPlaying = false;
+    this.innerAudioContext.stop();
+  }
 };
 </script>
 
