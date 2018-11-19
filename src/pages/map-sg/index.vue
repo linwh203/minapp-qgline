@@ -17,9 +17,9 @@
       </div>
     </movable-view>
     <div class="index-tab">
-      <div class="index-tab-item icon-map" >
+      <!-- <div class="index-tab-item icon-map" >
         <img src="https://gw.alicdn.com/tfs/TB1hOhEmMDqK1RjSZSyXXaxEVXa-90-101.png" alt="">
-      </div>
+      </div> -->
       <div class="index-tab-item icon-list" @click="bindTab('../index-sg/main')">
         <img src="https://gw.alicdn.com/tfs/TB1gqFKmHvpK1RjSZFqXXcXUVXa-91-101.png">
       </div>
@@ -372,6 +372,7 @@ export default {
   background: #a8368e;
   color: #fff;
   border: yellow;
+  z-index:1000;
 }
 .index-tab {
   position: fixed;

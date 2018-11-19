@@ -2,22 +2,22 @@
   <movable-area class="container">
     <movable-view class="index-bg" scale="true" scale-max="2" scale-min="1" direction="all"  @scale="startScale" @change="startTouch">
       <img class="mapImg" src="https://gw.alicdn.com/tfs/TB1JlSPn7zoK1RjSZFlXXai4VXa-2835-2835.jpg" alt="" >
-        <div class="spot-icon"  :class="activeSpot == index?'changeBG':''" v-for="(item,index) in spotList" :key="item.sortNo"
-              @click="showWindow(index)" :style="{top:item.top+'rpx',left:item.left+'rpx',transform:'scale('+spotScale+')'}">
-          <span >{{item.sortNo}}</span>
-          <div class="spot-item-window" :class="'window-'+item.sortNo" v-if="activeWindow == index" @click="viewDetail(item)">
-            <img class="spot-item-window-pic" :src="prefix + item.spot_coverurl" v-if=item.spot_coverurl>
-            <div class="spot-item-window-text">
-              <div class="spot-item-window-title">{{item.spot_title}}</div>
-              <div class="spot-item-window-desc">{{item.spot_describe}}</div>
-            </div>
+      <div class="spot-icon"  :class="activeSpot == index?'changeBG':''" v-for="(item,index) in spotList" :key="item.sortNo"
+            @click="showWindow(index)" :style="{top:item.top+'rpx',left:item.left+'rpx',transform:'scale('+spotScale+')'}">
+        <span >{{item.sortNo}}</span>
+        <div class="spot-item-window" :class="'window-'+item.sortNo" v-if="activeWindow == index" @click="viewDetail(item)">
+          <img class="spot-item-window-pic" :src="prefix + item.spot_coverurl" v-if=item.spot_coverurl>
+          <div class="spot-item-window-text">
+            <div class="spot-item-window-title">{{item.spot_title}}</div>
+            <div class="spot-item-window-desc">{{item.spot_describe}}</div>
           </div>
         </div>
+      </div>
     </movable-view>
     <div class="index-tab">
-      <div class="index-tab-item icon-map" @click="bindTab('../index/main')" >
+      <!-- <div class="index-tab-item icon-map" @click="bindTab('../index/main')" >
         <img src="https://gw.alicdn.com/tfs/TB1hOhEmMDqK1RjSZSyXXaxEVXa-90-101.png" alt="">
-      </div>
+      </div> -->
       <div class="index-tab-item icon-list" @click="bindTab('../index/main')">
         <img src="https://gw.alicdn.com/tfs/TB1gqFKmHvpK1RjSZFqXXcXUVXa-91-101.png">
       </div>
@@ -320,30 +320,7 @@ export default {
     height: 3753rpx;
   }
 }
-.spot-window {
-  position: absolute;
-  z-index: 999;
-  width: 248rpx;
-  height: 248rpx;
-  border: 6rpx solid #bc8d5d;
-  // background: #00baea;
-  background: url("https://gw.alicdn.com/tfs/TB1Mxiei4TpK1RjSZR0XXbEwXXa-248-248.png")
-    no-repeat center/cover;
-  border-radius: 40rpx;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  &-text {
-    font-size: 26rpx;
-    color: #fff;
-    line-height: 90rpx;
-  }
-  &-img {
-    width: 220rpx;
-    height: 144rpx;
-    border-radius: 24rpx;
-  }
-}
+
 .active-spot {
   width: 40rpx;
   height: 30rpx;
@@ -361,12 +338,12 @@ export default {
   font-size: 28rpx;
   border-radius: 50%;
   border: 1px solid #a8368e;
-  // border:1px solid yellow;
 }
 .changeBG {
   background: #a8368e;
   color: #fff;
   border: yellow;
+  z-index:1000;
 }
 .index-tab {
   position: fixed;
@@ -409,9 +386,9 @@ export default {
   background: url("https://gw.alicdn.com/tfs/TB1PHRpnCzqK1RjSZPxXXc4tVXa-1809-607.png")
     no-repeat center/contain;
   position: absolute;
-  bottom: 60rpx;
+  bottom: 40rpx;
   left: -90rpx;
-  z-index: 30;
+  z-index: 999;
   display: flex;
   &-pic {
     width: 136rpx;

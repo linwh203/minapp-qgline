@@ -6,9 +6,9 @@
     </div>
     <div class="modal" v-if="motto">
       <div class="modal-container">
-        <img src="https://gw.alicdn.com/tfs/TB1zSxnmSzqK1RjSZPcXXbTepXa-544-700.png" alt="">
+        <img src="https://gw.alicdn.com/tfs/TB1UNN3qCzqK1RjSZFpXXakSXXa-544-700.png" alt="">
         <button class="auth-confirm" open-type="getUserInfo" @getuserinfo="bindGetUserInfo" @click="getUserInfo1">授权登录</button>
-        <button class="auth-cancel" @click="cancelAuth">拒绝授权</button>
+        <!-- <button class="auth-cancel" @click="cancelAuth">拒绝授权</button> -->
       </div>
     </div>
   </div>
@@ -144,7 +144,8 @@ export default {
   }
 }
 .auth-confirm {
-  width: 224rpx;
+  // width: 224rpx;
+  width: 448rpx;
   height: 92rpx;
   position: absolute;
   right: 42rpx;
