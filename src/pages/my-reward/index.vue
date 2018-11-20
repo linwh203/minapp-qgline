@@ -38,7 +38,8 @@
               <span>兑换1个勋章</span>
             </div>
             <div class="main-body-list-item-right">
-              立即兑换
+              <span v-if="exchange1">兑换成功</span>
+              <span v-else @click="openLayer(150)">立即兑换</span>
             </div>
           </div>
           <div class="main-body-list-item">
@@ -47,7 +48,8 @@
               <span>兑换3个勋章</span>
             </div>
             <div class="main-body-list-item-right">
-              立即兑换
+              <span v-if="exchange2">兑换成功</span>
+              <span v-else @click="openLayer(200)">立即兑换</span>
             </div>
           </div>
           <div class="main-body-list-item">
@@ -56,7 +58,8 @@
               <span>兑换10个勋章</span>
             </div>
             <div class="main-body-list-item-right">
-              立即兑换
+              <span v-if="exchange3">兑换成功</span>
+              <span v-else @click="openLayer(480)">立即兑换</span>
             </div>
           </div>
         </div>
@@ -65,6 +68,9 @@
 
     <div class="cover" v-if="showCover"></div>
     <div class="ruleLayer" v-if="ruleLayer">
+      <div class="ruleLayer-head">获得{{msgTitle}}个勋章</div>
+      <div class="ruleLayer-text">本次兑换消耗{{msgCoin}}个金币</div>
+      <div class="ruleLayer-btn" @click="buyTitle(msgCoin)">确定兑换</div>
       <div class="close" @click="closeLayer"></div>
     </div>
   </div>
@@ -80,6 +86,13 @@ export default {
       level:1,
       count:0,
       coin:0,
+      exchange1:false,
+      exchange2:false,
+      exchange3:false,
+      ruleLayer:false,
+      showCover:false,
+      msgCoin:0,
+      msgTitle:0,
     };
   },
 
@@ -108,12 +121,97 @@ export default {
         complete: () => {}
       });
     },
+    closeLayer() {
+      this.ruleLayer = false;
+      this.showCover = false;
+    },
+    openLayer(coin) {
+      this.ruleLayer = true;
+      this.showCover = true;
+      this.msgCoin = coin;
+      if(coin == 150){
+        this.msgTitle = 1
+      }
+      if(coin == 200){
+        this.msgTitle = 3
+      }
+      if(coin == 480){
+        this.msgTitle = 10
+      }
+    },
+    buyTitle(coin) {
+      wx.request({
+        url: config.base + 'quiz/buyTitle', //开发者服务器接口地址",
+        data: {
+          coin: coin,
+          LineId: config.lineId
+        }, //请求的参数",
+        method: 'post',
+        header: {
+          token: this.userCode,
+        },
+        dataType: 'json', //如果设为json，会尝试对返回的数据做一次 JSON.parse
+        success: res => {
+          console.log(res.data)
+          this.closeLayer()
+          if(res.data.res_code==0) {
+            this.level = res.data.data.count
+            if(coin == 150){
+              this.exchange1 = true
+              return
+            }
+            if(coin == 200){
+              this.exchange2 = true
+              return
+            }
+            if(coin == 480){
+              this.exchange3 = true
+              return
+            }
+          }else {
+            wx.showToast({
+              title: res.data.res_msg, //提示的内容,
+              icon: 'none', //图标,
+              duration: 2000, //延迟时间,
+              mask: true, //显示透明蒙层，防止触摸穿透,
+              success: res => {}
+            });
+          }
+        }
+      });
+    },
+    getLevel() {
+      wx.request({
+        url: config.base + 'quiz/getTitle', //开发者服务器接口地址",
+        data: {
+          token: this.userCode,
+          LineId: config.lineId
+        }, //请求的参数",
+        method: 'get',
+        dataType: 'json', //如果设为json，会尝试对返回的数据做一次 JSON.parse
+        success: res => {
+          console.log(res.data)
+          if(res.data.res_code==0) {
+            this.level = res.data.data.count
+          }else {
+            wx.showToast({
+              title: res.data.res_msg, //提示的内容,
+              icon: 'none', //图标,
+              duration: 2000, //延迟时间,
+              mask: true, //显示透明蒙层，防止触摸穿透,
+              success: res => {}
+            });
+          }
+        }
+      });
+    }
   },
   onReady(){
   },
   onShow() {
     this.userCode = wx.getStorageSync('userCode')
     this.loadCheckPoint()
+    this.getLevel()
   },
   onShareAppMessage(result) {
     let title = `我已获得${this.level}个勋章`;
@@ -209,8 +307,35 @@ export default {
   z-index:81;
   top: 20%;
   left: 0;right: 0;margin:auto;
-  background: url('https://gw.alicdn.com/tfs/TB1.U9SnMHqK1RjSZJnXXbNLpXa-460-700.png') no-repeat top/cover;
-
+  background: url('https://gw.alicdn.com/tfs/TB16p9nqNYaK1RjSZFnXXa80pXa-460-700.png') no-repeat top/cover;
+  &-head{
+    font-size:30rpx;
+    position: absolute;
+    top: 408rpx;
+    left: 0;right: 0;margin:auto;
+    color:#fff;
+    text-align: center;
+  }
+  &-text{
+    font-size:34rpx;
+    position: absolute;
+    top: 508rpx;
+    left: 0;right: 0;margin:auto;
+    color:#333;
+    text-align: center;
+  }
+  &-btn{
+    width: 300rpx;
+    height: 90rpx;
+    line-height: 90rpx;
+    text-align: center;
+    color:#fff;
+    background: #292770;
+    border-radius: 20rpx;
+    position: absolute;
+    bottom: 60rpx;
+    left: 0;right: 0;margin:auto;
+  }
 }
 .close{
   width: 70rpx;

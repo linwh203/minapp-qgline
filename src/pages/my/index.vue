@@ -134,7 +134,7 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin: 25rpx 25rpx;
+    margin: 6% 25rpx;
     &-item{
       display: flex;
       align-items: center;

@@ -1,6 +1,6 @@
 <template>
   <div class="container" :style="{height:bodyHeight}">
-    <map id="map" :longitude="lng" :latitude="lat" scale="18" :controls="controls" @controltap="controltap" :markers="markers" @markertap="markertap" :polyline="polyline" @regionchange="regionchange" show-location style="width: 100%; height: 100%;"></map>
+    <map id="map" :longitude="lng" :latitude="lat" scale="16" :controls="controls" @controltap="controltap" :markers="markers" @markertap="markertap" :polyline="polyline" @regionchange="regionchange" show-location style="width: 100%; height: 100%;"></map>
 
   </div>
 </template>

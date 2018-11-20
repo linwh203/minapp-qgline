@@ -1,6 +1,6 @@
 {
   "pages": [
-    "pages/my/main",
+    
     "pages/index/main",
     "pages/index-sg/main",
     "pages/map/main",
@@ -15,7 +15,7 @@
     "pages/first/main",
     "pages/list/main",
     "pages/video/main",
-    
+    "pages/my/main",
     "pages/my-rule/main",
     "pages/my-statement/main",
     "pages/my-about/main",

@@ -102,7 +102,7 @@ export default {
       if(this.score<id-1){
         return 
       }
-      wx.navigateTo({ url: "../quizdetail/main?checkpoint=" + id });
+      wx.navigateTo({ url: "../quizdetail/main?checkpoint=" + id + "&count=" + this.count});
     },
     login(code) {
       const userInfo = wx.getStorageSync('userInfo');
@@ -173,7 +173,7 @@ export default {
         success: res => {
           console.log(res.data)
           if(res.data.res_code==0) {
-            this.count = res.data.data.Count
+            this.count = res.data.data.count
           }else {
             wx.showToast({
               title: res.data.res_msg, //提示的内容,
@@ -337,7 +337,6 @@ export default {
   top: 20%;
   left: 0;right: 0;margin:auto;
   background: url('https://gw.alicdn.com/tfs/TB1.U9SnMHqK1RjSZJnXXbNLpXa-460-700.png') no-repeat top/cover;
-
 }
 .shareLayer{
   width: 500rpx;

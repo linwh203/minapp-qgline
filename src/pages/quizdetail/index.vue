@@ -49,8 +49,8 @@
         <span>+ 100</span>
       </div> 
        <div class="result-line"></div> 
-       <div class="quiz-result-btn-top">继续挑战</div>
-       <div class="quiz-result-btn-btm">查看成就</div>
+       <div class="quiz-result-btn-top" @click="bindTap('../quiz/main')">继续挑战</div>
+       <div class="quiz-result-btn-btm" @click="bindTap('../my-reward/main')">查看成就</div>
     </div>
     <div class="quiz-fail" v-if="quizFail">
       <img class="resultIcon" src="https://gw.alicdn.com/tfs/TB1Lg9UnHPpK1RjSZFFXXa5PpXa-328-251.png">
@@ -59,54 +59,17 @@
         <span>+ 0</span>
       </div>
       <div class="result-line"></div> 
-      <div class="quiz-result-btn-top">再来一局</div>
-      <div class="quiz-result-btn-btm">分享知识获取机会</div>
+      <div class="quiz-result-btn-top" @click="restart">再来一局</div>
+      <button open-type="share" class="quiz-result-btn-btm">分享知识获取机会</button>
       <div class="quiz-result-tip">分享知识给微信好友群可获得1次挑战机会</div>
     </div>
-    <div class="modal" v-if="showHint || showAnswer || showFinish">
-      <div class="modal-container">
-        <div class="hint" v-if="showHint">
-          <div class="hint-title">温馨提示</div>
-          <div class="hint-text">
-            {{currentQuiz.tooltip}}
-          </div>
-          <div class="hint-close" @click="closeHint">
-            <!-- <img src="../../assets/btn-close-list.png" alt=""> -->
-          </div>
-        </div>
-        <div class="hint answer" v-if="showAnswer">
-          <div class="answer-title">{{wrongAnswer?'再想想':'你真棒'}}</div>
-          <div class="answer-text">
-            {{wrongAnswer?'不是'+choiceName+'选错了!':'找对了,继续加油哦!'}}
-          </div>
-          <div class="answer-btn" @click=closeAnswer>
-            {{wrongAnswer?'重新回答':'下一题'}}
-          </div>
-          <div class="hint-close" @click="closeAnswer">
-            <!-- <img src="../../assets/btn-close-list.png" alt=""> -->
-          </div>
-        </div>
-        <div class="hint finish" v-if="showFinish">
-          <div class="finish-title">恭喜你，闯关成功</div>
-          <!-- <img src="../../assets/icon-reward.png" class="finish-icon"> -->
-          <div class="finish-text">获得:1个勋章</div>
-          <div class="finish-btns">
-            <div class="finish-btns-left" @click="bindTab('../quiz/main')">继续闯关</div>
-            <div class="finish-btns-right" @click="bindTab('../my-reward/main')">查看成就</div>
-          </div>
-          <div class="hint-close" @click="bindTab('../quiz/main')">
-            <!-- <img src="../../assets/btn-close-list.png" alt=""> -->
-          </div>
-        </div>
-      </div>
+    <div class="cover" v-if="showCover"></div>
+    <div class="ruleLayer" v-if="ruleLayer">
+      <button open-type="share" class="ruleLayer-btn"></button>
+      <div class="close" @click="closeLayer"></div>
     </div>
-    <div class="modal" v-if="showLarge">
-      <div class="largeImg">
-        <img :src="prefix+largeSrc">
-        <div class="hint-close" @click="showLarge = false">
-            <!-- <img src="../../assets/btn-close-list.png" alt=""> -->
-          </div>
-      </div>
+    <div class="endLayer" v-if="endLayer">
+      <div class="close" @click="closeLayer"></div>
     </div>
   </div>
   <div class="countdown" v-if="showCountdown">
@@ -130,31 +93,23 @@ import { setTimeout } from 'timers';
 export default {
   data() {
     return {
-      failMsg:'https://gw.alicdn.com/tfs/TB1RLqUnFzqK1RjSZFvXXcB7VXa-460-700.png',
-      failMsgNoChance:'https://gw.alicdn.com/tfs/TB1tIq0nQvoK1RjSZFDXXXY3pXa-460-700.png',
-      failMsgBtn:'https://gw.alicdn.com/tfs/TB1Rn9UnHvpK1RjSZPiXXbmwXXa-340-80.png',
+      prefix:config.prefix,
+      count:0,
       countNumber:3,
       showCountdown:false,
       rightCount:0,
       showRight:-1,
       showWrong:-1,
+      choiceIndex: -1,
       quizSuccess:false,
       quizFail:false,
-      prefix:config.prefix,
       userCode: "",
       index: 0,
-      showHint: false,
-      isPlayAudio: false,
-      choiceIndex: -1,
+      wrongAnswer: false,
+      showCover: false,
+      ruleLayer: false,
+      endLayer: false,
       currentQuiz: {
-        // id: null,
-        // title: null,
-        // type: null,
-        // tooltip: null,
-        // quiz: null,
-        // answer_list: [],
-        // right_answer: null,
-        // is_right: null
         id: null,
         title: '1.大陆河边有什么鸟',
         type: null,
@@ -164,28 +119,15 @@ export default {
         right_answer: 1,
         is_right: null
       },
-      wrongAnswer: false,
-      showAnswer: false,
-      showFinish: false,
-      showLarge: false,
-      innerAudioContext: null,
       questionList: [
         {
-          // 题目id
           id: 1,
-          // 标题
           title: "",
-          // 题目类型,类型枚举:'文本选择 text','看图识别 image','声音识别 video',
           type: 1,
-          // 问题的提示
           tooltip: "",
-          // 问题正文,如果是'看图识别'和'声音识别'就应该是个url字符串
           quiz: "",
-          // 答案列表,如果是'看图识别'就应该是个图片地址
           answer_list: ["A ", "B ", "C", "D "],
-          // 正确答案的序号
           right_answer: -1,
-          // 我是否答对
           is_right: false
         }
       ]
@@ -196,8 +138,6 @@ export default {
       return this.currentQuiz.right_answer-1
     }
   },
-  components: {},
-
   methods: {
     bindTab(url) {
       wx.redirectTo({ url: url });
@@ -219,7 +159,15 @@ export default {
       } else {
         this.showRight = this.rightAnswer
         this.showWrong = this.choiceIndex
+        setTimeout(()=>{
+          this.quizFail = true
+          this.count --
+        },800)
       }
+    },
+    closeLayer() {
+      this.showCover = false;
+      this.ruleLayer = false;
     },
     init(){
       this.choiceIndex = -1
@@ -254,30 +202,6 @@ export default {
         fail: () => {},
         complete: () => {}
       });
-    },
-    lookHint() {
-      this.showHint = true;
-    },
-    closeHint() {
-      this.showHint = false;
-    },
-    closeAnswer() {
-      this.isPlayAudio = false;
-      this.innerAudioContext.stop();
-      this.showAnswer = false;
-      if (this.wrongAnswer) {
-        this.wrongAnswer = false;
-      } else {
-        this.questionList[this.index].is_right = true;
-        if (this.index == this.questionList.length - 1) {
-          this.showFinish = true;
-        } else {
-          this.index += 1;
-          this.choiceIndex = -1;
-          this.choiceName = "";
-          this.currentQuiz = this.questionList[this.index];
-        }
-      }
     },
     getList() {
       function selectSort(arr) {
@@ -325,23 +249,57 @@ export default {
         fail: () => {},
         complete: () => {}
       });
+    },
+    restart() {
+      if(this.count == 0) {
+        this.showCover = true
+        this.ruleLayer = true
+        return
+      }
+      this.quizFail = false
+      this.choiceIndex = -1
+      this.showRight = -1
+      this.showWrong = -1
+      this.rightCount = 0
+      this.index = 0
+      this.currentQuiz = this.questionList[0];
+    },
+    addCount() {
+      wx.request({
+        url: config.base + 'quiz/addCount', //开发者服务器接口地址",
+        data: {
+          LineId: config.lineId
+        }, //请求的参数",
+        method: 'post',
+        header: {
+          token: this.userCode,
+        },
+        dataType: 'json', //如果设为json，会尝试对返回的数据做一次 JSON.parse
+        success: res => {
+          console.log(res.data)
+          if(res.data.res_code==0) {
+            this.count = res.data.data.count
+          }else {
+            wx.showToast({
+              title: res.data.res_msg, //提示的内容,
+              icon: 'none', //图标,
+              duration: 1000, //延迟时间,
+              mask: true, //显示透明蒙层，防止触摸穿透,
+              success: res => {}
+            });
+          }
+        }
+      });
     }
-  },
-
-  created() {
-    // this.currentQuiz = this.questionList[0];
-  },
-  mounted() {
-    // this.getList()
   },
   onLoad(option) {
     console.log(option.checkpoint);
     this.checkpoint = option.checkpoint;
+    this.count = option.count;
   },
   onShow(option) {
     this.userCode = wx.getStorageSync("userCode");
     this.getList()
-
     setInterval(()=>{
       if(this.countNumber > 0){
         this.countNumber-- 
@@ -353,11 +311,7 @@ export default {
   },
   onHide() {
     this.index = 0;
-    this.showHint = false;
-    this.hasAudio = false;
-    this.isPlayAudio = false;
     this.choiceIndex = -1;
-    this.choiceName = "";
     this.currentQuiz = {
       id: null,
       title: null,
@@ -369,16 +323,10 @@ export default {
       is_right: null
     };
     this.wrongAnswer = false;
-    this.showAnswer = false;
-    this.showFinish = false;
   },
   onUnload() {
     this.index = 0;
-    this.showHint = false;
-    this.hasAudio = false;
-    this.isPlayAudio = false;
     this.choiceIndex = -1;
-    this.choiceName = "";
     this.currentQuiz = {
       id: null,
       title: null,
@@ -390,8 +338,25 @@ export default {
       is_right: null
     };
     this.wrongAnswer = false;
-    this.showAnswer = false;
-    this.showFinish = false;
+  },
+  onShareAppMessage(result) {
+    let title = "青谷研习径";
+    let path = "/pages/index/main";
+    let imageUrl = "https://gw.alicdn.com/tfs/TB1uLyAnxjaK1RjSZKzXXXVwXXa-80-80.png";
+    return {
+      title,
+      path,
+      imageUrl,
+      // desc,
+      success: res => {
+        console.log("success", res);
+        this.closeLayer();
+        this.addCount();
+      },
+      fail(e) {
+        console.log(e);
+      }
+    };
   }
 };
 </script>
@@ -556,156 +521,6 @@ export default {
     }
   }
 }
-.image-choose {
-  height: 54rpx;
-  width: 52rpx;
-  position: absolute;
-  top: 0;
-  left: 0;
-  background: #fff;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  border-bottom-right-radius: 25rpx;
-  img {
-    width: 32rpx;
-    height: 32rpx;
-    display: block;
-  }
-}
-.modal {
-  width: 100%;
-  height: 100%;
-  position: fixed;
-  top: 0;
-  left: 0;
-  background: rgba(0, 0, 0, 0.6);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  &-container {
-    position: absolute;
-    top: 548rpx;
-    width: 540rpx;
-    height: 336rpx;
-    background: #fff;
-    border-radius: 10px;
-    overflow: hidden;
-  }
-}
-.hint {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  height: 100%;
-  position: relative;
-  &-title {
-    color: #fff;
-    text-align: center;
-    height: 90rpx;
-    line-height: 90rpx;
-    background: #53c6f7;
-    width: 100%;
-  }
-  &-text {
-    color: #000;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    flex-direction: column;
-    height: 100%;
-  }
-  &-close {
-    height: 54rpx;
-    width: 52rpx;
-    position: absolute;
-    top: 0;
-    right: 0;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    border-bottom-left-radius: 25rpx;
-    img {
-      width: 32rpx;
-      height: 32rpx;
-      display: block;
-    }
-  }
-}
-.answer {
-  color: #000;
-  width: 100%;
-  &-title {
-    font-size: 40rpx;
-    line-height: 130rpx;
-  }
-  &-text {
-    width: 100%;
-    font-size: 28rpx;
-    text-align: center;
-    padding-bottom: 60rpx;
-    border-bottom: 1px solid #a0a0a0;
-  }
-  &-btn {
-    color: #00baea;
-    font-size: 36rpx;
-    line-height: 90rpx;
-  }
-}
-.finish {
-  color: #000;
-  font-size: 36rpx;
-  &-title {
-    line-height: 82rpx;
-  }
-  &-icon {
-    width: 128rpx;
-    height: 84rpx;
-  }
-  &-text {
-    line-height: 64rpx;
-    font-size: 24rpx;
-  }
-  &-btns {
-    width: 100%;
-    height: 105rpx;
-    border-top: 1px solid #a0a0a0;
-    display: flex;
-    &-left {
-      flex: 1;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      border-right: 1px solid #a0a0a0;
-      color: #00baea;
-    }
-    &-right {
-      flex: 1;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: #ff1919;
-    }
-  }
-}
-.largeImg {
-  width: 538rpx;
-  height: 823rpx;
-  border-radius: 12rpx;
-  overflow: hidden;
-  position: relative;
-  img {
-    width: 100%;
-    height: 100%;
-    display: block;
-  }
-}
 .countdown{
   width: 100%;
   height: 100%;
@@ -765,5 +580,48 @@ export default {
 .userName{
   color:#fff;
   font-size: 30rpx;
+}
+.close{
+  width: 70rpx;
+  height: 142rpx;
+  background: url('https://gw.alicdn.com/tfs/TB14yqPnNTpK1RjSZFKXXa2wXXa-60-132.png') no-repeat top/cover;
+  position: absolute;
+  right: 0;top: -130rpx;
+  z-index: 81;
+}
+.cover{
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  background: rgba(0,0,0,.5);
+  z-index:80;
+  top: 0;
+  left: 0;
+}
+.ruleLayer{
+  width: 500rpx;
+  height: 760rpx;
+  position: fixed;
+  z-index:81;
+  top: 20%;
+  left: 0;right: 0;margin:auto;
+  background: url('https://gw.alicdn.com/tfs/TB1RLqUnFzqK1RjSZFvXXcB7VXa-460-700.png') no-repeat top/cover;
+  &-btn{
+    width: 340rpx;
+    height: 80rpx;
+    position: absolute;
+    bottom: 100rpx;
+    left: 0;right: 0;margin: auto;
+    background: url('https://gw.alicdn.com/tfs/TB1Rn9UnHvpK1RjSZPiXXbmwXXa-340-80.png') no-repeat top/cover;
+  }
+}
+.endLayer{
+  width: 500rpx;
+  height: 760rpx;
+  position: fixed;
+  z-index:81;
+  top: 20%;
+  left: 0;right: 0;margin:auto;
+  background: url('https://gw.alicdn.com/tfs/TB1tIq0nQvoK1RjSZFDXXXY3pXa-460-700.png') no-repeat top/cover;
 }
 </style>
