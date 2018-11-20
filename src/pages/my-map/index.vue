@@ -1,44 +1,8 @@
 <template>
-  <movable-area class="container">
-    <movable-view class="index-bg" scale="true" scale-max="2" scale-min="1" direction="all"  @scale="startScale" @change="startTouch">
-      <img class="mapImg" src="https://gw.alicdn.com/tfs/TB1JlSPn7zoK1RjSZFlXXai4VXa-2835-2835.jpg" alt="" >
-      <div class="spot-icon"  :class="activeSpot == index?'changeBG':''" v-for="(item,index) in spotList" :key="item.sortNo"
-            @click="showWindow(index)" :style="{top:item.top+'rpx',left:item.left+'rpx',transform:'scale('+spotScale+')'}">
-        <span >{{item.sortNo}}</span>
-        <div class="spot-item-window" :class="'window-'+item.sortNo" v-if="activeWindow == index" @click="viewDetail(item)">
-          <img class="spot-item-window-pic" :src="prefix + item.spot_coverurl" v-if=item.spot_coverurl>
-          <div class="spot-item-window-text">
-            <div class="spot-item-window-title">{{item.spot_title}}</div>
-            <div class="spot-item-window-desc">{{item.spot_describe}}</div>
-          </div>
-        </div>
-      </div>
-    </movable-view>
-    <div class="index-tab">
-      <!-- <div class="index-tab-item icon-map" @click="bindTab('../index/main')" >
-        <img src="https://gw.alicdn.com/tfs/TB1hOhEmMDqK1RjSZSyXXaxEVXa-90-101.png" alt="">
-      </div> -->
-      <div class="index-tab-item icon-list" @click="bindTab('../index/main')">
-        <img src="https://gw.alicdn.com/tfs/TB1gqFKmHvpK1RjSZFqXXcXUVXa-91-101.png">
-      </div>
-      <div class="index-tab-item icon-scan" @click="bindTab('../scan/main')">
-        <img src="https://gw.alicdn.com/tfs/TB1gWBKmHvpK1RjSZFqXXcXUVXa-91-101.png" alt="">
-      </div>
-      <div class="index-tab-item icon-audio" @click="playAudio" v-if="false">
-        <img src="https://gw.alicdn.com/tfs/TB1PStFmSzqK1RjSZFLXXcn2XXa-91-101.png" alt="">
-      </div>
-      <div class="index-tab-item icon-quiz" @click="bindTab('../quiz/main')">
-        <img src="https://gw.alicdn.com/tfs/TB1mz8HmQvoK1RjSZFNXXcxMVXa-91-101.png" alt="">
-      </div>
-      <div class="index-tab-item icon-rule" @click="bindTab('../my-rule/main')">
-        <img src="https://gw.alicdn.com/tfs/TB1QrFHmSzqK1RjSZFHXXb3CpXa-91-100.png" alt="">
-      </div>
-      <div class="index-tab-item icon-my" @click="bindTab('../my/main')">
-        <img src="https://gw.alicdn.com/tfs/TB1TXlImMHqK1RjSZFgXXa7JXXa-92-99.png" alt="">
-      </div>
-      <div class="index-tab-line"></div>
-    </div>
-  </movable-area>
+  <div class="container" :style="{height:bodyHeight}">
+    <map id="map" :longitude="lng" :latitude="lat" scale="16" :controls="controls" @controltap="controltap" :markers="markers" @markertap="markertap" :polyline="polyline" @regionchange="regionchange" show-location style="width: 100%; height: 100%;"></map>
+
+  </div>
 </template>
 
 <script>
@@ -47,40 +11,13 @@ import { config } from "../../utils/index";
 export default {
   data() {
     return {
-      spotList: [],
-      activeSpot: 0,
-      activeWindow: -1,
-      x: 0,
-      y: 0,
-      mapStart: {
-        lng: 114.32751775,
-        lat: 22.63737202
-      },
-      mapEnd: {
-        lng: 114.36443567,
-        lat: 22.60346353
-      },
-      Xstart: {
-        lng: 114.32751775,
-        lat: 22.63737202
-      },
-      Xend: {
-        lng: 114.32751775,
-        lat: 22.60346353
-      },
-      Ystart: {
-        lng: 114.32751775,
-        lat: 22.63737202
-      },
-      Yend: {
-        lng: 114.36443567,
-        lat: 22.63737202
-      },
-      nearSpot: 0,
-      prefix: config.prefix,
-      // 当前地图的spot的缩放比例,跟地图的scale成为反比
-      spotScale: 1,
-      _tScale: undefined
+      //  longitude: 113.3245211,
+      //   latitude: 23.10229
+      lng: 114.32751775,
+      lat: 22.63737202,
+      controls: [],
+      markers: [],
+      polyline: []
     };
   },
   computed: {},
@@ -89,7 +26,6 @@ export default {
 
   methods: {
     startScale(e) {
-      return;
       let detail = e.mp.detail;
       let scale = detail.scale;
       console.log("start scale", scale);
@@ -224,13 +160,25 @@ export default {
     getSpot() {
       const self = this;
       const storageData = wx.getStorageSync("NatureList");
-      if (storageData) {
-        storageData.forEach((item, index) => {
-          let result = this.distance(item);
-          item.top = result.top;
-          item.left = result.left;
+      let processData = data => {
+        this.markers = data.map((item, index) => {
+          // console.log(index);
+          return {
+            id: index,
+            title: item.spot_title,
+            longitude: item.longitude,
+            latitude: item.latitude,
+            // callout: {
+            //   content: item.spot_title
+            // },
+            label: {
+              content: item.spot_name
+            }
+          };
         });
-        this.spotList = storageData;
+      };
+      if (storageData) {
+        processData(storageData);
         return;
       }
       wx.request({
@@ -244,12 +192,7 @@ export default {
           // console.log(res)
           let data = res.data.data;
           this.setStorage("NatureList", data);
-          data.forEach(item => {
-            let result = this.distance(item);
-            item.top = result.top;
-            item.left = result.left;
-          });
-          this.spotList = data;
+          processData(data);
         },
         fail: () => {},
         complete: () => {}
@@ -257,6 +200,7 @@ export default {
     }
   },
   created() {
+    console.log("create");
     this.getSpot();
   },
   mounted() {},
@@ -320,7 +264,30 @@ export default {
     height: 3753rpx;
   }
 }
-
+.spot-window {
+  position: absolute;
+  z-index: 999;
+  width: 248rpx;
+  height: 248rpx;
+  border: 6rpx solid #bc8d5d;
+  // background: #00baea;
+  background: url("https://gw.alicdn.com/tfs/TB1Mxiei4TpK1RjSZR0XXbEwXXa-248-248.png")
+    no-repeat center/cover;
+  border-radius: 40rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  &-text {
+    font-size: 26rpx;
+    color: #fff;
+    line-height: 90rpx;
+  }
+  &-img {
+    width: 220rpx;
+    height: 144rpx;
+    border-radius: 24rpx;
+  }
+}
 .active-spot {
   width: 40rpx;
   height: 30rpx;
@@ -338,12 +305,12 @@ export default {
   font-size: 28rpx;
   border-radius: 50%;
   border: 1px solid #a8368e;
+  // border:1px solid yellow;
 }
 .changeBG {
   background: #a8368e;
   color: #fff;
   border: yellow;
-  z-index:1000;
 }
 .index-tab {
   position: fixed;
@@ -386,9 +353,9 @@ export default {
   background: url("https://gw.alicdn.com/tfs/TB1PHRpnCzqK1RjSZPxXXc4tVXa-1809-607.png")
     no-repeat center/contain;
   position: absolute;
-  bottom: 40rpx;
+  bottom: 60rpx;
   left: -90rpx;
-  z-index: 999;
+  z-index: 30;
   display: flex;
   &-pic {
     width: 136rpx;

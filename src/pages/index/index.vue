@@ -15,7 +15,7 @@
         <img src="https://gw.alicdn.com/tfs/TB1PStFmSzqK1RjSZFLXXcn2XXa-91-101.png" alt="" v-if="!isPlaying">
         <img src="https://gw.alicdn.com/tfs/TB1mMsUomzqK1RjSZFLXXcn2XXa-91-101.png" alt="" v-if="isPlaying">
       </div>
-      <div class="index-tab-item icon-quiz" @click="bindTab('../quiz/main')" v-if="false">
+      <div class="index-tab-item icon-quiz" @click="bindTab('../quiz/main')">
         <img src="https://gw.alicdn.com/tfs/TB1mz8HmQvoK1RjSZFNXXcxMVXa-91-101.png" alt="">
       </div>
       <div class="index-tab-item icon-rule" @click="bindTab('../my-rule/main')">
@@ -33,14 +33,14 @@
         <img src="https://gw.alicdn.com/tfs/TB1jUCamRLoK1RjSZFuXXXn0XXa-343-214.png" class="scroll-title-body">
       </div>
       <div class="spot">
-        <div class="spot-first" :class="activeIndex == 1?'active':''" id="spot1">
+        <div class="spot-item" :class="activeIndex == 1?'active':''" id="spot1">
           <div @click="firstSpot">1</div> 
-          <div class="spot-first-tri" v-if="activeIndex == 1"></div>
-          <div class="spot-first-window" :style="{right:calcRight+'rpx'}" v-if="activeIndex == 1" @click=goDetail>
-            <img class="spot-first-window-pic" :src="prefix + currentSpot.spot_coverurl" v-if=currentSpot.spot_coverurl>
-            <div class="spot-first-window-text">
-              <div class="spot-first-window-title">{{currentSpot.spot_title}}</div>
-              <div class="spot-first-window-desc">{{currentSpot.spot_describe}}</div>
+          <div class="spot-item-tri" v-if="activeIndex == 1"></div>
+          <div class="spot-item-window" :style="{right:calcRight+'rpx'}" v-if="activeIndex == 1" @click=goDetail>
+            <img class="spot-item-window-pic" :src="prefix + currentSpot.spot_coverurl" v-if=currentSpot.spot_coverurl>
+            <div class="spot-item-window-text">
+              <div class="spot-item-window-title">{{currentSpot.spot_title}}</div>
+              <div class="spot-item-window-desc">{{currentSpot.spot_describe}}</div>
             </div>
           </div>
         </div>
@@ -56,8 +56,8 @@
           </div>
         </div>
       </div>
-      <img src="https://gw.alicdn.com/tfs/TB1IvF1mSzqK1RjSZFHXXb3CpXa-580-9295.png" mode="widthFix" class="scroll-road">
-      <img src="https://gw.alicdn.com/tfs/TB1xbXBmSzqK1RjSZFpXXakSXXa-532-8080.png" mode="widthFix" class="scroll-bg" @load=finishLoadImg>
+      <img src="https://gw.alicdn.com/tfs/TB1KDtrqQvoK1RjSZPfXXXPKFXa-565-9495.png" mode="widthFix" class="scroll-road">
+      <img src="https://gw.alicdn.com/tfs/TB1xbXBmSzqK1RjSZFpXXakSXXa-532-8080.png" class="scroll-bg" style="height: 6316px;" @load=finishLoadImg>
     </scroll-view>
     <div class="cover" @click="showRoadSelect = false" v-if="showRoadSelect"></div>
     <div class="modal" v-if="showRoadSelect">
@@ -91,57 +91,76 @@
 </template>
 
 <script>
-import { config } from '../../utils/index';
+import { config } from "../../utils/index";
 
 export default {
   data() {
     return {
-      prefix:config.prefix,
-      currentSpot:{
-        spot_coverurl:'',spot_title:'',spot_describe:'',spot_id:''
+      prefix: config.prefix,
+      currentSpot: {
+        spot_coverurl: "",
+        spot_title: "",
+        spot_describe: "",
+        spot_id: ""
       },
-      fullHeight:'',
-      activeIndex:1,
-      toView:'spot1',
-      titleSrc:'https://gw.alicdn.com/tfs/TB1K_SBi4jaK1RjSZFAXXbdLFXa-222-146.png',
-      fullSpot:[],
-      isIPX:false,
-      isPlaying:false,
-      innerAudioContext:wx.createInnerAudioContext(),
-      showRoadSelect:false,
-      tab1:false,
-      tab2:false,
-      natureList:['滨海线研习段','二线关研习段','大岭古研习段','红花岭水库研习段','洞背村研习段']
+      fullHeight: "",
+      activeIndex: 1,
+      toView: "spot1",
+      titleSrc:
+        "https://gw.alicdn.com/tfs/TB1K_SBi4jaK1RjSZFAXXbdLFXa-222-146.png",
+      fullSpot: [],
+      isIPX: false,
+      isIPXS: false,
+      isPlaying: false,
+      innerAudioContext: wx.createInnerAudioContext(),
+      showRoadSelect: false,
+      tab1: false,
+      tab2: false,
+      natureList: [
+        "滨海线研习段",
+        "二线关研习段",
+        "大岭古研习段",
+        "红花岭水库研习段",
+        "洞背村研习段"
+      ]
     };
   },
 
   computed: {
     bodyHeight() {
-      let l = this.fullSpot.length
-      let full_h,full_s = 89
-      this.isIPX? full_h = 780:full_h=940
+      let l = this.fullSpot.length;
+      let full_h,
+        full_s = 89;
+      full_h = 940;
+      if (this.isIPX) {
+        full_h = 780;
+      } else if (this.isIPXS) {
+        full_h = 780;
+      }
       // full_h = 780
-      let h = parseInt(l*full_h/full_s)
-      return `${h}%`
+      let h = parseInt(l * full_h / full_s);
+      console.log("h", h);
+      return `${h}%`;
     },
     calcRight() {
-      if(this.activeIndex == 1) {
-        return -50
+      if (this.activeIndex == 1) {
+        return -50;
       }
-      const a = this.activeIndex%6
-      switch(a){
+      const a = this.activeIndex % 6;
+      switch (a) {
         case 0:
-          return -260
+          return -260;
         case 1:
-          return -120
+          return -120;
         case 2:
-          return 0
+          // 处女座说,必须调整,所以0改成-16
+          return -16;
         case 3:
-          return -116
+          return -116;
         case 4:
-          return -250
+          return -250;
         case 5:
-          return -380
+          return -380;
       }
     }
   },
@@ -150,93 +169,101 @@ export default {
 
   methods: {
     finishLoadImg(e) {
-      console.log(e.target)
-      this.fullHeight = e.target.height
+      console.log(e.target);
+      this.fullHeight = e.target.height;
     },
     setStorage(key, val) {
       try {
-        wx.setStorageSync(key,val)
-      } catch(e) {
-        wx.setStorage(key,val)
+        wx.setStorageSync(key, val);
+      } catch (e) {
+        wx.setStorage(key, val);
       }
     },
     getStorage(key) {
       try {
-        wx.getStorageSync(key)
-      } catch(e) {
-        wx.getStorage(key)
+        wx.getStorageSync(key);
+      } catch (e) {
+        wx.getStorage(key);
       }
     },
     bindTab(url) {
       wx.navigateTo({ url: url });
     },
-    goDetail(){
-      const index = parseInt(this.activeIndex-1)
-      wx.navigateTo({ url: '../list/main?spot_index=' + index});
+    goDetail() {
+      // 备注:因为二维码从1开始计数,所以放到list中再去-1
+      const index = parseInt(this.activeIndex);
+      wx.navigateTo({ url: "../list/main?spot_index=" + index });
     },
     showRoadName() {
       this.showRoadSelect = true;
     },
-    toSmallLine(index){
-      let lineNo = parseInt(index+1)
-      let top
-      switch(lineNo){
+    toSmallLine(index) {
+      let lineNo = parseInt(index + 1);
+      let top;
+      switch (lineNo) {
         case 1:
           top = 0;
           this.activeIndex = 1;
-          break
+          break;
         case 2:
           top = 1100;
           this.activeIndex = 20;
-          break
+          break;
         case 3:
           top = 1800;
           this.activeIndex = 32;
-          break
+          break;
         case 4:
           top = 2700;
           this.activeIndex = 47;
-          break
+          break;
         case 5:
           top = 3700;
           this.activeIndex = 64;
-          break
+          break;
       }
-      this.currentSpot = this.spotList[this.activeIndex-1]
+      this.currentSpot = this.spotList[this.activeIndex - 1];
       wx.pageScrollTo({
         scrollTop: top,
         duration: 0
-      })
+      });
+      this.showRoadSelect = false;
+      this.tab1 = false;
     },
-    chooseSpot(item,index){
-      this.activeIndex == index + 2? this.activeIndex = -1 : this.activeIndex = index + 2
-      this.currentSpot = this.spotList[this.activeIndex-1]
+    chooseSpot(item, index) {
+      this.activeIndex == index + 2
+        ? (this.activeIndex = -1)
+        : (this.activeIndex = index + 2);
+      this.currentSpot = this.spotList[this.activeIndex - 1];
     },
     firstSpot() {
-      this.activeIndex = 1
-      this.currentSpot = this.spotList[0]
+      this.activeIndex = 1;
+      this.currentSpot = this.spotList[0];
     },
     playAudio() {
       // console.log(this.currentSpot.spot_id)
-      if(this.isPlaying){
-        this.innerAudioContext.stop()
-        this.isPlaying = false
-        return
+      if (this.isPlaying) {
+        this.innerAudioContext.stop();
+        this.isPlaying = false;
+        return;
       }
       wx.request({
-        url: config.base + 'attraction/listdetail', //开发者服务器接口地址",
+        url: config.base + "attraction/listdetail", //开发者服务器接口地址",
         data: {
           spot_id: this.currentSpot.spot_id
         }, //请求的参数",
-        method: 'GET',
-        dataType: 'json', //如果设为json，会尝试对返回的数据做一次 JSON.parse
+        method: "GET",
+        dataType: "json", //如果设为json，会尝试对返回的数据做一次 JSON.parse
         success: res => {
-          console.log(res.data.data)
-          this.audioUrl = res.data.data.audio_url == null ? '' :  config.prefix + res.data.data.audio_url
+          console.log(res.data.data);
+          this.audioUrl =
+            res.data.data.audio_url == null
+              ? ""
+              : config.prefix + res.data.data.audio_url;
           if (this.audioUrl) {
-            this.innerAudioContext.src = this.audioUrl
-            this.innerAudioContext.play()
-            this.isPlaying = true
+            this.innerAudioContext.src = this.audioUrl;
+            this.innerAudioContext.play();
+            this.isPlaying = true;
           }
         },
         fail: () => {},
@@ -244,9 +271,9 @@ export default {
       });
     },
     login(code) {
-      const userInfo = wx.getStorageSync('userInfo');
+      const userInfo = wx.getStorageSync("userInfo");
       wx.request({
-        url: config.base + 'wxlogin/login',
+        url: config.base + "wxlogin/login",
         data: {
           code: code,
           lineId: config.lineId,
@@ -255,47 +282,47 @@ export default {
           city: userInfo.city,
           province: userInfo.province,
           country: userInfo.country
-        }, 
-        method: 'GET',
-        dataType: 'json', 
+        },
+        method: "GET",
+        dataType: "json",
         success: res => {
           // console.log('login',res.data.data)
-          this.setStorage('userCode',res.data.data)
+          this.setStorage("userCode", res.data.data);
         },
         fail: err => {
-          console.log('hasError',err)
+          console.log("hasError", err);
         }
       });
     },
     getSpot() {
-      const self = this
-      const storageData = wx.getStorageSync('NatureList')
-      if(storageData){
-        this.spotList = storageData
-        this.currentSpot = storageData[0]
-        this.fullSpot.length = 0
-        for(let i=2; i<=storageData.length;i++){
-          this.fullSpot.push(i)
+      const self = this;
+      const storageData = wx.getStorageSync("NatureList");
+      if (storageData) {
+        this.spotList = storageData;
+        this.currentSpot = storageData[0];
+        this.fullSpot.length = 0;
+        for (let i = 2; i <= storageData.length; i++) {
+          this.fullSpot.push(i);
         }
-        return
+        return;
       }
       wx.request({
-        url: config.base + 'attraction/NaturalList', //开发者服务器接口地址",
+        url: config.base + "attraction/NaturalList", //开发者服务器接口地址",
         data: {
-          lineId:config.lineId
+          lineId: config.lineId
         }, //请求的参数",
-        method: 'GET',
-        dataType: 'json', //如果设为json，会尝试对返回的数据做一次 JSON.parse
+        method: "GET",
+        dataType: "json", //如果设为json，会尝试对返回的数据做一次 JSON.parse
         success: res => {
           // console.log(res)
           // self.GLOBAL.spot_list = res.data.data
-         const data = res.data.data
-          this.setStorage('NatureList',data)
-          this.spotList = data
-          this.currentSpot = data[0]
-          this.fullSpot.length = 0
-          for(let i=2; i<=data.length;i++){
-            this.fullSpot.push(i)
+          const data = res.data.data;
+          this.setStorage("NatureList", data);
+          this.spotList = data;
+          this.currentSpot = data[0];
+          this.fullSpot.length = 0;
+          for (let i = 2; i <= data.length; i++) {
+            this.fullSpot.push(i);
           }
         },
         fail: () => {},
@@ -310,7 +337,7 @@ export default {
     //     console.log(res)
     //     this.login(res.code);
     //   }
-    // }); 
+    // });
     // this.scrollTo = 'spot' + parseInt(this.activeIndex + 2)
   },
   mounted() {
@@ -326,21 +353,26 @@ export default {
     } else {
       console.log(firsttime);
     }
-    wx.getSystemInfo({ success: res => {
-      if(res.model == 'iPhone X'){
-        this.isIPX = true
+    wx.getSystemInfo({
+      success: res => {
+        console.log("model", res.model);
+        if (res.model == "iPhone X") {
+          this.isIPX = true;
+        }
+        if (res.model.indexOf("iPhone11") >= 0) {
+          console.log("model is iphone xs");
+          this.isIPXS = true;
+        }
       }
-    } });
+    });
   },
   onReady() {
     // this.toView = 'spot12'
   },
-  onShow() {
-
-  },
+  onShow() {},
   onHide() {
-    this.isPlaying = false
-    this.innerAudioContext.stop()
+    this.isPlaying = false;
+    this.innerAudioContext.stop();
   }
 };
 </script>
@@ -351,194 +383,224 @@ export default {
   position: relative;
   overflow: hidden;
 }
-.spot{
+.spot {
   width: 100%;
   position: absolute;
   top: 2.8%;
-  &-first{
+  &-first {
     position: relative;
-    z-index:2;
+    z-index: 2;
     width: 64rpx;
     height: 64rpx;
     line-height: 64rpx;
     text-align: center;
-    color:#fff;
+    color: #fff;
     font-size: 34rpx;
-    background: url('https://gw.alicdn.com/tfs/TB1LC9gmH2pK1RjSZFsXXaNlXXa-60-70.png') no-repeat center/contain;
+    background: url("https://gw.alicdn.com/tfs/TB1LC9gmH2pK1RjSZFsXXaNlXXa-60-70.png")
+      no-repeat center/contain;
     margin-bottom: 7%;
     margin-left: 55%;
-    &-window{
+    &-window {
       width: 522rpx;
       height: 176rpx;
-      border-bottom:1px solid #c7c7c7;
-      background: url('https://gw.alicdn.com/tfs/TB1PHRpnCzqK1RjSZPxXXc4tVXa-1809-607.png') no-repeat center/contain;
-      position:absolute;
+      border-bottom: 1px solid #c7c7c7;
+      background: url("https://gw.alicdn.com/tfs/TB1PHRpnCzqK1RjSZPxXXc4tVXa-1809-607.png")
+        no-repeat center/contain;
+      position: absolute;
       bottom: -180rpx;
-      z-index:30;
+      z-index: 30;
       display: flex;
-      &-pic{
+      &-pic {
         width: 136rpx;
         height: 134rpx;
         background: #fff;
-        margin:12rpx 12rpx 0 32rpx;
+        margin: 12rpx 12rpx 0 32rpx;
       }
-      &-text{
+      &-text {
         width: 280rpx;
         display: flex;
         flex-direction: column;
-        color:#101010;
+        color: #101010;
         text-align: left;
         overflow: hidden;
       }
-      &-title{
+      &-title {
         margin-top: 45rpx;
         font-size: 28rpx;
-        line-height:40rpx;
-        white-space:nowrap;
+        line-height: 40rpx;
+        white-space: nowrap;
       }
-      &-desc{
+      &-desc {
         font-size: 20rpx;
-        color:#6f6f6f;
-        line-height:30rpx;
+        color: #6f6f6f;
+        line-height: 30rpx;
       }
     }
-    &-tri{
+    &-tri {
       width: 52rpx;
       height: 30rpx;
-      background: url('https://gw.alicdn.com/tfs/TB1C0d3nwHqK1RjSZFkXXX.WFXa-181-96.png') no-repeat center/cover;
+      background: url("https://gw.alicdn.com/tfs/TB1C0d3nwHqK1RjSZFkXXX.WFXa-181-96.png")
+        no-repeat center/cover;
       position: absolute;
-      bottom: -36rpx;left: 0;right: 0;margin:auto;
-      z-index:31;
-      transform:rotate(180deg);
+      bottom: -36rpx;
+      left: 0;
+      right: 0;
+      margin: auto;
+      z-index: 31;
+      transform: rotate(180deg);
     }
   }
-  &-first.active,&-item.active{
+  &-first.active,
+  &-item.active {
     position: relative;
-    background: url('https://gw.alicdn.com/tfs/TB1b7gKnmrqK1RjSZK9XXXyypXa-60-68.png') no-repeat center/contain;
+    background: url("https://gw.alicdn.com/tfs/TB1b7gKnmrqK1RjSZK9XXXyypXa-60-68.png")
+      no-repeat center/contain;
   }
-  &-first.active:after,&-item.active:after{
-    content:'';
+  &-first.active:after,
+  &-item.active:after {
+    content: "";
     width: 28rpx;
     height: 24rpx;
     display: block;
     position: absolute;
-    right: 0;top: 0;
-    background: url('https://gw.alicdn.com/tfs/TB1.uXenxnaK1RjSZFBXXcW7VXa-28-24.png') no-repeat center/cover;
+    right: 0;
+    top: 0;
+    background: url("https://gw.alicdn.com/tfs/TB1.uXenxnaK1RjSZFBXXcW7VXa-28-24.png")
+      no-repeat center/cover;
   }
-  &-item{
+  &-item {
     position: relative;
-    z-index:2;
+    z-index: 30;
     width: 64rpx;
     height: 64rpx;
     line-height: 64rpx;
     text-align: center;
-    color:#fff;
+    color: #fff;
     font-size: 34rpx;
-    background: url('https://gw.alicdn.com/tfs/TB1LC9gmH2pK1RjSZFsXXaNlXXa-60-70.png') no-repeat center/contain;
-    margin-bottom: 7.4%;
-    &-window{
+    background: url("https://gw.alicdn.com/tfs/TB1LC9gmH2pK1RjSZFsXXaNlXXa-60-70.png")
+      no-repeat center/contain;
+    margin-bottom: 8.12%;
+    &-window {
       width: 522rpx;
       height: 176rpx;
-      border-bottom:1px solid #c7c7c7;
-      background: url('https://gw.alicdn.com/tfs/TB1PHRpnCzqK1RjSZPxXXc4tVXa-1809-607.png') no-repeat center/contain;
-      position:absolute;
+      border-bottom: 1px solid #c7c7c7;
+      background: url("https://gw.alicdn.com/tfs/TB1PHRpnCzqK1RjSZPxXXc4tVXa-1809-607.png")
+        no-repeat center/contain;
+      position: absolute;
       bottom: 90rpx;
-      z-index:30;
+      z-index: 30;
       display: flex;
-      &-pic{
+      &-pic {
         width: 136rpx;
         height: 134rpx;
         background: #fff;
-        margin:12rpx 12rpx 0 32rpx;
+        margin: 12rpx 12rpx 0 32rpx;
       }
-      &-text{
+      &-text {
         width: 280rpx;
         display: flex;
         flex-direction: column;
-        color:#101010;
+        color: #101010;
         text-align: left;
         overflow: hidden;
       }
-      &-title{
+      &-title {
         margin-top: 45rpx;
         font-size: 28rpx;
-        line-height:40rpx;
-        white-space:nowrap;
+        line-height: 40rpx;
+        white-space: nowrap;
       }
-      &-desc{
+      &-desc {
         font-size: 20rpx;
-        color:#6f6f6f;
-        line-height:30rpx;
+        color: #6f6f6f;
+        line-height: 30rpx;
+        word-break: break-all;
+        text-overflow: ellipsis;
+        display: -webkit-box; /** 对象作为伸缩盒子模型显示 **/
+        -webkit-box-orient: vertical; /** 设置或检索伸缩盒对象的子元素的排列方式 **/
+        -webkit-line-clamp: 2; /** 显示的行数 **/
+        overflow: hidden; /** 隐藏超出的内容 **/
       }
     }
-    &-tri{
+    &-tri {
       width: 52rpx;
       height: 30rpx;
-      background: url('https://gw.alicdn.com/tfs/TB1C0d3nwHqK1RjSZFkXXX.WFXa-181-96.png') no-repeat center/cover;
+      background: url("https://gw.alicdn.com/tfs/TB1C0d3nwHqK1RjSZFkXXX.WFXa-181-96.png")
+        no-repeat center/cover;
       position: absolute;
-      top: -28rpx;left: 0;right: 0;margin:auto;
-      z-index:31
+      top: -28rpx;
+      left: 0;
+      right: 0;
+      margin: auto;
+      z-index: 31;
     }
   }
-  &-item:nth-of-type(6n+2){
+  &-item:nth-of-type(6n + 2) {
     margin-left: 68%;
   }
-  &-item:nth-of-type(6n+3){
+  &-item:nth-of-type(6n + 3) {
     margin-left: 52%;
   }
-  &-item:nth-of-type(6n+1){
+  &-item:nth-of-type(6n + 1) {
     margin-left: 55.3%;
   }
-  &-item:nth-of-type(6n+4){
+  &-item:nth-of-type(6n + 4) {
     margin-left: 35%;
   }
-  &-item:nth-of-type(6n){
+  &-item:nth-of-type(6n) {
     margin-left: 38%;
   }
-  &-item:nth-of-type(6n+5){
+  &-item:nth-of-type(6n + 5) {
     margin-left: 21%;
   }
 }
-.scroll{
+.scroll {
   position: relative;
-  &-title{
+  &-title {
     width: 402rpx;
     height: 234rpx;
-    position: fixed;
-    top:0.1%;  
-    left: 0;right: 0;margin:auto;
+    position: absolute;
+    top: 0.1%;
+    left: 0;
+    right: 0;
+    margin: auto;
     z-index: 21;
-    &-body{
+    &-body {
       width: 402rpx;
       height: 210rpx;
       position: absolute;
       top: 68rpx;
-      z-index:22;
+      z-index: 22;
     }
-    &-text{
+    &-text {
       width: 286rpx;
       height: 60rpx;
       position: absolute;
-      top: 180rpx;left: 0;right: 0;margin:auto;
-      z-index:23;
+      top: 180rpx;
+      left: 0;
+      right: 0;
+      margin: auto;
+      z-index: 23;
     }
-    &-pic{
+    &-pic {
       width: 200rpx;
       height: 200rpx;
       border-radius: 50%;
       overflow: hidden;
       position: absolute;
-      top: 0;left: 0;right: 0;margin:auto;
-      border:12rpx solid #292770;
+      top: 0;
+      left: 0;
+      right: 0;
+      margin: auto;
+      border: 12rpx solid #292770;
     }
   }
-  &-road{
-    width:90%;
+  &-road {
+    width: 90%;
     position: absolute;
-    top:2%;  
-
+    top: 2%;
   }
-  &-bg{
+  &-bg {
     width: 100%;
   }
 }
@@ -550,25 +612,25 @@ export default {
   flex-direction: column;
   justify-content: space-around;
   align-items: center;
-  z-index:21;
+  z-index: 21;
   &-item {
-    width: 100rpx;
-    height: 110rpx;
-    margin-bottom:36rpx;
+    width: 120rpx;
+    height: 130rpx;
+    margin-bottom: 36rpx;
     position: relative;
     z-index: 23;
   }
   &-line {
     width: 1px;
-    height:90%;
-    background-image: url('https://gw.alicdn.com/tfs/TB1B10KmFzqK1RjSZSgXXcpAVXa-2-762.png');
+    height: 90%;
+    background-image: url("https://gw.alicdn.com/tfs/TB1B10KmFzqK1RjSZSgXXcpAVXa-2-762.png");
     background-repeat: repeat-y;
     background-size: cover;
     background-position: center;
     position: absolute;
     top: 10rpx;
-    right: 32rpx;
-    z-index:22;
+    right: 39rpx;
+    z-index: 22;
   }
   img {
     width: 100%;
@@ -576,59 +638,66 @@ export default {
     display: block;
   }
 }
-.cover{
+.cover {
   width: 100%;
   height: 100%;
   position: fixed;
-  background: rgba(0,0,0,.5);
-  z-index:80;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 80;
   top: 0;
   left: 0;
 }
-.modal{
-  width: 100%;position: fixed;z-index:82;
+.modal {
+  width: 100%;
+  position: fixed;
+  z-index: 82;
   bottom: 0;
   left: 0;
-  display: flex;flex-direction: column;justify-content: flex-end;
-  &-tab{
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  &-tab {
     width: 100%;
-    display: flex;justify-content: center;flex-direction: column;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
     background: #fff;
-    &-title{
+    &-title {
       height: 150rpx;
-      display: flex;justify-content: center;
+      display: flex;
+      justify-content: center;
       align-items: center;
-      &-logo{
+      &-logo {
         width: 76rpx;
         height: 76rpx;
         border-radius: 50%;
         overflow: hidden;
-        border:1px solid #292770;
+        border: 1px solid #292770;
         margin-right: 14rpx;
       }
-      &-text{
+      &-text {
         display: flex;
         flex-direction: column;
-        font-size:28rpx;
+        font-size: 28rpx;
         line-height: 34rpx;
         font-weight: bold;
       }
-      &-icon{
+      &-icon {
         width: 22rpx;
         height: 26rpx;
-        margin-top:36rpx;
+        margin-top: 36rpx;
         margin-left: 20rpx;
       }
     }
-    &-content{
+    &-content {
       text-align: center;
       line-height: 80rpx;
-      font-size:28rpx;
+      font-size: 28rpx;
       background: #f6f7f6;
     }
   }
 }
-.rotate{
-  transform:rotate(180deg)
+.rotate {
+  transform: rotate(180deg);
 }
 </style>

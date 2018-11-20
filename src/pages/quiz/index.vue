@@ -5,7 +5,7 @@
       <open-data type="userNickName" class="userName"></open-data>
       <div class="top-btn">
         <div class="top-btn-item">
-          <span>5</span>挑战次数
+          <span>{{count}}</span>挑战次数
         </div>
         <div class="top-btn-item" @click="showRule">
           <span>?</span>挑战规则
@@ -70,6 +70,8 @@ export default {
     return {
       userCode:'',
       score:'',
+      count:0,
+      coin:0,
       showCover:false,
       ruleLayer:false,
       shareLayer:false
@@ -100,7 +102,7 @@ export default {
       if(this.score<id-1){
         return 
       }
-      wx.navigateTo({ url: "../quizdetail/main?checkpoint=" + id });
+      wx.navigateTo({ url: "../quizdetail/main?checkpoint=" + id + "&count=" + this.count});
     },
     login(code) {
       const userInfo = wx.getStorageSync('userInfo');
@@ -122,6 +124,7 @@ export default {
           const userCode = res.data.data
           this.setStorage('userCode',userCode)
           this.loadCheckPoint(userCode)
+          this.userCode = userCode
         },
         fail: err => {
           console.log('hasError',err)
@@ -139,7 +142,9 @@ export default {
         dataType: 'json', 
         success: res => {
           console.log(res.data)
-          this.score = res.data.data
+          this.count = res.data.data.count || 0
+          this.score = res.data.data.score || 0
+          this.coin = res.data.data.coin || 0
         },
         fail: () => {},
         complete: () => {}
@@ -153,6 +158,33 @@ export default {
       this.showCover = false;
       this.ruleLayer = false;
       this.shareLayer = false;
+    },
+    addCount() {
+      wx.request({
+        url: config.base + 'quiz/addCount', //开发者服务器接口地址",
+        data: {
+          LineId: config.lineId
+        }, //请求的参数",
+        method: 'post',
+        header: {
+          token: this.userCode,
+        },
+        dataType: 'json', //如果设为json，会尝试对返回的数据做一次 JSON.parse
+        success: res => {
+          console.log(res.data)
+          if(res.data.res_code==0) {
+            this.count = res.data.data.count
+          }else {
+            wx.showToast({
+              title: res.data.res_msg, //提示的内容,
+              icon: 'none', //图标,
+              duration: 1000, //延迟时间,
+              mask: true, //显示透明蒙层，防止触摸穿透,
+              success: res => {}
+            });
+          }
+        }
+      });
     }
   },
 
@@ -174,8 +206,8 @@ export default {
   },
   onShareAppMessage(result) {
     let title = "青谷研习径";
-    let path = "/pages/list/main?spot_index=" + this.activeIndex;
-    let imageUrl = "https://gw.alicdn.com/tfs/TB1K_SBi4jaK1RjSZFAXXbdLFXa-222-146.png";
+    let path = "/pages/index/main";
+    let imageUrl = "https://gw.alicdn.com/tfs/TB1uLyAnxjaK1RjSZKzXXXVwXXa-80-80.png";
     return {
       title,
       path,
@@ -185,6 +217,7 @@ export default {
         console.log("success", res);
         this.showCover = true;
         this.shareLayer = true;
+        this.addCount();
       },
       fail(e) {
         console.log(e);
@@ -304,7 +337,6 @@ export default {
   top: 20%;
   left: 0;right: 0;margin:auto;
   background: url('https://gw.alicdn.com/tfs/TB1.U9SnMHqK1RjSZJnXXbNLpXa-460-700.png') no-repeat top/cover;
-
 }
 .shareLayer{
   width: 500rpx;

@@ -1,56 +1,77 @@
 <template>
   <div class="container">
-    <open-data type="userNickName" class="userName"></open-data>
-    <div class="my-tab">
-      <div class="my-tab-top">
-        <div class="my-tab-top-left">
-          <img src="https://gw.alicdn.com/tfs/TB1Krl6k3HqK1RjSZFgXXa7JXXa-111-76.png" class="icon-stage">
-          <div class="icon-stage-text">第 <span>{{score}}</span> 关</div>
+    <div class="top">
+      <open-data type="userAvatarUrl" class="userPic"></open-data>
+      <open-data type="userNickName" class="userName"></open-data>
+    </div>
+    <div class="mid">
+      <div class="mid-item">
+        挑战机会
+        <span><span style="font-size:40rpx">{{count}}</span>次</span>
+      </div>
+      <div class="mid-line"></div>
+      <div class="mid-item">
+        累计奖金
+        <span><span style="font-size:40rpx">{{coin}}</span>币</span>
+      </div>
+    </div>
+    <div class="share">
+      Lv.{{level}}
+    </div>
+    <div class="main">
+      <div class="main-share">
+         <button class="main-share-item" open-type="share">
+          <img src="https://gw.alicdn.com/tfs/TB1CAWCqNnaK1RjSZFtXXbC2VXa-36-33.png" alt=""> 炫耀战绩
+         </button>
+         <button class="main-share-item" open-type="share">
+          <img src="https://gw.alicdn.com/tfs/TB1AiyeqQvoK1RjSZPfXXXPKFXa-27-32.png" alt=""> 分享到微信群
+         </button>
+      </div>
+      <div class="main-body">
+        <div class="main-body-head">
+          奖励兑换区
         </div>
-        <div class="my-tab-top-right">
-          <img src="https://gw.alicdn.com/tfs/TB1Ww4Yk9rqK1RjSZK9XXXyypXa-110-72.png" class="icon-reward">
-          <div class="icon-reward-text">勋章 <span>{{score}}</span> 枚</div>
+        <div class="main-body-list">
+          <div class="main-body-list-item">
+            <div class="main-body-list-item-left">
+              <span>150个金币</span>
+              <span>兑换1个勋章</span>
+            </div>
+            <div class="main-body-list-item-right">
+              <span v-if="exchange1">兑换成功</span>
+              <span v-else @click="openLayer(150)">立即兑换</span>
+            </div>
+          </div>
+          <div class="main-body-list-item">
+            <div class="main-body-list-item-left">
+              <span>200个金币</span>
+              <span>兑换3个勋章</span>
+            </div>
+            <div class="main-body-list-item-right">
+              <span v-if="exchange2">兑换成功</span>
+              <span v-else @click="openLayer(200)">立即兑换</span>
+            </div>
+          </div>
+          <div class="main-body-list-item">
+            <div class="main-body-list-item-left">
+              <span>480个金币</span>
+              <span>兑换10个勋章</span>
+            </div>
+            <div class="main-body-list-item-right">
+              <span v-if="exchange3">兑换成功</span>
+              <span v-else @click="openLayer(480)">立即兑换</span>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="my-tab-btm">
-        <div class="my-tab-btm-head">闯关记录</div>
-        <div class="my-tab-btm-main">
-          <div class="my-tab-btm-item relative mrgin70">
-            <img src="https://gw.alicdn.com/tfs/TB1wtV2kY2pK1RjSZFsXXaNlXXa-110-80.png" class="icon-noclear" v-if="score<1" >
-            <img src="https://gw.alicdn.com/tfs/TB1ir86k3HqK1RjSZFgXXa7JXXa-110-80.png" class="icon-clear" v-else>
-            <div class="my-tab-btm-item-name">第一关</div>
-            <!-- <div class="my-tab-btm-item-time">(******)</div> -->
-            <div class="my-tab-btm-item-line"></div>
-          </div>
-          <div class="my-tab-btm-item relative mrgin70">
-            <img src="https://gw.alicdn.com/tfs/TB1wtV2kY2pK1RjSZFsXXaNlXXa-110-80.png" class="icon-noclear" v-if="score<2" >
-            <img src="https://gw.alicdn.com/tfs/TB1ir86k3HqK1RjSZFgXXa7JXXa-110-80.png" class="icon-clear" v-else>
-            <div class="my-tab-btm-item-name">第二关</div>
-            <!-- <div class="my-tab-btm-item-time">(******)</div> -->
-            <div class="my-tab-btm-item-line"></div>
-          </div>
-          <div class="my-tab-btm-item relative">
-            <img src="https://gw.alicdn.com/tfs/TB1wtV2kY2pK1RjSZFsXXaNlXXa-110-80.png" class="icon-noclear" v-if="score<3" >
-            <img src="https://gw.alicdn.com/tfs/TB1ir86k3HqK1RjSZFgXXa7JXXa-110-80.png" class="icon-clear" v-else>
-            <div class="my-tab-btm-item-name">第三关</div>
-            <!-- <div class="my-tab-btm-item-time">(******)</div> -->
-          </div>
-          <div class="my-tab-btm-item relative mrgin70">
-            <img src="https://gw.alicdn.com/tfs/TB1wtV2kY2pK1RjSZFsXXaNlXXa-110-80.png" class="icon-noclear" v-if="score<4" >
-            <img src="https://gw.alicdn.com/tfs/TB1ir86k3HqK1RjSZFgXXa7JXXa-110-80.png" class="icon-clear" v-else>
-            <div class="my-tab-btm-item-name">第四关</div>
-            <!-- <div class="my-tab-btm-item-time">(******)</div> -->
-            <div class="my-tab-btm-item-line"></div>
-          </div>
-          <div class="my-tab-btm-item relative">
-            <img src="https://gw.alicdn.com/tfs/TB1wtV2kY2pK1RjSZFsXXaNlXXa-110-80.png" class="icon-noclear" v-if="score<5" >
-            <img src="https://gw.alicdn.com/tfs/TB1ir86k3HqK1RjSZFgXXa7JXXa-110-80.png" class="icon-clear" v-else>
-            <div class="my-tab-btm-item-name">第五关</div>
-            <!-- <div class="my-tab-btm-item-time">(******)</div> -->
-          </div>
-        </div>
-        <!-- <img src="../../assets/bg-my-reward.png" class="my-tab-btm-bg"> -->
-      </div>
+    </div>
+
+    <div class="cover" v-if="showCover"></div>
+    <div class="ruleLayer" v-if="ruleLayer">
+      <div class="ruleLayer-head">获得{{msgTitle}}个勋章</div>
+      <div class="ruleLayer-text">本次兑换消耗{{msgCoin}}个金币</div>
+      <div class="ruleLayer-btn" @click="buyTitle(msgCoin)">确定兑换</div>
+      <div class="close" @click="closeLayer"></div>
     </div>
   </div>
 </template>
@@ -61,7 +82,17 @@ export default {
   data() {
     return {
       userCode:'',
-      score:0
+      score:0,
+      level:1,
+      count:0,
+      coin:0,
+      exchange1:false,
+      exchange2:false,
+      exchange3:false,
+      ruleLayer:false,
+      showCover:false,
+      msgCoin:0,
+      msgTitle:0,
     };
   },
 
@@ -70,158 +101,324 @@ export default {
   methods: {
     bindTab(url) {
       wx.navigateTo({ url: url });
+    },
+    loadCheckPoint(){
+      wx.request({
+        url: config.base + 'quiz/getcheckpoint', 
+        data: {
+          LineId: config.lineId,
+          token: this.userCode
+        }, 
+        method: 'GET',
+        dataType: 'json', 
+        success: res => {
+          console.log(res.data)
+          this.count = res.data.data.count || 0
+          this.score = res.data.data.score || 0
+          this.coin = res.data.data.coin || 0
+        },
+        fail: () => {},
+        complete: () => {}
+      });
+    },
+    closeLayer() {
+      this.ruleLayer = false;
+      this.showCover = false;
+    },
+    openLayer(coin) {
+      this.ruleLayer = true;
+      this.showCover = true;
+      this.msgCoin = coin;
+      if(coin == 150){
+        this.msgTitle = 1
+      }
+      if(coin == 200){
+        this.msgTitle = 3
+      }
+      if(coin == 480){
+        this.msgTitle = 10
+      }
+    },
+    buyTitle(coin) {
+      wx.request({
+        url: config.base + 'quiz/buyTitle', //开发者服务器接口地址",
+        data: {
+          coin: coin,
+          LineId: config.lineId
+        }, //请求的参数",
+        method: 'post',
+        header: {
+          token: this.userCode,
+        },
+        dataType: 'json', //如果设为json，会尝试对返回的数据做一次 JSON.parse
+        success: res => {
+          console.log(res.data)
+          this.closeLayer()
+          if(res.data.res_code==0) {
+            this.level = res.data.data.count
+            if(coin == 150){
+              this.exchange1 = true
+              return
+            }
+            if(coin == 200){
+              this.exchange2 = true
+              return
+            }
+            if(coin == 480){
+              this.exchange3 = true
+              return
+            }
+          }else {
+            wx.showToast({
+              title: res.data.res_msg, //提示的内容,
+              icon: 'none', //图标,
+              duration: 2000, //延迟时间,
+              mask: true, //显示透明蒙层，防止触摸穿透,
+              success: res => {}
+            });
+          }
+        }
+      });
+    },
+    getLevel() {
+      wx.request({
+        url: config.base + 'quiz/getTitle', //开发者服务器接口地址",
+        data: {
+          token: this.userCode,
+          LineId: config.lineId
+        }, //请求的参数",
+        method: 'get',
+        dataType: 'json', //如果设为json，会尝试对返回的数据做一次 JSON.parse
+        success: res => {
+          console.log(res.data)
+          if(res.data.res_code==0) {
+            this.level = res.data.data.count
+          }else {
+            wx.showToast({
+              title: res.data.res_msg, //提示的内容,
+              icon: 'none', //图标,
+              duration: 2000, //延迟时间,
+              mask: true, //显示透明蒙层，防止触摸穿透,
+              success: res => {}
+            });
+          }
+        }
+      });
     }
   },
-
-  created() {
-    this.userCode = wx.getStorageSync('userCode');
+  onReady(){
   },
-  mounted() {
-    wx.request({
-      url: config.base + 'quiz/getcheckpoint', 
-      data: {
-        LineId: config.lineId,
-        token: this.userCode
-      }, 
-      method: 'GET',
-      dataType: 'json', 
+  onShow() {
+    this.userCode = wx.getStorageSync('userCode')
+    this.loadCheckPoint()
+    this.getLevel()
+  },
+  onShareAppMessage(result) {
+    let title = `我已获得${this.level}个勋章`;
+    let path = "/pages/index/main";
+    let imageUrl = "https://gw.alicdn.com/tfs/TB1uLyAnxjaK1RjSZKzXXXVwXXa-80-80.png";
+    return {
+      title,
+      path,
+      imageUrl,
+      // desc,
       success: res => {
-        console.log(res.data)
-        this.score = res.data.data
+        console.log("success", res);
       },
-      fail: () => {},
-      complete: () => {}
-    });
+      fail(e) {
+        console.log(e);
+      }
+    };
   }
 };
 </script>
 
 <style scoped lang="less">
-.center{
+.top{
+  height: 270rpx;
+  background: #292770;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
+  border-bottom:1px dotted #fff;
 }
-.relative{
-  position: relative;
-  z-index: 2;
+.mid{
+  height: 124rpx;
+  display: flex;
+  align-items: center;
+  background: #292770;
+  &-item{
+    width: 49%;
+    color:#fff;
+    font-size: 30rpx;
+    display: flex;flex-direction: column;align-items: center;
+    span{
+      font-size: 18rpx;
+    }
+  }
+  &-line{
+    width: 1px;
+    height: 84rpx;
+    border-right:1px dotted #fff;
+  }
 }
-.mrgin70{
-  margin-right:70rpx;
-}
-.container {
-  width: 100%;
-  height: 100%;
-  position: relative;
-  background: url('https://gw.alicdn.com/tfs/TB1_p0GkZfpK1RjSZFOXXa6nFXa-640-1008.png') no-repeat top/cover;
-  .center();
+.userPic{
+  width: 110rpx;
+  height: 110rpx;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 4rpx solid #fff;
+  margin-bottom: 10rpx;
 }
 .userName{
-  padding:0 60rpx;
-  line-height: 70rpx;
-  background: #ff9899;
   color:#fff;
-  border-radius: 38rpx;
+  font-size: 30rpx;
+}
+.share{
+  color:#fff;
+  font-size: 24rpx;
+  padding-left:66rpx;
+  width: 60rpx;
+  height: 66rpx;
+  line-height: 66rpx;
   position: absolute;
-  top: 24%;
+  right: 0;
+  top: 80rpx;
+  background: url('https://gw.alicdn.com/tfs/TB1f.h6qQvoK1RjSZFwXXciCFXa-114-60.png') no-repeat top/cover;
 }
-.my-tab{
-  position: absolute;
-  top: 40%;
-  width: 100%;
-  &-top{
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    &-left,&-right{
-      display: flex;
-      align-items: center;
-    }
-  }
-  &-btm{
-    margin:34rpx 24rpx;
-    position: relative;
-    &-head{
-      position: absolute;
-      z-index: 2;
-      top: 12rpx;
-      font-size: 34rpx;
-      text-align: center;
-      left: 0;right: 0;margin: auto;
-      color:#fff;
-      background: #4d2e0f;
-      width: 166rpx;
-      line-height: 60rpx;
-      border-bottom-left-radius: 12rpx;
-      border-bottom-right-radius: 12rpx;
-    }
-    &-main{
-      padding:96rpx 84rpx 0;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: flex-start;
-      align-items: center;
-    }
-    &-item{
-      .center();
-      font-size: 20rpx;
-      margin-bottom: 64rpx;
-      &-name{
-        margin-top: 6rpx;
-      }
-      &-line{
-        position: absolute;
-        z-index: 2;
-        right: -94rpx; top: 44rpx;
-        width: 100rpx;
-        height: 0;
-        border-top:3px dotted #d5aa80;
-      }
-    }
-    &-bg{
-      position: absolute;
-      z-index: 1;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 560rpx;
-    }
-  }
-}
-.icon-stage{
-  width: 130rpx;
-  height: 88rpx;
-  position: relative;
-  z-index: 2;
-}
-.icon-reward{
-  width: 128rpx;
-  height: 84rpx;
-  position: relative;
-  z-index: 2;
-}
-.icon-clear{
-  width: 128rpx;
-  height: 94rpx;
-}
-.icon-noclear{
-  width: 128rpx;
-  height: 94rpx;
-}
-.icon-stage-text,.icon-reward-text{
-  width: 160rpx;
-  line-height: 70rpx;
-  padding-left:60rpx;
+.container {
   background: #fff;
   position: relative;
-  left: -50rpx;
-  z-index:1;
-  font-size: 28rpx;
-  border-top-right-radius: 40rpx;
-  border-bottom-right-radius: 40rpx;
-  span{
+}
+.cover{
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  background: rgba(0,0,0,.5);
+  z-index:80;
+  top: 0;
+  left: 0;
+}
+.ruleLayer{
+  width: 500rpx;
+  height: 760rpx;
+  position: fixed;
+  z-index:81;
+  top: 20%;
+  left: 0;right: 0;margin:auto;
+  background: url('https://gw.alicdn.com/tfs/TB16p9nqNYaK1RjSZFnXXa80pXa-460-700.png') no-repeat top/cover;
+  &-head{
+    font-size:30rpx;
+    position: absolute;
+    top: 408rpx;
+    left: 0;right: 0;margin:auto;
+    color:#fff;
+    text-align: center;
+  }
+  &-text{
     font-size:34rpx;
+    position: absolute;
+    top: 508rpx;
+    left: 0;right: 0;margin:auto;
+    color:#333;
+    text-align: center;
+  }
+  &-btn{
+    width: 300rpx;
+    height: 90rpx;
+    line-height: 90rpx;
+    text-align: center;
+    color:#fff;
+    background: #292770;
+    border-radius: 20rpx;
+    position: absolute;
+    bottom: 60rpx;
+    left: 0;right: 0;margin:auto;
+  }
+}
+.close{
+  width: 70rpx;
+  height: 142rpx;
+  background: url('https://gw.alicdn.com/tfs/TB14yqPnNTpK1RjSZFKXXa2wXXa-60-132.png') no-repeat top/cover;
+  position: absolute;
+  right: 0;top: -130rpx;
+  z-index: 81;
+}
+.main{
+  
+  padding:0 20rpx;
+  &-share{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    &-item{
+      color:#fff;
+      margin:20rpx 0;
+      width: 340rpx;
+      height: 90rpx;
+      background: url('https://gw.alicdn.com/tfs/TB1ZHqcqH2pK1RjSZFsXXaNlXXa-290-80.png') no-repeat center/cover;
+      img{
+        width: 30rpx;
+        height: 30rpx;
+        margin:0 10rpx;
+      }
+    }
+  }
+  &-body{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #292770;
+    padding:25rpx 38rpx;
+    color:#fff;
+    border-radius: 10rpx;
+    &-head{
+      width: 260rpx;
+      height: 60rpx;
+      line-height: 60rpx;
+      border:1px solid #fff;
+      border-radius: 10rpx;
+      text-align: center;
+      font-size: 30rpx;
+      margin-bottom: 50rpx;
+    }
+    &-list{
+      display: flex;
+      width: 100%;
+      flex-direction: column;
+      &-item{
+        display: flex;
+        align-items: center;
+        width: 100%;
+        height: 140rpx;
+        margin-bottom: 40rpx;
+        background:url('https://gw.alicdn.com/tfs/TB1wXOcqQzoK1RjSZFlXXai4VXa-520-125.png') no-repeat center/cover;
+        &-right{
+          width: 160rpx;
+          height: 60rpx;
+          line-height: 60rpx;
+          text-align: center;
+          background: #a8368e;
+          border-radius: 10rpx;
+          font-size: 24rpx;
+        }
+        &-left{
+          width: 60%;
+          display: flex;
+          flex-direction: column;
+          margin-left: 60rpx;
+          span:nth-of-type(1){
+            color:#000;
+            font-size: 36rpx;
+          }  
+          span:nth-of-type(2){
+            color:#909090;
+            font-size: 24rpx;
+          }
+        }
+      }
+    }
   }
 }
 </style>
