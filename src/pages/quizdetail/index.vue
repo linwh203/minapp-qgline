@@ -2,13 +2,13 @@
 <div class="mainContainer">
   <div class="container" v-if="!showCountdown">
     <div class="quiz-top">
-      <div class="quiz-top-mid">挑战 第{{index+1}}/{{questionList.length}}关</div>
+      <div class="quiz-top-mid">挑战 第{{index+1}}/{{stageNum}}关</div>
     </div>
     <div class="user">
       <open-data type="userAvatarUrl" class="userPic"></open-data>
       <open-data type="userNickName" class="userName"></open-data>
     </div>
-    <div class="quiz-status">已连续答对 {{rightCount}}/{{questionList.length}}题</div>
+    <div class="quiz-status">已连续答对 {{rightCount}}/{{stageNum}}题</div>
     <div class="quiz-title" v-if="!quizSuccess && !quizFail">{{currentQuiz.title}}</div>
     <div class="quiz-choice" v-if="!quizSuccess && !quizFail">
       <div class="quiz-choice-body" v-if="currentQuiz.answer_list.length>0">
@@ -94,6 +94,7 @@ export default {
   data() {
     return {
       prefix:config.prefix,
+      stageNum:6,
       count:0,
       countNumber:3,
       showCountdown:false,
@@ -148,7 +149,7 @@ export default {
         this.showRight = this.choiceIndex
         this.showWrong = -1
         this.index ++
-        if(this.index == this.questionList.length){
+        if(this.index == this.stageNum){
           this.quizSuccess = true
           return
         }
