@@ -30,16 +30,16 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 1,
+			"current": 0,
 			"list": [
 				{
 					"id": 0,
 					"name": "知识图",
-					"pathName": "pages/list/main",
-					"query": "spot_index=90"
+					"pathName": "pages/my-reward/main",
+					"query": ""
 				},
 				{
-					"id": -1,
+					"id": 1,
 					"name": "问答",
 					"pathName": "pages/quizdetail/main",
 					"query": "checkpoint=1"

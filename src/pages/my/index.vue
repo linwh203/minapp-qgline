@@ -6,9 +6,9 @@
     <open-data type="userNickName" class="userName"></open-data>
     <div class="my-tab">
       <div class="my-tab-body">
-        <div class="my-tab-body-item" @click="bindTab('../my-msg/main')">
-          <img src="https://gw.alicdn.com/tfs/TB1Z6iGn6TpK1RjSZKPXXa3UpXa-74-66.png" class="my-tab-body-item-icon"/>
-          <div class="my-tab-body-item-name">消息中心</div>
+        <div class="my-tab-body-item" @click="bindTab('../my-reward/main')">
+          <img src="https://gw.alicdn.com/tfs/TB18fNUqSzqK1RjSZPcXXbTepXa-74-67.png" class="my-tab-body-item-icon"/>
+          <div class="my-tab-body-item-name">个人成就</div>
         </div>
         <div class="my-tab-body-item" @click="bindTab('../my-statement/main')">
           <img src="https://gw.alicdn.com/tfs/TB1aCaInVzqK1RjSZFoXXbfcXXa-71-65.png" class="my-tab-body-item-icon"/>
@@ -20,6 +20,12 @@
           <img src="https://gw.alicdn.com/tfs/TB1BEeMn7voK1RjSZPfXXXPKFXa-74-66.png" class="my-tab-body-item-icon"/>
           <div class="my-tab-body-item-name">意见反馈</div>
         </div>
+        <div class="my-tab-body-item" @click="bindTab('../my-msg/main')">
+          <img src="https://gw.alicdn.com/tfs/TB1Z6iGn6TpK1RjSZKPXXa3UpXa-74-66.png" class="my-tab-body-item-icon"/>
+          <div class="my-tab-body-item-name">消息中心</div>
+        </div>
+      </div>
+      <div class="my-tab-body">
         <div class="my-tab-body-item" @click="bindTab('../my-about/main')">
           <img src="https://gw.alicdn.com/tfs/TB1fZ9Gn4TpK1RjSZR0XXbEwXXa-74-65.png" class="my-tab-body-item-icon"/>
           <div class="my-tab-body-item-name">关于我们</div>

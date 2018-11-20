@@ -162,7 +162,7 @@ export default {
       const storageData = wx.getStorageSync("NatureList");
       let processData = data => {
         this.markers = data.map((item, index) => {
-          console.log(index);
+          // console.log(index);
           return {
             id: index,
             title: item.spot_title,

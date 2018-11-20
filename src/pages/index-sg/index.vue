@@ -15,7 +15,7 @@
         <img src="https://gw.alicdn.com/tfs/TB1PStFmSzqK1RjSZFLXXcn2XXa-91-101.png" alt="" v-if="!isPlaying">
         <img src="https://gw.alicdn.com/tfs/TB1mMsUomzqK1RjSZFLXXcn2XXa-91-101.png" alt="" v-if="isPlaying">
       </div>
-      <div class="index-tab-item icon-quiz" @click="bindTab('../quiz/main')" v-if="false">
+      <div class="index-tab-item icon-quiz" @click="bindTab('../quiz/main')">
         <img src="https://gw.alicdn.com/tfs/TB1mz8HmQvoK1RjSZFNXXcxMVXa-91-101.png" alt="">
       </div>
       <div class="index-tab-item icon-rule" @click="bindTab('../my-rule/main')">
@@ -57,7 +57,7 @@
         </div>
       </div>
       <!-- <img src="https://gw.alicdn.com/tfs/TB1rXqxnq6qK1RjSZFmXXX0PFXa-580-8690.png" mode="widthFix" class="scroll-road"> -->
-      <img src="https://etx.forestvisual.com/File/Download?fileName=poetry/poetry.png&fileType=QGLineFile" mode="widthFix" class="scroll-road">
+      <img src="https://gw.alicdn.com/tfs/TB1DPxtqHvpK1RjSZPiXXbmwXXa-569-8806.png" mode="widthFix" class="scroll-road">
       <img src="https://gw.alicdn.com/tfs/TB1M91vnAvoK1RjSZFNXXcxMVXa-640-9094.png" mode="widthFix" class="scroll-bg" @load=finishLoadImg>
     </scroll-view>
     <div class="cover" @click="showRoadSelect = false" v-if="showRoadSelect"></div>
@@ -467,7 +467,7 @@ export default {
     font-size: 34rpx;
     background: url("https://gw.alicdn.com/tfs/TB1LC9gmH2pK1RjSZFsXXaNlXXa-60-70.png")
       no-repeat center/contain;
-    margin-bottom: 7.4%;
+    margin-bottom: 8.02%;
     &-window {
       width: 522rpx;
       height: 176rpx;

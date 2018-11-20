@@ -27,7 +27,7 @@
       <div class="index-tab-item icon-audio" @click="playAudio" v-if="false">
         <img src="https://gw.alicdn.com/tfs/TB1PStFmSzqK1RjSZFLXXcn2XXa-91-101.png" alt="">
       </div>
-      <div class="index-tab-item icon-quiz" @click="bindTab('../quiz/main')" v-if="false">
+      <div class="index-tab-item icon-quiz" @click="bindTab('../quiz/main')">
         <img src="https://gw.alicdn.com/tfs/TB1mz8HmQvoK1RjSZFNXXcxMVXa-91-101.png" alt="">
       </div>
       <div class="index-tab-item icon-rule" @click="bindTab('../my-rule/main')">

@@ -15,7 +15,7 @@
         <img src="https://gw.alicdn.com/tfs/TB1PStFmSzqK1RjSZFLXXcn2XXa-91-101.png" alt="" v-if="!isPlaying">
         <img src="https://gw.alicdn.com/tfs/TB1mMsUomzqK1RjSZFLXXcn2XXa-91-101.png" alt="" v-if="isPlaying">
       </div>
-      <div class="index-tab-item icon-quiz" @click="bindTab('../quiz/main')" v-if="false">
+      <div class="index-tab-item icon-quiz" @click="bindTab('../quiz/main')">
         <img src="https://gw.alicdn.com/tfs/TB1mz8HmQvoK1RjSZFNXXcxMVXa-91-101.png" alt="">
       </div>
       <div class="index-tab-item icon-rule" @click="bindTab('../my-rule/main')">
@@ -56,8 +56,8 @@
           </div>
         </div>
       </div>
-      <img src="https://gw.alicdn.com/tfs/TB1IvF1mSzqK1RjSZFHXXb3CpXa-580-9295.png" mode="widthFix" class="scroll-road">
-      <img src="https://gw.alicdn.com/tfs/TB1xbXBmSzqK1RjSZFpXXakSXXa-532-8080.png" mode="widthFix" class="scroll-bg" @load=finishLoadImg>
+      <img src="https://gw.alicdn.com/tfs/TB1KDtrqQvoK1RjSZPfXXXPKFXa-565-9495.png" mode="widthFix" class="scroll-road">
+      <img src="https://gw.alicdn.com/tfs/TB1xbXBmSzqK1RjSZFpXXakSXXa-532-8080.png" class="scroll-bg" style="height: 6316px;" @load=finishLoadImg>
     </scroll-view>
     <div class="cover" @click="showRoadSelect = false" v-if="showRoadSelect"></div>
     <div class="modal" v-if="showRoadSelect">
@@ -479,7 +479,7 @@ export default {
     font-size: 34rpx;
     background: url("https://gw.alicdn.com/tfs/TB1LC9gmH2pK1RjSZFsXXaNlXXa-60-70.png")
       no-repeat center/contain;
-    margin-bottom: 7.4%;
+    margin-bottom: 8.12%;
     &-window {
       width: 522rpx;
       height: 176rpx;
