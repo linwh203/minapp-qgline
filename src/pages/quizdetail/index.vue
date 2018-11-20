@@ -164,6 +164,7 @@ export default {
           this.count --
         },800)
       }
+      this.requestAnswer(this.currentQuiz.id, this.choiceIndex + 1);
     },
     closeLayer() {
       this.showCover = false;
@@ -173,14 +174,6 @@ export default {
       this.choiceIndex = -1
       this.showRight = -1
       this.rightCount ++
-    },
-    submitAnswer() {
-      this.showAnswer = true;
-      if (this.choiceIndex + 1 != this.currentQuiz.right_answer) {
-        this.wrongAnswer = true;
-      } else {
-        this.requestAnswer(this.currentQuiz.id, this.choiceIndex + 1);
-      }
     },
     requestAnswer(id, answernum) {
       if (answernum > 8) return;
