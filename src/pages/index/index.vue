@@ -44,7 +44,7 @@
             </div>
           </div>
         </div>
-        <div class="spot-item" v-for="(item,index) in fullSpot" :key="index" :class="activeIndex == index+2?'active':''" :id="'spot'+item">
+        <div class="spot-item" v-for="(item,index) in fullSpot" :key="index" :class="activeIndex == index+2?'active':''" :id="'spot'+item" :style="{marginBottom:margin}">
           <div @click="chooseSpot(item,index)">{{item}}</div> 
           <div class="spot-item-tri" v-if="activeIndex == index+2"></div>
           <div class="spot-item-window" :style="{right:calcRight+'rpx'}" v-if="activeIndex == index+2" @click=goDetail>
@@ -56,8 +56,9 @@
           </div>
         </div>
       </div>
-      <img src="https://gw.alicdn.com/tfs/TB1KDtrqQvoK1RjSZPfXXXPKFXa-565-9495.png" mode="widthFix" class="scroll-road">
-      <img src="https://gw.alicdn.com/tfs/TB1xbXBmSzqK1RjSZFpXXakSXXa-532-8080.png" class="scroll-bg" style="height: 6316px;" @load=finishLoadImg>
+      <!-- <img src="https://gw.alicdn.com/tfs/TB1KDtrqQvoK1RjSZPfXXXPKFXa-565-9495.png" mode="widthFix" class="scroll-road"> -->
+      <img src="https://gw.alicdn.com/tfs/TB1IvF1mSzqK1RjSZFHXXb3CpXa-580-9295.png" mode="widthFix" class="scroll-road">
+      <img src="https://gw.alicdn.com/tfs/TB1xbXBmSzqK1RjSZFpXXakSXXa-532-8080.png" mode="widthFix" class="scroll-bg" style="height: 6316px;" @load=finishLoadImg>
     </scroll-view>
     <div class="cover" @click="showRoadSelect = false" v-if="showRoadSelect"></div>
     <div class="modal" v-if="showRoadSelect">
@@ -111,6 +112,8 @@ export default {
       fullSpot: [],
       isIPX: false,
       isIPXS: false,
+      isIP5: false,
+      isPlus: false,
       isPlaying: false,
       innerAudioContext: wx.createInnerAudioContext(),
       showRoadSelect: false,
@@ -122,7 +125,8 @@ export default {
         "大岭古研习段",
         "红花岭水库研习段",
         "洞背村研习段"
-      ]
+      ],
+      windowHeight:0,
     };
   },
 
@@ -136,11 +140,18 @@ export default {
         full_h = 780;
       } else if (this.isIPXS) {
         full_h = 780;
+      } else if (this.isIP5) {
+        full_h = 970;
       }
-      // full_h = 780
       let h = parseInt(l * full_h / full_s);
       console.log("h", h);
       return `${h}%`;
+    },
+    margin() {
+      if(this.isPlus || this.isIP5) {
+        return `7.43%`
+      }
+      return `7.37%`
     },
     calcRight() {
       if (this.activeIndex == 1) {
@@ -330,19 +341,8 @@ export default {
       });
     }
   },
-
-  created() {
-    // wx.login({
-    //   success: (res) => {
-    //     console.log(res)
-    //     this.login(res.code);
-    //   }
-    // });
-    // this.scrollTo = 'spot' + parseInt(this.activeIndex + 2)
-  },
   mounted() {
     this.getSpot();
-    // console.log(this.GLOBAL);
   },
   onLoad() {
     // 判断是否第一次使用
@@ -355,9 +355,16 @@ export default {
     }
     wx.getSystemInfo({
       success: res => {
-        console.log("model", res.model);
+        console.log("model", res);
+        this.windowHeight = res.windowHeight;
         if (res.model == "iPhone X") {
           this.isIPX = true;
+        }
+        if (res.model == "iPhone 6 Plus" || res.model == "iPhone 7 Plus" || res.model == "iPhone 8 Plus") {
+          this.isPlus = true;
+        }
+        if (res.model == "iPhone 5") {
+          this.isIP5 = true
         }
         if (res.model.indexOf("iPhone11") >= 0) {
           console.log("model is iphone xs");
@@ -479,7 +486,7 @@ export default {
     font-size: 34rpx;
     background: url("https://gw.alicdn.com/tfs/TB1LC9gmH2pK1RjSZFsXXaNlXXa-60-70.png")
       no-repeat center/contain;
-    margin-bottom: 8.12%;
+    margin-bottom: 7.37%;
     &-window {
       width: 522rpx;
       height: 176rpx;

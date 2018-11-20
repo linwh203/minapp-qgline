@@ -44,7 +44,7 @@
             </div>
           </div>
         </div>
-        <div class="spot-item" v-for="(item,index) in fullSpot" :key="index" :class="activeIndex == index+2?'active':''" :id="'spot'+item">
+        <div class="spot-item" v-for="(item,index) in fullSpot" :key="index" :class="activeIndex == index+2?'active':''" :id="'spot'+item" :style="{marginBottom:margin}">
           <div @click="chooseSpot(item,index)">{{item}}</div> 
           <div class="spot-item-tri" v-if="activeIndex == index+2"></div>
           <div class="spot-item-window" :style="{right:calcRight+'rpx'}" v-if="activeIndex == index+2" @click=goDetail>
@@ -56,8 +56,8 @@
           </div>
         </div>
       </div>
-      <!-- <img src="https://gw.alicdn.com/tfs/TB1rXqxnq6qK1RjSZFmXXX0PFXa-580-8690.png" mode="widthFix" class="scroll-road"> -->
-      <img src="https://gw.alicdn.com/tfs/TB1DPxtqHvpK1RjSZPiXXbmwXXa-569-8806.png" mode="widthFix" class="scroll-road">
+      <img src="https://gw.alicdn.com/tfs/TB1rXqxnq6qK1RjSZFmXXX0PFXa-580-8690.png" mode="widthFix" class="scroll-road">
+      <!-- <img src="https://gw.alicdn.com/tfs/TB1DPxtqHvpK1RjSZPiXXbmwXXa-569-8806.png" mode="widthFix" class="scroll-road"> -->
       <img src="https://gw.alicdn.com/tfs/TB1M91vnAvoK1RjSZFNXXcxMVXa-640-9094.png" mode="widthFix" class="scroll-bg" @load=finishLoadImg>
     </scroll-view>
     <div class="cover" @click="showRoadSelect = false" v-if="showRoadSelect"></div>
@@ -113,6 +113,8 @@ export default {
       spotList: [],
       isIPX: false,
       isIPXS: false,
+      isIP5: false,
+      isPlus: false,
       isPlaying: false,
       innerAudioContext: wx.createInnerAudioContext(),
       showRoadSelect: false,
@@ -132,11 +134,19 @@ export default {
         full_h = 780;
       } else if (this.isIPXS) {
         full_h = 780;
+      } else if (this.isIP5) {
+        full_h = 980;
       }
       // full_h = 780
       let h = parseInt(l * full_h / full_s);
       console.log("h", h);
       return `${h}%`;
+    },
+    margin() {
+      if(this.isPlus || this.isIP5) {
+        return `7.43%`
+      }
+      return `7.37%`
     },
     calcRight() {
       if (this.activeIndex == 1) {
@@ -319,16 +329,6 @@ export default {
       });
     }
   },
-
-  created() {
-    // wx.login({
-    //   success: (res) => {
-    //     console.log(res)
-    //     this.login(res.code);
-    //   }
-    // });
-    // this.scrollTo = 'spot' + parseInt(this.activeIndex + 2)
-  },
   mounted() {
     this.getSpot();
     // console.log(this.GLOBAL);
@@ -346,6 +346,12 @@ export default {
       success: res => {
         if (res.model == "iPhone X") {
           this.isIPX = true;
+        }
+         if (res.model == "iPhone 6 Plus" || res.model == "iPhone 7 Plus" || res.model == "iPhone 8 Plus") {
+          this.isPlus = true;
+        }
+        if (res.model == "iPhone 5") {
+          this.isIP5 = true
         }
         if (res.model.indexOf("iPhone11") >= 0) {
           console.log("model is iphone xs");
