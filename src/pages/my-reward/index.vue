@@ -77,22 +77,22 @@
 </template>
 
 <script>
-import { config } from '../../utils/index'
+import { config } from "../../utils/index";
 export default {
   data() {
     return {
-      userCode:'',
-      score:0,
-      level:1,
-      count:0,
-      coin:0,
-      exchange1:false,
-      exchange2:false,
-      exchange3:false,
-      ruleLayer:false,
-      showCover:false,
-      msgCoin:0,
-      msgTitle:0,
+      userCode: "",
+      score: 0,
+      level: 1,
+      count: 0,
+      coin: 0,
+      exchange1: false,
+      exchange2: false,
+      exchange3: false,
+      ruleLayer: false,
+      showCover: false,
+      msgCoin: 0,
+      msgTitle: 0
     };
   },
 
@@ -102,20 +102,20 @@ export default {
     bindTab(url) {
       wx.navigateTo({ url: url });
     },
-    loadCheckPoint(){
+    loadCheckPoint() {
       wx.request({
-        url: config.base + 'quiz/getcheckpoint', 
+        url: config.base + "quiz/getcheckpoint",
         data: {
           LineId: config.lineId,
           token: this.userCode
-        }, 
-        method: 'GET',
-        dataType: 'json', 
+        },
+        method: "GET",
+        dataType: "json",
         success: res => {
-          console.log(res.data)
-          this.count = res.data.data.count || 0
-          this.score = res.data.data.score || 0
-          this.coin = res.data.data.coin || 0
+          console.log(res.data);
+          this.count = res.data.data.count || 0;
+          this.score = res.data.data.score || 0;
+          this.coin = res.data.data.coin || 0;
         },
         fail: () => {},
         complete: () => {}
@@ -129,49 +129,49 @@ export default {
       this.ruleLayer = true;
       this.showCover = true;
       this.msgCoin = coin;
-      if(coin == 150){
-        this.msgTitle = 1
+      if (coin == 150) {
+        this.msgTitle = 1;
       }
-      if(coin == 200){
-        this.msgTitle = 3
+      if (coin == 200) {
+        this.msgTitle = 3;
       }
-      if(coin == 480){
-        this.msgTitle = 10
+      if (coin == 480) {
+        this.msgTitle = 10;
       }
     },
     buyTitle(coin) {
       wx.request({
-        url: config.base + 'quiz/buyTitle', //开发者服务器接口地址",
+        url: config.base + "quiz/buyTitle", //开发者服务器接口地址",
         data: {
           coin: coin,
           LineId: config.lineId
         }, //请求的参数",
-        method: 'post',
+        method: "post",
         header: {
-          token: this.userCode,
+          token: this.userCode
         },
-        dataType: 'json', //如果设为json，会尝试对返回的数据做一次 JSON.parse
+        dataType: "json", //如果设为json，会尝试对返回的数据做一次 JSON.parse
         success: res => {
-          console.log(res.data)
-          this.closeLayer()
-          if(res.data.res_code==0) {
-            this.level = res.data.data.count
-            if(coin == 150){
-              this.exchange1 = true
-              return
+          console.log(res.data);
+          this.closeLayer();
+          if (res.data.res_code == 0) {
+            this.level = res.data.data.count;
+            if (coin == 150) {
+              this.exchange1 = true;
+              return;
             }
-            if(coin == 200){
-              this.exchange2 = true
-              return
+            if (coin == 200) {
+              this.exchange2 = true;
+              return;
             }
-            if(coin == 480){
-              this.exchange3 = true
-              return
+            if (coin == 480) {
+              this.exchange3 = true;
+              return;
             }
-          }else {
+          } else {
             wx.showToast({
               title: res.data.res_msg, //提示的内容,
-              icon: 'none', //图标,
+              icon: "none", //图标,
               duration: 2000, //延迟时间,
               mask: true, //显示透明蒙层，防止触摸穿透,
               success: res => {}
@@ -182,21 +182,21 @@ export default {
     },
     getLevel() {
       wx.request({
-        url: config.base + 'quiz/getTitle', //开发者服务器接口地址",
+        url: config.base + "quiz/getTitle", //开发者服务器接口地址",
         data: {
           token: this.userCode,
           LineId: config.lineId
         }, //请求的参数",
-        method: 'get',
-        dataType: 'json', //如果设为json，会尝试对返回的数据做一次 JSON.parse
+        method: "get",
+        dataType: "json", //如果设为json，会尝试对返回的数据做一次 JSON.parse
         success: res => {
-          console.log(res.data)
-          if(res.data.res_code==0) {
-            this.level = res.data.data.count
-          }else {
+          console.log(res.data);
+          if (res.data.res_code == 0) {
+            this.level = res.data.data.count;
+          } else {
             wx.showToast({
               title: res.data.res_msg, //提示的内容,
-              icon: 'none', //图标,
+              icon: "none", //图标,
               duration: 2000, //延迟时间,
               mask: true, //显示透明蒙层，防止触摸穿透,
               success: res => {}
@@ -206,17 +206,17 @@ export default {
       });
     }
   },
-  onReady(){
-  },
+  onReady() {},
   onShow() {
-    this.userCode = wx.getStorageSync('userCode')
-    this.loadCheckPoint()
-    this.getLevel()
+    this.userCode = wx.getStorageSync("userCode");
+    this.loadCheckPoint();
+    this.getLevel();
   },
   onShareAppMessage(result) {
     let title = `我已获得${this.level}个勋章`;
     let path = "/pages/index/main";
-    let imageUrl = "https://gw.alicdn.com/tfs/TB1uLyAnxjaK1RjSZKzXXXVwXXa-80-80.png";
+    let imageUrl =
+      "https://gw.alicdn.com/tfs/TB1uLyAnxjaK1RjSZKzXXXVwXXa-80-80.png";
     return {
       title,
       path,
@@ -234,36 +234,38 @@ export default {
 </script>
 
 <style scoped lang="less">
-.top{
+.top {
   height: 270rpx;
   background: #292770;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  border-bottom:1px dotted #fff;
+  border-bottom: 1px dotted #fff;
 }
-.mid{
+.mid {
   height: 124rpx;
   display: flex;
   align-items: center;
   background: #292770;
-  &-item{
+  &-item {
     width: 49%;
-    color:#fff;
-    font-size: 30rpx;
-    display: flex;flex-direction: column;align-items: center;
-    span{
+    color: #fff;
+    font-size: 34rpx;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    span {
       font-size: 18rpx;
     }
   }
-  &-line{
+  &-line {
     width: 1px;
     height: 84rpx;
-    border-right:1px dotted #fff;
+    border-right: 1px dotted #fff;
   }
 }
-.userPic{
+.userPic {
   width: 110rpx;
   height: 110rpx;
   border-radius: 50%;
@@ -271,130 +273,143 @@ export default {
   border: 4rpx solid #fff;
   margin-bottom: 10rpx;
 }
-.userName{
-  color:#fff;
+.userName {
+  color: #fff;
   font-size: 30rpx;
 }
-.share{
-  color:#fff;
+.share {
+  color: #fff;
   font-size: 24rpx;
-  padding-left:66rpx;
+  padding-left: 66rpx;
   width: 60rpx;
   height: 66rpx;
   line-height: 66rpx;
   position: absolute;
   right: 0;
   top: 80rpx;
-  background: url('https://gw.alicdn.com/tfs/TB1f.h6qQvoK1RjSZFwXXciCFXa-114-60.png') no-repeat top/cover;
+  background: url("https://gw.alicdn.com/tfs/TB1f.h6qQvoK1RjSZFwXXciCFXa-114-60.png")
+    no-repeat top/cover;
 }
 .container {
   background: #fff;
   position: relative;
 }
-.cover{
+.cover {
   width: 100%;
   height: 100%;
   position: fixed;
-  background: rgba(0,0,0,.5);
-  z-index:80;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 80;
   top: 0;
   left: 0;
 }
-.ruleLayer{
+.ruleLayer {
   width: 500rpx;
   height: 760rpx;
   position: fixed;
-  z-index:81;
+  z-index: 81;
   top: 20%;
-  left: 0;right: 0;margin:auto;
-  background: url('https://gw.alicdn.com/tfs/TB16p9nqNYaK1RjSZFnXXa80pXa-460-700.png') no-repeat top/cover;
-  &-head{
-    font-size:30rpx;
+  left: 0;
+  right: 0;
+  margin: auto;
+  background: url("https://gw.alicdn.com/tfs/TB16p9nqNYaK1RjSZFnXXa80pXa-460-700.png")
+    no-repeat top/cover;
+  &-head {
+    font-size: 30rpx;
     position: absolute;
     top: 408rpx;
-    left: 0;right: 0;margin:auto;
-    color:#fff;
+    left: 0;
+    right: 0;
+    margin: auto;
+    color: #fff;
     text-align: center;
   }
-  &-text{
-    font-size:34rpx;
+  &-text {
+    font-size: 34rpx;
     position: absolute;
     top: 508rpx;
-    left: 0;right: 0;margin:auto;
-    color:#333;
+    left: 0;
+    right: 0;
+    margin: auto;
+    color: #333;
     text-align: center;
   }
-  &-btn{
+  &-btn {
     width: 300rpx;
     height: 90rpx;
     line-height: 90rpx;
     text-align: center;
-    color:#fff;
+    color: #fff;
     background: #292770;
     border-radius: 20rpx;
     position: absolute;
     bottom: 60rpx;
-    left: 0;right: 0;margin:auto;
+    left: 0;
+    right: 0;
+    margin: auto;
   }
 }
-.close{
+.close {
   width: 70rpx;
   height: 142rpx;
-  background: url('https://gw.alicdn.com/tfs/TB14yqPnNTpK1RjSZFKXXa2wXXa-60-132.png') no-repeat top/cover;
+  background: url("https://gw.alicdn.com/tfs/TB14yqPnNTpK1RjSZFKXXa2wXXa-60-132.png")
+    no-repeat top/cover;
   position: absolute;
-  right: 0;top: -130rpx;
+  right: 0;
+  top: -130rpx;
   z-index: 81;
 }
-.main{
-  
-  padding:0 20rpx;
-  &-share{
+.main {
+  padding: 0 20rpx;
+  &-share {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    &-item{
-      color:#fff;
-      margin:20rpx 0;
+    &-item {
+      color: #fff;
+      margin: 20rpx 0;
       width: 340rpx;
       height: 90rpx;
-      background: url('https://gw.alicdn.com/tfs/TB1ZHqcqH2pK1RjSZFsXXaNlXXa-290-80.png') no-repeat center/cover;
-      img{
+      background: url("https://gw.alicdn.com/tfs/TB1ZHqcqH2pK1RjSZFsXXaNlXXa-290-80.png")
+        no-repeat center/cover;
+      img {
         width: 30rpx;
         height: 30rpx;
-        margin:0 10rpx;
+        margin: 0 10rpx;
       }
     }
   }
-  &-body{
+  &-body {
     display: flex;
     flex-direction: column;
     align-items: center;
     background: #292770;
-    padding:25rpx 38rpx;
-    color:#fff;
+    padding: 25rpx 38rpx;
+    color: #fff;
     border-radius: 10rpx;
-    &-head{
+    &-head {
       width: 260rpx;
       height: 60rpx;
       line-height: 60rpx;
-      border:1px solid #fff;
+      border: 1px solid #fff;
       border-radius: 10rpx;
       text-align: center;
       font-size: 30rpx;
       margin-bottom: 50rpx;
     }
-    &-list{
+    &-list {
       display: flex;
       width: 100%;
       flex-direction: column;
-      &-item{
+      &-item {
         display: flex;
         align-items: center;
         width: 100%;
         height: 140rpx;
         margin-bottom: 40rpx;
-        background:url('https://gw.alicdn.com/tfs/TB1wXOcqQzoK1RjSZFlXXai4VXa-520-125.png') no-repeat center/cover;
-        &-right{
+        background: url("https://gw.alicdn.com/tfs/TB1wXOcqQzoK1RjSZFlXXai4VXa-520-125.png")
+          no-repeat center/cover;
+        &-right {
           width: 160rpx;
           height: 60rpx;
           line-height: 60rpx;
@@ -403,17 +418,17 @@ export default {
           border-radius: 10rpx;
           font-size: 24rpx;
         }
-        &-left{
+        &-left {
           width: 60%;
           display: flex;
           flex-direction: column;
           margin-left: 60rpx;
-          span:nth-of-type(1){
-            color:#000;
+          span:nth-of-type(1) {
+            color: #000;
             font-size: 36rpx;
-          }  
-          span:nth-of-type(2){
-            color:#909090;
+          }
+          span:nth-of-type(2) {
+            color: #909090;
             font-size: 24rpx;
           }
         }
