@@ -2,7 +2,7 @@
 <div class="mainContainer">
   <div class="container" v-if="!showCountdown">
     <div class="quiz-top">
-      <div class="quiz-top-mid">挑战 第{{index+1}}/{{stageNum}}关</div>
+      <div class="quiz-top-mid">挑战 第{{(index+1)>stageNum?stageNum:(index+1)}}/{{stageNum}}关</div>
     </div>
     <div class="user">
       <open-data type="userAvatarUrl" class="userPic"></open-data>
@@ -46,11 +46,11 @@
       <img class="resultIcon" src="https://gw.alicdn.com/tfs/TB1iq1VnMTqK1RjSZPhXXXfOFXa-328-251.png">
       <div class="quiz-result">
         <img class="coin" src="https://gw.alicdn.com/tfs/TB1fLeZnQvoK1RjSZFwXXciCFXa-43-44.png">  
-        <span>+ 100</span>
+        <span>+ {{bonus}}</span>
       </div> 
        <div class="result-line"></div> 
-       <div class="quiz-result-btn-top" @click="bindTap('../quiz/main')">继续挑战</div>
-       <div class="quiz-result-btn-btm" @click="bindTap('../my-reward/main')">查看成就</div>
+       <div class="quiz-result-btn-top" @click="bindTab('../quiz/main')">继续挑战</div>
+       <div class="quiz-result-btn-btm" @click="bindTab('../my-reward/main')">查看成就</div>
     </div>
     <div class="quiz-fail" v-if="quizFail">
       <img class="resultIcon" src="https://gw.alicdn.com/tfs/TB1Lg9UnHPpK1RjSZFFXXa5PpXa-328-251.png">
@@ -97,7 +97,7 @@ export default {
       stageNum:6,
       count:0,
       countNumber:3,
-      showCountdown:false,
+      showCountdown:true,
       rightCount:0,
       showRight:-1,
       showWrong:-1,
@@ -137,6 +137,23 @@ export default {
   computed: {
     rightAnswer(){
       return this.currentQuiz.right_answer-1
+    },
+    bonus(){
+      if(this.checkpoint==1){
+        return 100
+      }
+      if(this.checkpoint==2){
+        return 180
+      }
+      if(this.checkpoint==3){
+        return 260
+      }
+      if(this.checkpoint==4){
+        return 380
+      }
+      if(this.checkpoint==5){
+        return 460
+      }
     }
   },
   methods: {
@@ -150,6 +167,7 @@ export default {
         this.showWrong = -1
         this.index ++
         if(this.index == this.stageNum){
+          this.rightCount ++
           this.quizSuccess = true
           return
         }
