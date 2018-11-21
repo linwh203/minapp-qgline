@@ -366,6 +366,10 @@ export default {
     justify-content: space-between;
     align-items: center;
     &-item {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 32rpx;
       color: #fff;
       margin: 20rpx 0;
       width: 340rpx;
@@ -373,8 +377,8 @@ export default {
       background: url("https://gw.alicdn.com/tfs/TB1ZHqcqH2pK1RjSZFsXXaNlXXa-290-80.png")
         no-repeat center/cover;
       img {
-        width: 30rpx;
-        height: 30rpx;
+        width: 40rpx;
+        height: 40rpx;
         margin: 0 10rpx;
       }
     }
@@ -394,7 +398,7 @@ export default {
       border: 1px solid #fff;
       border-radius: 10rpx;
       text-align: center;
-      font-size: 30rpx;
+      font-size: 34rpx;
       margin-bottom: 50rpx;
     }
     &-list {
@@ -417,6 +421,7 @@ export default {
           background: #a8368e;
           border-radius: 10rpx;
           font-size: 24rpx;
+          margin-right: 60rpx;
         }
         &-left {
           width: 60%;
