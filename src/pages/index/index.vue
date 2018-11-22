@@ -33,7 +33,7 @@
         <img src="https://gw.alicdn.com/tfs/TB1jUCamRLoK1RjSZFuXXXn0XXa-343-214.png" class="scroll-title-body">
       </div>
       <div class="spot">
-        <div class="spot-item" :class="activeIndex == 1?'active':''" id="spot1">
+        <div class="spot-item" :class="activeIndex == 1?'active':''" id="spot1" :style="{top:firstY+'%'}">
           <div @click="firstSpot">1</div> 
           <div class="spot-item-tri" v-if="activeIndex == 1"></div>
           <div class="spot-item-window" :style="{right:calcRight+'rpx'}" v-if="activeIndex == 1" @click=goDetail>
@@ -126,7 +126,8 @@ export default {
         "红花岭水库研习段",
         "洞背村研习段"
       ],
-      windowHeight: 0
+      windowHeight: 0,
+      firstY: 0
     };
   },
 
@@ -310,6 +311,7 @@ export default {
       let process = data => {
         this.spotList = storageData;
         this.currentSpot = storageData[0];
+        this.firstY = this._fy(1);
         this.fullSpot.length = 0;
         for (let i = 2; i <= data.length; i++) {
           let item = { num: i, y: this._fy(i) };
