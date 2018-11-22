@@ -216,7 +216,7 @@ export default {
     let title = `我已获得${this.level}个勋章`;
     let path = "/pages/index/main";
     let imageUrl =
-      "https://gw.alicdn.com/tfs/TB1uLyAnxjaK1RjSZKzXXXVwXXa-80-80.png";
+      "https://etx.forestvisual.com/File/Download?fileName=poetry/share.png&fileType=QGLineFile";
     return {
       title,
       path,
