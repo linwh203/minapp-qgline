@@ -33,7 +33,7 @@
         <img src="https://gw.alicdn.com/tfs/TB1jUCamRLoK1RjSZFuXXXn0XXa-343-214.png" class="scroll-title-body">
       </div>
       <div class="spot">
-        <div class="spot-item" :class="activeIndex == 1?'active':''" id="spot1">
+        <div class="spot-item" :class="activeIndex == 1?'active':''" id="spot1" :style="{top:firstY+'%'}">
           <div @click="firstSpot">1</div> 
           <div class="spot-item-tri" v-if="activeIndex == 1"></div>
           <div class="spot-item-window" :style="{right:calcRight+'rpx'}" v-if="activeIndex == 1" @click=goDetail>
@@ -44,8 +44,8 @@
             </div>
           </div>
         </div>
-        <div class="spot-item" v-for="(item,index) in fullSpot" :key="index" :class="activeIndex == index+2?'active':''" :id="'spot'+item" :style="{marginBottom:margin}">
-          <div @click="chooseSpot(item,index)">{{item}}</div> 
+        <div class="spot-item" v-for="(item,index) in fullSpot" :key="index" :class="activeIndex == index+2?'active':''" :id="'spot'+item.num" :style="{top:item.y+'%'}">
+          <div @click="chooseSpot(item,index)">{{item.num}}</div> 
           <div class="spot-item-tri" v-if="activeIndex == index+2"></div>
           <div class="spot-item-window" :style="{right:calcRight+'rpx'}" v-if="activeIndex == index+2" @click=goDetail>
             <img class="spot-item-window-pic" :src="prefix + currentSpot.spot_coverurl" v-if=currentSpot.spot_coverurl>
@@ -126,7 +126,8 @@ export default {
         "红花岭水库研习段",
         "洞背村研习段"
       ],
-      windowHeight:0,
+      windowHeight: 0,
+      firstY: 0
     };
   },
 
@@ -148,10 +149,10 @@ export default {
       return `${h}%`;
     },
     margin() {
-      if(this.isPlus || this.isIP5) {
-        return `7.43%`
+      if (this.isPlus || this.isIP5) {
+        return `7.43%`;
       }
-      return `7.37%`
+      return `7.37%`;
     },
     calcRight() {
       if (this.activeIndex == 1) {
@@ -307,14 +308,19 @@ export default {
     },
     getSpot() {
       const self = this;
-      const storageData = wx.getStorageSync("NatureList");
-      if (storageData) {
+      let process = data => {
         this.spotList = storageData;
         this.currentSpot = storageData[0];
+        this.firstY = this._fy(1);
         this.fullSpot.length = 0;
-        for (let i = 2; i <= storageData.length; i++) {
-          this.fullSpot.push(i);
+        for (let i = 2; i <= data.length; i++) {
+          let item = { num: i, y: this._fy(i) };
+          this.fullSpot.push(item);
         }
+      };
+      const storageData = wx.getStorageSync("NatureList");
+      if (storageData) {
+        process(storageData);
         return;
       }
       wx.request({
@@ -329,16 +335,79 @@ export default {
           // self.GLOBAL.spot_list = res.data.data
           const data = res.data.data;
           this.setStorage("NatureList", data);
-          this.spotList = data;
-          this.currentSpot = data[0];
-          this.fullSpot.length = 0;
-          for (let i = 2; i <= data.length; i++) {
-            this.fullSpot.push(i);
-          }
+          process(data);
         },
         fail: () => {},
         complete: () => {}
       });
+    },
+
+    /**
+     * 计算序号的位置跟x的偏移的关系
+     * 规律:
+     * 0,1,2,3,4,5为一个周期,对应的x的偏移为0,1,2,3,2,1
+     * f(x) = dict[x%6]
+     * 又因为最开始的1出现在偏移为2的位置,所以
+     * g(x) = dict[(x+1)%6]
+     */
+    _fx(x) {
+      let dict = this._getMarginXDict();
+      return dict[(x + 1) % 6];
+    },
+    _getMarginXDict() {
+      return [20, 30, 40, 50];
+    },
+    /**
+     * 计算序号的位置跟y的偏移关系
+     * 规律:
+     * 因为图片很长,并且不是完全的等差,所以需要分段进行重新定位
+     * 每个序号属于某个分段,它的y偏移为分段的初始偏移加上跟分段相对偏移
+     * f1(x)返回序号属于的第几个分段的偏移
+     * 一个分段,最后一个数字是4
+     * f1(x) = dict[INT((x+1)/6)]
+     * f2(x)返回序号在分段中的相对偏移
+     * 简单递增
+     * f2(x) = deltaY * ((x+1)%6)
+     * 所以,总偏移f(x)= f1(x) + f2(x)
+     *
+     */
+    _fy(x) {
+      return this._fy1(x) + this._fy2(x);
+    },
+    _fy1(x) {
+      let dict = this._getMarginYDict();
+      return dict[parseInt((x + 1) / 6)];
+    },
+    _fy2(x) {
+      let deltaY = this._getDeltaY(x);
+      return deltaY * ((x + 1) % 6);
+    },
+    _getDeltaY(x) {
+      let index = parseInt((x + 1) / 6);
+      let dict = this._getMarginYDict();
+      let rst = dict[index + 1] ? (dict[index + 1] - dict[index]) / 6 : 1.05;
+      console.log(index, dict[index + 1], dict[index], rst);
+      return rst;
+    },
+    _getMarginYDict() {
+      return [
+        0.8,
+        7,
+        13.2,
+        19.5,
+        25.8,
+        32.05,
+        38.4,
+        44.5,
+        50.9,
+        57.1,
+        63.45,
+        69.7,
+        76,
+        82.25,
+        88.6,
+        94.75
+      ];
     }
   },
   mounted() {
@@ -360,11 +429,15 @@ export default {
         if (res.model == "iPhone X") {
           this.isIPX = true;
         }
-        if (res.model == "iPhone 6 Plus" || res.model == "iPhone 7 Plus" || res.model == "iPhone 8 Plus") {
+        if (
+          res.model == "iPhone 6 Plus" ||
+          res.model == "iPhone 7 Plus" ||
+          res.model == "iPhone 8 Plus"
+        ) {
           this.isPlus = true;
         }
         if (res.model == "iPhone 5") {
-          this.isIP5 = true
+          this.isIP5 = true;
         }
         if (res.model.indexOf("iPhone11") >= 0) {
           console.log("model is iphone xs");
@@ -393,7 +466,8 @@ export default {
 .spot {
   width: 100%;
   position: absolute;
-  top: 2.8%;
+  height: 100%;
+  // top: 2.8%;
   &-first {
     position: relative;
     z-index: 2;
@@ -476,7 +550,8 @@ export default {
       no-repeat center/cover;
   }
   &-item {
-    position: relative;
+    // position: relative;
+    position: absolute;
     z-index: 30;
     width: 64rpx;
     height: 64rpx;
