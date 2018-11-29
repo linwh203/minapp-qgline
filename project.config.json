@@ -30,12 +30,12 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 1,
+			"current": 0,
 			"list": [
 				{
 					"id": 0,
-					"name": "知识图",
-					"pathName": "pages/my-reward/main",
+					"name": "图",
+					"pathName": "pages/map/main",
 					"query": ""
 				},
 				{

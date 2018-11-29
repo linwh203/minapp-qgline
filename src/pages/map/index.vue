@@ -1,6 +1,6 @@
 <template>
   <movable-area class="container">
-    <movable-view class="index-bg" scale="true" scale-max="2" scale-min="1" direction="all"  @scale="startScale" @change="startTouch">
+    <movable-view class="index-bg" :scale="false" :x="x" :y="y" :animation="false" scale-max="1.2" scale-min="1" direction="all"  @scale="startScale" @change="startTouch" >
       <img class="mapImg" src="https://gw.alicdn.com/tfs/TB1JlSPn7zoK1RjSZFlXXai4VXa-2835-2835.jpg" alt="" >
       <div class="spot-icon"  :class="activeSpot == index?'changeBG':''" v-for="(item,index) in spotList" :key="item.sortNo"
             @click="showWindow(index)" :style="{top:item.top+'rpx',left:item.left+'rpx',transform:'scale('+spotScale+')'}">
@@ -52,6 +52,8 @@ export default {
       activeWindow: -1,
       x: 0,
       y: 0,
+      left:0,
+      top:0,
       mapStart: {
         lng: 114.32751775,
         lat: 22.63737202
@@ -89,22 +91,14 @@ export default {
 
   methods: {
     startScale(e) {
-      return;
+      console.log("start scale", e);
       let detail = e.mp.detail;
       let scale = detail.scale;
-      console.log("start scale", scale);
-      this._x = detail.x;
-      this._y = detail.y;
-      this._spotScale = 1 / scale;
-
-      if (this._tScale) {
-        clearTimeout(this._tScale);
+      if(scale > 1) {
+        // this.x = e.x;
+        // this.y = e.y;
       }
-      this._tScale = setTimeout(() => {
-        this.spotScale = this._spotScale;
-        this.x = this._x;
-        this.y = this._y;
-      }, 100);
+      return;
     },
     startTouch(e) {
       let detail = e.mp.detail;
@@ -128,7 +122,7 @@ export default {
     distance(item) {
       let x = this.locate(this.Xstart, this.Xend);
       let y = this.locate(this.Ystart, this.Yend);
-      let width = 3753;
+      let width = 5630;
       let spotX = {},
         spotY = {};
       spotX.lng = this.Xstart.lng;
@@ -316,8 +310,8 @@ export default {
   height: auto;
   background: #d1a77f;
   .mapImg {
-    width: 3753rpx;
-    height: 3753rpx;
+    width: 5630rpx;
+    height: 5630rpx;
   }
 }
 

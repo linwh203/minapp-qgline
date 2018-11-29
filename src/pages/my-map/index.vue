@@ -1,12 +1,33 @@
 <template>
-  <div class="container" :style="{height:bodyHeight}">
-    <map id="map" :longitude="lng" :latitude="lat" scale="16" :controls="controls" @controltap="controltap" :markers="markers" @markertap="markertap" :polyline="polyline" @regionchange="regionchange" show-location style="width: 100%; height: 100%;"></map>
+  <div class="container">
+    <!-- <map id="map" :longitude="lng" :latitude="lat" scale="16" 
+    :controls="controls" @controltap="controltap" 
+    :markers="markers" @markertap="markertap" 
+    :polyline="polyline" @regionchange="regionchange" 
+    show-location 
+    style="width: 100%; height: 100%;"
+    ></map> -->
+    <view class="flex-style">
+      <view class="flex-item active" bindtouchstart="goToCar">驾车</view>
+      <view class="flex-item" bindtouchstart="goToWalk">步行</view>
+      <view class="flex-item" bindtouchstart="goToBus">公交</view>
+      <view class="flex-item" bindtouchstart="goToRide">骑行</view>
+    </view>
+    <view class="map_box">
+      <map id="navi_map" longitude="116.451028" latitude="39.949643" scale="12" :markers="markers" :polyline="polyline"></map>
+    </view>
 
+    <view class="text_box">
+      <view class="text">{{distance}}</view>
+      <view class="text">{{cost}}</view>
+      <view class="detail_button" bindtouchstart="goDetail">详情</view>
+    </view>
   </div>
 </template>
 
 <script>
 import { config } from "../../utils/index";
+var amapFile = require('../../utils/amap-wx.js') 
 
 export default {
   data() {
@@ -16,7 +37,23 @@ export default {
       lng: 114.32751775,
       lat: 22.63737202,
       controls: [],
-      markers: [],
+      markers: [{
+        iconPath: "https://gw.alicdn.com/tfs/TB18fNUqSzqK1RjSZPcXXbTepXa-74-67.png",
+        id: 0,
+        latitude: 39.989643,
+        longitude: 116.481028,
+        width: 23,
+        height: 33
+      },{
+        iconPath: "https://gw.alicdn.com/tfs/TB1Z6iGn6TpK1RjSZKPXXa3UpXa-74-66.png",
+        id: 0,
+        latitude: 39.90816,
+        longitude: 116.434446,
+        width: 24,
+        height: 34
+      }],
+      distance: '',
+      cost: '',
       polyline: []
     };
   },
@@ -201,9 +238,22 @@ export default {
   },
   created() {
     console.log("create");
-    this.getSpot();
+    // this.getSpot();
   },
-  mounted() {},
+  onLoad() {
+
+    var that = this;
+    var key = 'f8a1f49bfc110fe1fb27f66d31ae51e6';//web key
+    var myAmapFun = new amapFile.AMapWX({key: '77e91d24d844c4829f423939f5df930b'});
+    myAmapFun.ImageLayer({
+      url:'https://gw.alicdn.com/tfs/TB1JlSPn7zoK1RjSZFlXXai4VXa-2835-2835.jpg',
+      bounds: myAmapFun.Bounds(
+        [116.451028, 39.949643],   //左下角
+        [116.471028, 39.929643]    //右上角
+      ),
+      zooms: [15, 18]
+    })
+  },
   onReady() {
     this.x = -1400;
     this.y = -900;
@@ -212,182 +262,52 @@ export default {
 </script>
 
 <style scoped lang="less">
-.center {
+.flex-style{
+  display: -webkit-box;
+  display: -webkit-flex;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
 }
-#mid {
-  width: 10px;
-  height: 10px;
-  background: red;
-  position: absolute;
-  top: 1000rpx;
-  left: 430rpx;
-  z-index: 99999;
-}
-.container {
-  width: 100%;
-  position: relative;
-  z-index: 2;
-  margin-top: 20rpx;
-}
-.map-tab {
-  height: 150rpx;
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  margin: auto;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  background: #d5aa80;
-  z-index: 99;
-  &-item {
-    width: 100rpx;
-    height: 110rpx;
-    img {
-      width: 100%;
-      height: 100%;
-      display: block;
-    }
-  }
-}
-.index-bg {
-  width: auto;
-  height: auto;
-  background: #d1a77f;
-  .mapImg {
-    width: 3753rpx;
-    height: 3753rpx;
-  }
-}
-.spot-window {
-  position: absolute;
-  z-index: 999;
-  width: 248rpx;
-  height: 248rpx;
-  border: 6rpx solid #bc8d5d;
-  // background: #00baea;
-  background: url("https://gw.alicdn.com/tfs/TB1Mxiei4TpK1RjSZR0XXbEwXXa-248-248.png")
-    no-repeat center/cover;
-  border-radius: 40rpx;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  &-text {
-    font-size: 26rpx;
-    color: #fff;
-    line-height: 90rpx;
-  }
-  &-img {
-    width: 220rpx;
-    height: 144rpx;
-    border-radius: 24rpx;
-  }
-}
-.active-spot {
-  width: 40rpx;
-  height: 30rpx;
-  margin: auto;
-}
-.spot-icon {
-  width: 36rpx;
-  height: 36rpx;
-  line-height: 36rpx;
-  background: yellow;
-  position: absolute;
-  z-index: 888;
+.flex-item{
+  height: 35px; 
+  line-height: 35px;
   text-align: center;
-  color: #292770;
-  font-size: 28rpx;
-  border-radius: 50%;
-  border: 1px solid #a8368e;
-  // border:1px solid yellow;
+  -webkit-box-flex: 1;
+  -webkit-flex: 1;
+  flex: 1
 }
-.changeBG {
-  background: #a8368e;
+.flex-item.active{
+  color:#0091ff;
+}
+.map_box{
+  position:absolute;
+  top: 35px;
+  bottom: 90px;
+  left: 0px;
+  right: 0px;
+}
+#navi_map{
+  width: 100%;
+  height: 100%;
+}
+.text_box{
+  position:absolute;
+  height: 90px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+}
+.text_box .text{
+  margin: 15px;
+}
+.detail_button{
+  position:absolute;
+  bottom: 30px;
+  right: 10px;
+  padding: 3px 5px;
   color: #fff;
-  border: yellow;
-}
-.index-tab {
-  position: fixed;
-  top: 15rpx;
-  right: 20rpx;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  align-items: center;
-  z-index: 21;
-  &-item {
-    width: 100rpx;
-    height: 110rpx;
-    margin-bottom: 36rpx;
-    position: relative;
-    z-index: 23;
-  }
-  &-line {
-    width: 1px;
-    height: 90%;
-    background-image: url("https://gw.alicdn.com/tfs/TB1B10KmFzqK1RjSZSgXXcpAVXa-2-762.png");
-    background-repeat: repeat-y;
-    background-size: cover;
-    background-position: center;
-    position: absolute;
-    top: 10rpx;
-    right: 32rpx;
-    z-index: 22;
-  }
-  img {
-    width: 100%;
-    height: 100%;
-    display: block;
-  }
-}
-.spot-item-window {
-  width: 522rpx;
-  height: 176rpx;
-  border-bottom: 1px solid #c7c7c7;
-  background: url("https://gw.alicdn.com/tfs/TB1PHRpnCzqK1RjSZPxXXc4tVXa-1809-607.png")
-    no-repeat center/contain;
-  position: absolute;
-  bottom: 60rpx;
-  left: -90rpx;
-  z-index: 30;
-  display: flex;
-  &-pic {
-    width: 136rpx;
-    height: 134rpx;
-    background: #fff;
-    margin: 12rpx 12rpx 0 32rpx;
-  }
-  &-text {
-    width: 280rpx;
-    display: flex;
-    flex-direction: column;
-    color: #101010;
-    text-align: left;
-    overflow: hidden;
-  }
-  &-title {
-    margin-top: 45rpx;
-    font-size: 28rpx;
-    line-height: 40rpx;
-    white-space: nowrap;
-    overflow: hidden;
-  }
-  &-desc {
-    font-size: 20rpx;
-    color: #6f6f6f;
-    line-height: 30rpx;
-    word-break: break-all;
-    text-overflow: ellipsis;
-    display: -webkit-box; /** 对象作为伸缩盒子模型显示 **/
-    -webkit-box-orient: vertical; /** 设置或检索伸缩盒对象的子元素的排列方式 **/
-    -webkit-line-clamp: 2; /** 显示的行数 **/
-    overflow: hidden; /** 隐藏超出的内容 **/
-  }
+  background: #0091ff;
+  width:50px;
+  text-align:center;
+  border-radius:5px;
 }
 </style>
