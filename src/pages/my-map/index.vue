@@ -1,13 +1,13 @@
 <template>
   <div class="container">
-    <!-- <map id="map" :longitude="lng" :latitude="lat" scale="16" 
+    <map id="map" :longitude="lng" :latitude="lat" scale="16" 
     :controls="controls" @controltap="controltap" 
     :markers="markers" @markertap="markertap" 
     :polyline="polyline" @regionchange="regionchange" 
     show-location 
     style="width: 100%; height: 100%;"
-    ></map> -->
-    <view class="flex-style">
+    ></map>
+    <!-- <view class="flex-style">
       <view class="flex-item active" bindtouchstart="goToCar">驾车</view>
       <view class="flex-item" bindtouchstart="goToWalk">步行</view>
       <view class="flex-item" bindtouchstart="goToBus">公交</view>
@@ -21,13 +21,13 @@
       <view class="text">{{distance}}</view>
       <view class="text">{{cost}}</view>
       <view class="detail_button" bindtouchstart="goDetail">详情</view>
-    </view>
+    </view> -->
   </div>
 </template>
 
 <script>
 import { config } from "../../utils/index";
-var amapFile = require('../../utils/amap-wx.js') 
+// var amapFile = require('../../utils/amap-wx.js') 
 
 export default {
   data() {
@@ -238,25 +238,25 @@ export default {
   },
   created() {
     console.log("create");
-    // this.getSpot();
+    this.getSpot();
   },
   onLoad() {
 
-    var that = this;
-    var key = 'f8a1f49bfc110fe1fb27f66d31ae51e6';//web key
-    var myAmapFun = new amapFile.AMapWX({key: '77e91d24d844c4829f423939f5df930b'});
-    myAmapFun.ImageLayer({
-      url:'https://gw.alicdn.com/tfs/TB1JlSPn7zoK1RjSZFlXXai4VXa-2835-2835.jpg',
-      bounds: myAmapFun.Bounds(
-        [116.451028, 39.949643],   //左下角
-        [116.471028, 39.929643]    //右上角
-      ),
-      zooms: [15, 18]
-    })
+    // var that = this;
+    // var key = 'f8a1f49bfc110fe1fb27f66d31ae51e6';//web key
+    // var myAmapFun = new amapFile.AMapWX({key: '77e91d24d844c4829f423939f5df930b'});
+    // myAmapFun.ImageLayer({
+    //   url:'https://gw.alicdn.com/tfs/TB1JlSPn7zoK1RjSZFlXXai4VXa-2835-2835.jpg',
+    //   bounds: myAmapFun.Bounds(
+    //     [116.451028, 39.949643],   //左下角
+    //     [116.471028, 39.929643]    //右上角
+    //   ),
+    //   zooms: [15, 18]
+    // })
   },
   onReady() {
-    this.x = -1400;
-    this.y = -900;
+    // this.x = -1400;
+    // this.y = -900;
   }
 };
 </script>

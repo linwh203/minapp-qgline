@@ -1,6 +1,17 @@
 <template>
+  <!-- <div class="container">
+  <img
+    mode="scaleToFill"
+    id="map"
+    src="https://gw.alicdn.com/tfs/TB1JlSPn7zoK1RjSZFlXXai4VXa-2835-2835.jpg"
+    @touchstart="touchStartHandle"
+    @touchmove="touchMoveHandle"
+    @load="load"
+    :style="{width:touch.scaleWidth+'px',height:touch.scaleHeight+'px',transform:'translate(-'+top+'px,-'+y+'px)'}"
+  > -->
+  
   <movable-area class="container">
-    <movable-view class="index-bg" :scale="false" :x="x" :y="y" :animation="false" scale-max="1.2" scale-min="1" direction="all"  @scale="startScale" @change="startTouch" >
+    <movable-view id="map" class="index-bg" :scale="true" :x="x" :y="y" :animation="false" scale-max="2" scale-min="1" direction="all"  @scale="startScale" @change="startTouch" >
       <img class="mapImg" src="https://gw.alicdn.com/tfs/TB1JlSPn7zoK1RjSZFlXXai4VXa-2835-2835.jpg" alt="" >
       <div class="spot-icon"  :class="activeSpot == index?'changeBG':''" v-for="(item,index) in spotList" :key="item.sortNo"
             @click="showWindow(index)" :style="{top:item.top+'rpx',left:item.left+'rpx',transform:'scale('+spotScale+')'}">
@@ -15,9 +26,6 @@
       </div>
     </movable-view>
     <div class="index-tab">
-      <!-- <div class="index-tab-item icon-map" @click="bindTab('../index/main')" >
-        <img src="https://gw.alicdn.com/tfs/TB1hOhEmMDqK1RjSZSyXXaxEVXa-90-101.png" alt="">
-      </div> -->
       <div class="index-tab-item icon-list" @click="bindTab('../index/main')">
         <img src="https://gw.alicdn.com/tfs/TB1gqFKmHvpK1RjSZFqXXcXUVXa-91-101.png">
       </div>
@@ -39,6 +47,7 @@
       <div class="index-tab-line"></div>
     </div>
   </movable-area>
+  <!-- </div> -->
 </template>
 
 <script>
@@ -47,13 +56,21 @@ import { config } from "../../utils/index";
 export default {
   data() {
     return {
+      touch: {
+        distance: 0,
+        scale: 1,
+        baseWidth: null,
+        baseHeight: null,
+        scaleWidth: null,
+        scaleHeight: null
+      },
       spotList: [],
       activeSpot: 0,
       activeWindow: -1,
       x: 0,
       y: 0,
-      left:0,
-      top:0,
+      left: 0,
+      top: 0,
       mapStart: {
         lng: 114.32751775,
         lat: 22.63737202
@@ -90,13 +107,69 @@ export default {
   components: {},
 
   methods: {
+    touchStartHandle(e) {
+
+      // 单手指缩放开始，也不做任何处理
+      if (e.mp.touches.length == 1) {
+        console.log("单滑了");
+        return;
+      }
+      console.log("双手指触发开始");
+      // 注意touchstartCallback 真正代码的开始
+      // 一开始我并没有这个回调函数，会出现缩小的时候有瞬间被放大过程的bug
+      // 当两根手指放上去的时候，就将distance 初始化。
+      let xMove = e.mp.touches[1].clientX - e.mp.touches[0].clientX;
+      let yMove = e.mp.touches[1].clientY - e.mp.touches[0].clientY;
+      let distance = Math.sqrt(xMove * xMove + yMove * yMove);
+      this.touch.distance = distance
+    },
+    touchMoveHandle(e) {
+      let touch = this.touch;
+      // 单手指缩放我们不做任何操作
+      if (e.mp.touches.length == 1) {
+        console.log("单滑了");
+        return;
+      }
+      console.log("双手指运动开始");
+      let xMove = e.mp.touches[1].clientX - e.mp.touches[0].clientX;
+      let yMove = e.mp.touches[1].clientY - e.mp.touches[0].clientY;
+      // 新的 ditance
+      let distance = Math.sqrt(xMove * xMove + yMove * yMove);
+      let distanceDiff = distance - touch.distance;
+      let newScale = touch.scale + 0.005 * distanceDiff;
+      // 为了防止缩放得太大，所以scale需要限制，同理最小值也是
+      if (newScale >= 2) {
+        newScale = 2;
+      }
+      if (newScale <= 0.6) {
+        newScale = 0.6;
+      }
+      let scaleWidth = newScale * touch.baseWidth;
+      let scaleHeight = newScale * touch.baseHeight;
+      this.left = xMove * newScale
+      this.top = yMove * newScale
+
+      // 赋值 新的 => 旧的
+      this.touch.distance = distance
+      this.touch.scale = newScale
+      this.touch.scaleWidth = scaleWidth
+      this.touch.scaleHeight = scaleHeight
+      this.touch.diff = distanceDiff
+    },
+    load: function(e) {
+      // bindload 这个api是<image>组件的api类似<img>的onload属性
+      this.touch.baseWidth = e.mp.detail.width;
+      this.touch.baseHeight = e.mp.detail.height;
+      this.touch.scaleWidth = e.mp.detail.width;
+      this.touch.scaleHeight = e.mp.detail.height;
+    },
     startScale(e) {
       console.log("start scale", e);
       let detail = e.mp.detail;
       let scale = detail.scale;
-      if(scale > 1) {
-        // this.x = e.x;
-        // this.y = e.y;
+      if (scale > 1) {
+        // this.x = e.x * (scale - 0.05);
+        // this.y = e.y * (scale - 0.05);
       }
       return;
     },
@@ -122,7 +195,7 @@ export default {
     distance(item) {
       let x = this.locate(this.Xstart, this.Xend);
       let y = this.locate(this.Ystart, this.Yend);
-      let width = 5630;
+      let width = 3735;
       let spotX = {},
         spotY = {};
       spotX.lng = this.Xstart.lng;
@@ -255,8 +328,8 @@ export default {
   },
   mounted() {},
   onReady() {
-    this.x = -1400;
-    this.y = -900;
+    // this.x = -2100;
+    // this.y = -1600;
   }
 };
 </script>
@@ -310,8 +383,8 @@ export default {
   height: auto;
   background: #d1a77f;
   .mapImg {
-    width: 5630rpx;
-    height: 5630rpx;
+    width: 3735rpx;
+    height: 3735rpx;
   }
 }
 
@@ -337,7 +410,7 @@ export default {
   background: #a8368e;
   color: #fff;
   border: yellow;
-  z-index:1000;
+  z-index: 1000;
 }
 .index-tab {
   position: fixed;
