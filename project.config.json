@@ -41,7 +41,7 @@
 				{
 					"id": 1,
 					"name": "问答",
-					"pathName": "pages/list/main",
+					"pathName": "pages/index-sg/main",
 					"query": ""
 				}
 			]

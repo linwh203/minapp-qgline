@@ -211,15 +211,15 @@ export default {
           this.activeIndex = 1;
           break;
         case 2:
-          top = 750;
+          top = this.isIP5 ? 650 : 750;
           this.activeIndex = 15;
           break;
         case 3:
-          top = 1760;
+          top = this.isIP5 ? 1560 : 1760;
           this.activeIndex = 34;
           break;
         case 4:
-          top = 4000;
+          top = this.isIP5 ? 3400 : 4000;
           this.activeIndex = 71;
           break;
       }

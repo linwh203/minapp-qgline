@@ -218,19 +218,19 @@ export default {
           this.activeIndex = 1;
           break;
         case 2:
-          top = 1100;
+          top = this.isIP5 ? 1000 : 1100;
           this.activeIndex = 20;
           break;
         case 3:
-          top = 1800;
+          top = this.isIP5 ? 1600 : 1800;
           this.activeIndex = 32;
           break;
         case 4:
-          top = 2700;
+          top = this.isIP5 ? 2350 : 2700;
           this.activeIndex = 47;
           break;
         case 5:
-          top = 3700;
+          top = this.isIP5 ? 3200 : 3700;
           this.activeIndex = 64;
           break;
       }
