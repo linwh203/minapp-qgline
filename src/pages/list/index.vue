@@ -9,7 +9,10 @@
           <div class="nav-item video" @click="goVideo"></div>
           <div class="point"></div>
           <div class="nav-item note" v-if="false"></div>
-          <div class="nav-item share" @click="showShareBox"></div>
+          <!-- <button class="nav-item share" style="margin-left:0;margin-right:0;" open-type="share"></button> -->
+          <div class="nav-item share">
+            <button style="width:100%;height:100%;opacity:0;padding:0;" open-type="share"></button>
+          </div>
         </div>
         <div class="nav-line"></div>
       </div>
