@@ -391,7 +391,8 @@ export default {
     },
     _getMarginYDict() {
       return [
-        0.8,
+        // 0.8, 六边形高度增加，微调一下
+        0.2,
         7,
         13.2,
         19.5,
@@ -471,16 +472,16 @@ export default {
   &-first {
     position: relative;
     z-index: 2;
-    width: 64rpx;
-    height: 64rpx;
-    line-height: 64rpx;
+    width: 70rpx;
+    height: 82rpx;
+    line-height: 82rpx;
     text-align: center;
     color: #fff;
     font-size: 34rpx;
     background: url("https://gw.alicdn.com/tfs/TB1LC9gmH2pK1RjSZFsXXaNlXXa-60-70.png")
-      no-repeat center/contain;
+      no-repeat center/100%;
     margin-bottom: 7%;
-    margin-left: 55%;
+    margin-left: 54%;
     &-window {
       width: 522rpx;
       height: 176rpx;
@@ -535,7 +536,7 @@ export default {
   &-item.active {
     position: relative;
     background: url("https://gw.alicdn.com/tfs/TB1b7gKnmrqK1RjSZK9XXXyypXa-60-68.png")
-      no-repeat center/contain;
+      no-repeat center/100%;
   }
   &-first.active:after,
   &-item.active:after {
@@ -547,21 +548,21 @@ export default {
     right: 0;
     top: 0;
     background: url("https://gw.alicdn.com/tfs/TB1.uXenxnaK1RjSZFBXXcW7VXa-28-24.png")
-      no-repeat center/cover;
+      no-repeat center/100%;
   }
   &-item {
     // position: relative;
     position: absolute;
     z-index: 30;
-    width: 64rpx;
-    height: 64rpx;
-    line-height: 64rpx;
+    width: 70rpx;
+    height: 82rpx;
+    line-height: 82rpx;
     text-align: center;
     color: #fff;
     font-size: 34rpx;
     background: url("https://gw.alicdn.com/tfs/TB1LC9gmH2pK1RjSZFsXXaNlXXa-60-70.png")
-      no-repeat center/contain;
-    margin-bottom: 7.37%;
+      no-repeat center/100%;
+    margin-bottom: 7.27%;
     &-window {
       width: 522rpx;
       height: 176rpx;
@@ -569,7 +570,7 @@ export default {
       background: url("https://gw.alicdn.com/tfs/TB1PHRpnCzqK1RjSZPxXXc4tVXa-1809-607.png")
         no-repeat center/contain;
       position: absolute;
-      bottom: 90rpx;
+      bottom: 106rpx;
       z-index: 30;
       display: flex;
       &-pic {
@@ -781,5 +782,8 @@ export default {
 }
 .rotate {
   transform: rotate(180deg);
+}
+#spot1{
+  margin-left: 52%;
 }
 </style>

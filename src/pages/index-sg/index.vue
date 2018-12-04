@@ -379,7 +379,7 @@ export default {
     },
     _getMarginYDict() {
       return [
-        0.8,
+        0.2,
         7.3,
         14.1,
         20.7,
@@ -537,14 +537,14 @@ export default {
   &-item {
     position: absolute;
     z-index: 30;
-    width: 64rpx;
-    height: 64rpx;
-    line-height: 64rpx;
+    width: 70rpx;
+    height: 82rpx;
+    line-height: 82rpx;
     text-align: center;
     color: #fff;
     font-size: 34rpx;
     background: url("https://gw.alicdn.com/tfs/TB1LC9gmH2pK1RjSZFsXXaNlXXa-60-70.png")
-      no-repeat center/contain;
+      no-repeat center/100%;
     margin-bottom: 8.02%;
     &-window {
       width: 522rpx;
@@ -553,7 +553,7 @@ export default {
       background: url("https://gw.alicdn.com/tfs/TB1PHRpnCzqK1RjSZPxXXc4tVXa-1809-607.png")
         no-repeat center/contain;
       position: absolute;
-      bottom: 90rpx;
+      bottom: 106rpx;
       z-index: 30;
       display: flex;
       &-pic {
@@ -670,6 +670,9 @@ export default {
   &-bg {
     width: 100%;
   }
+}
+#spot1{
+  margin-left: 52%;
 }
 .index-tab {
   position: fixed;
