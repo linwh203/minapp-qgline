@@ -1,6 +1,5 @@
 {
   "pages": [
-    
     "pages/index/main",
     "pages/index-sg/main",
     "pages/map/main",
@@ -21,7 +20,8 @@
     "pages/my-about/main",
     "pages/my-suggest/main",
     "pages/logs/main",
-    "pages/counter/main"
+    "pages/counter/main",
+    "pages/webview/main"
   ],
   "window": {
     "backgroundTextStyle": "light",

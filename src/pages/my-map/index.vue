@@ -279,6 +279,7 @@ export default {
   color:#0091ff;
 }
 .map_box{
+  height:80%;
   position:absolute;
   top: 35px;
   bottom: 90px;
