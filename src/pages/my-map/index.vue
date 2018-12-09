@@ -1,60 +1,88 @@
 <template>
   <div class="container">
-    <!-- <map id="map" :longitude="lng" :latitude="lat" scale="16" 
-    :controls="controls" @controltap="controltap" 
-    :markers="markers" @markertap="markertap" 
-    :polyline="polyline" @regionchange="regionchange" 
-    show-location 
-    style="width: 100%; height: 100%;"
-    ></map> -->
-    <view class="flex-style">
-      <view class="flex-item active" bindtouchstart="goToCar">驾车</view>
-      <view class="flex-item" bindtouchstart="goToWalk">步行</view>
-      <view class="flex-item" bindtouchstart="goToBus">公交</view>
-      <view class="flex-item" bindtouchstart="goToRide">骑行</view>
-    </view>
-    <view class="map_box">
-      <map id="navi_map" longitude="116.451028" latitude="39.949643" scale="12" :markers="markers" :polyline="polyline"></map>
-    </view>
-
-    <view class="text_box">
-      <view class="text">{{distance}}</view>
-      <view class="text">{{cost}}</view>
-      <view class="detail_button" bindtouchstart="goDetail">详情</view>
-    </view>
+    <map
+      id="map"
+      :longitude="lng"
+      :latitude="lat"
+      scale="20"
+      :controls="controls"
+      :markers="markers"
+      :polyline="polyline"
+      show-location
+      style="width: 100%; height: 100%;"
+      @click="touchMap"
+      @markertap="touchMarker"
+    >
+      <!-- <cover-view>
+        <cover-image src="https://gw.alicdn.com/tfs/TB1JlSPn7zoK1RjSZFlXXai4VXa-2835-2835.jpg"></cover-image>
+      </cover-view>-->
+    </map>
+    <div class="modal">
+      <div
+        v-if="currSpot"
+        class="spot-item-window"
+        :class="'window-'+currSpot.sortNo"
+        @click="viewDetail(currSpot)"
+      >
+        <div class="left"></div>
+        <img
+          class="spot-item-window-pic"
+          :src="prefix + currSpot.spot_coverurl"
+          v-if="currSpot.spot_coverurl"
+        >
+        <div class="spot-item-window-text">
+          <div class="spot-item-window-title">{{currSpot.spot_title}}</div>
+          <div class="spot-item-window-desc">{{currSpot.spot_describe}}</div>
+        </div>
+        <div class="right"></div>
+      </div>
+    </div>
+    <div class="message" v-if="isShowOutTip">您当前不在研习径范围内,不能进行定位讲解</div>
   </div>
 </template>
 
 <script>
 import { config } from "../../utils/index";
-var amapFile = require('../../utils/amap-wx.js') 
+var amapFile = require("../../utils/amap-wx.js");
 
 export default {
   data() {
     return {
-      //  longitude: 113.3245211,
-      //   latitude: 23.10229
-      lng: 114.32751775,
-      lat: 22.63737202,
+      lng: 0,
+      lat: 0,
+      prefix: config.prefix,
+      // 查询的类型,"自然线"或者"诗歌线"
+      queryType: 0,
+      // 当前spot
+      currSpot: undefined,
       controls: [],
-      markers: [{
-        iconPath: "https://gw.alicdn.com/tfs/TB18fNUqSzqK1RjSZPcXXbTepXa-74-67.png",
-        id: 0,
-        latitude: 39.989643,
-        longitude: 116.481028,
-        width: 23,
-        height: 33
-      },{
-        iconPath: "https://gw.alicdn.com/tfs/TB1Z6iGn6TpK1RjSZKPXXa3UpXa-74-66.png",
-        id: 0,
-        latitude: 39.90816,
-        longitude: 116.434446,
-        width: 24,
-        height: 34
-      }],
-      distance: '',
-      cost: '',
-      polyline: []
+      markers: [],
+      distance: "",
+      cost: "",
+      polyline: [],
+      spotList: [],
+      // audio
+      innerAudioContext: undefined,
+      // 是否是主动播放
+      isActivePlay: false,
+      // 尝试主动播放的标记
+      isTryActivePlay: false,
+      // 是否在播放
+      isPlaying: false,
+
+      // position
+      tForPosition: 0,
+      hasShowOutTip: false,
+      isShowOutTip: false,
+      mapStart: {
+        lng: 114.49358,
+        lat: 22.61034
+      },
+      mapEnd: {
+        lng: 114.50023,
+        lat: 22.59959
+      },
+      person: undefined
     };
   },
   computed: {},
@@ -62,253 +90,323 @@ export default {
   components: {},
 
   methods: {
-    startScale(e) {
-      let detail = e.mp.detail;
-      let scale = detail.scale;
-      console.log("start scale", scale);
-      this._x = detail.x;
-      this._y = detail.y;
-      this._spotScale = 1 / scale;
-
-      if (this._tScale) {
-        clearTimeout(this._tScale);
+    // 去浏览spot的详细界面
+    viewDetail(spot) {
+      wx.navigateTo({ url: "../list/main?spot_index=" + spot.sortNo });
+    },
+    getSpot(queryType) {
+      let queryTypeStr = queryType === 0 ? "NatrueList" : "PoetryList";
+      let storageName, queryUrl;
+      if (queryType === 0) {
+        storageName = "NatrueList";
+        queryUrl = config.base + "attraction/NaturalList";
+      } else {
+        storageName = "PoetryList";
+        queryUrl = config.base + "attraction/PoetryList";
       }
-      this._tScale = setTimeout(() => {
-        this.spotScale = this._spotScale;
-        this.x = this._x;
-        this.y = this._y;
-      }, 100);
-    },
-    startTouch(e) {
-      let detail = e.mp.detail;
-      this._x = detail.x;
-      this._y = detail.y;
-    },
-    setStorage(key, val) {
-      try {
-        wx.setStorageSync(key, val);
-      } catch (e) {
-        wx.setStorage(key, val);
-      }
-    },
-    getStorage(key) {
-      try {
-        wx.getStorageSync(key);
-      } catch (e) {
-        wx.getStorage(key);
-      }
-    },
-    distance(item) {
-      let x = this.locate(this.Xstart, this.Xend);
-      let y = this.locate(this.Ystart, this.Yend);
-      let width = 3753;
-      let spotX = {},
-        spotY = {};
-      spotX.lng = this.Xstart.lng;
-      spotX.lat = item.latitude;
-      let left = this.locate(this.Xstart, spotX);
-      spotY.lng = item.longitude;
-      spotY.lat = this.Ystart.lat;
-      let top = this.locate(this.Ystart, spotY);
-      let result = {
-        top: left * width / x,
-        left: top * width / y
-      };
-      return result;
-    },
-    bindTab(url) {
-      wx.navigateTo({ url: url });
-    },
-    viewDetail(item) {
-      const index = this.activeSpot < 0 ? 0 : this.activeSpot;
-      wx.navigateTo({ url: "../list/main?spot_index=" + index });
-    },
-    showWindow(index) {
-      this.activeWindow == index
-        ? (this.activeWindow = -1)
-        : (this.activeWindow = index);
-      this.activeSpot == index
-        ? (this.activeSpot = -1)
-        : (this.activeSpot = index);
-      this.x = this._x;
-      this.y = this._y;
-      console.log(this.spotList);
-      console.log(this.spotList[index]);
-      return;
-      if (index < 12) {
-        this.x = -1400;
-        this.y = -900;
-      } else if (index < 15 && index > 11) {
-        this.x = -300;
-        this.y = -1900;
-      } else if (index == 15) {
-        this.x = -1199;
-        this.y = -247;
-      } else if (index > 15 && index <= 33) {
-        this.x = -176;
-        this.y = -455;
-      } else if (index > 33 && index <= 40) {
-        this.x = -307;
-        this.y = -138;
-      } else if (index > 40 && index <= 51) {
-        this.x = -485;
-        this.y = -276;
-      } else if (index > 51 && index <= 59) {
-        this.x = -590;
-        this.y = -676;
-      } else if (index > 59 && index <= 66) {
-        this.x = -772;
-        this.y = -739;
-      } else if (index > 66 && index <= 73) {
-        this.x = -1022;
-        this.y = -384;
-      } else if (index > 73 && index <= 81) {
-        this.x = -1199;
-        this.y = -247;
-      } else if (index == 82) {
-        this.x = -176;
-        this.y = -455;
-      }
-    },
-    locate(point1, point2) {
-      function rad(d) {
-        return d * Math.PI / 180.0; //经纬度转换成三角函数中度分表形式。
-      }
-      let radLat1 = rad(point1.lat);
-      let radLat2 = rad(point2.lat);
-      let a = radLat1 - radLat2;
-      let b = rad(point1.lng) - rad(point2.lng);
-      let s =
-        2 *
-        Math.asin(
-          Math.sqrt(
-            Math.pow(Math.sin(a / 2), 2) +
-              Math.cos(radLat1) *
-                Math.cos(radLat2) *
-                Math.pow(Math.sin(b / 2), 2)
-          )
-        );
-      s = s * 6378.137;
-      // EARTH_RADIUS;
-      s = Math.round(s * 10000) / 10000;
-      // console.log(s)
-      return s;
-    },
-    getSpot() {
-      const self = this;
-      const storageData = wx.getStorageSync("NatureList");
-      let processData = data => {
-        this.markers = data.map((item, index) => {
-          // console.log(index);
-          return {
-            id: index,
-            title: item.spot_title,
-            longitude: item.longitude,
-            latitude: item.latitude,
-            // callout: {
-            //   content: item.spot_title
-            // },
-            label: {
-              content: item.spot_name
-            }
-          };
+      return new Promise(resolve => {
+        const storageData = wx.getStorageSync(storageName);
+        if (storageData) {
+          this.spotList = storageData;
+          resolve();
+          return;
+        }
+        wx.request({
+          url: queryUrl, //开发者服务器接口地址",
+          data: {
+            lineId: config.lineId
+          }, //请求的参数",
+          method: "GET",
+          dataType: "json", //如果设为json，会尝试对返回的数据做一次 JSON.parse
+          success: res => {
+            // console.log(res)
+            let data = res.data.data;
+            this.setStorage(storageName, data);
+            this.spotList = data;
+            resolve();
+          },
+          fail: () => {},
+          complete: () => {}
         });
-      };
-      if (storageData) {
-        processData(storageData);
-        return;
-      }
-      wx.request({
-        url: config.base + "attraction/NaturalList", //开发者服务器接口地址",
-        data: {
-          lineId: config.lineId
-        }, //请求的参数",
-        method: "GET",
-        dataType: "json", //如果设为json，会尝试对返回的数据做一次 JSON.parse
-        success: res => {
-          // console.log(res)
-          let data = res.data.data;
-          this.setStorage("NatureList", data);
-          processData(data);
-        },
-        fail: () => {},
-        complete: () => {}
       });
-    }
+    },
+    createMarkers(spotList) {
+      console.log("create Markers");
+      this.markers = spotList.map(n => {
+        return {
+          id: n.sortNo,
+          title: n.spot_name,
+          longitude: n.longitude,
+          latitude: n.latitude,
+          iconPath: "../../assets/spot-gray.png",
+          callout: {
+            content: n.spot_title,
+            color: "#ff0000",
+            bgColor: "333333"
+          },
+          label: {
+            content: n.spot_name
+          }
+        };
+      });
+      this.person = {
+        id: 999,
+        longitude: 0,
+        latitude: 0,
+        iconPath: "../../assets/icon-avator.png"
+      };
+      this.markers.pus(this.person);
+    },
+    // 寻找一个合适的当前spot
+    // 如果不在目标区域内,则放弃
+    // 否则,就找个最近的
+    findCurrSpot(spotList) {
+      console.log("find current spot");
+      this.activeSpot(1);
+    },
+    touchMap(e) {
+      console.log(e);
+      this.stopAudio();
+    },
+    touchMarker(e) {
+      console.log("touch marker");
+      console.log(e);
+      let markerId = e.mp.markerId;
+
+      this.isTryActivePlay = true;
+      this.activeSpot(markerId);
+    },
+    activeSpot(spotId) {
+      // 反激活
+      if (this.currSpot) {
+        let ma = this.markers.find(n => n.id == this.currSpot.sortNo);
+        ma.iconPath = "../../assets/spot-gray.png";
+      }
+
+      // 激活
+      this.currSpot = this.spotList.find(n => n.sortNo == spotId);
+      let ma = this.markers.find(n => n.id == spotId);
+      ma.iconPath = "../../assets/spot-highlight.png";
+
+      // 激活audio的播放
+      this.playAudio(this.currSpot.spot_id);
+    },
+    // 播放音频
+    playAudio(spotId) {
+      new Promise(resolve => {
+        wx.request({
+          url: config.base + "attraction/listdetail", //开发者服务器接口地址",
+          data: {
+            spot_id: spotId
+          }, //请求的参数",
+          method: "GET",
+          dataType: "json", //如果设为json，会尝试对返回的数据做一次 JSON.parse
+          success: res => {
+            console.log(res.data.data);
+            let data = res.data.data;
+            resolve(data.audio_url);
+          },
+          fail: () => {
+            resolve(null);
+          },
+          complete: () => {}
+        });
+      }).then(audioUrl => {
+        if (audioUrl) {
+          this.innerAudioContext.src = config.prefix + audioUrl;
+          this.innerAudioContext.play();
+          console.log(this.innerAudioContext.src, "play audio");
+        }
+      });
+    },
+    stopAudio() {
+      this.innerAudioContext && this.innerAudioContext.stop();
+    },
+    initAudio() {
+      // 初始化audio
+      this.innerAudioContext = wx.createInnerAudioContext();
+      console.log(this.innerAudioContext);
+      this.innerAudioContext.onPlay(() => {
+        console.log("audio event: play");
+        this.isPlaying = true;
+        if (this.isTryActivePlay) {
+          this.isActivePlay = true;
+          this.isTryActivePlay = false;
+        }
+      });
+
+      this.innerAudioContext.onStop(() => {
+        console.log("audio event: stop");
+        this.isPlaying = false;
+        this.isTryActivePlay = false;
+        if (this.isActivePlay) {
+          this.isActivePlay = false;
+        }
+      });
+
+      this.innerAudioContext.onEnded(() => {
+        console.log("audio event: ended");
+        this.isPlaying = false;
+        this.isTryActivePlay = false;
+        if (this.isActivePlay) {
+          this.isActivePlay = false;
+        }
+      });
+    },
+    getPosition() {
+      return new Promise(resolve => {
+        wx.getLocation({
+          type: "wgs84", //默认为 wgs84 返回 gps 坐标，gcj02 返回可用于wx.openLocation的坐标,
+          success: res => {
+            resolve({ lng: res.longitude, lat: res.latitude });
+          },
+          fail: () => {
+            resolve(null);
+          }
+        });
+      });
+    },
+    isPositionOut(lng, lat) {
+      return (
+        lat < Math.min(this.mapStart.lat, this.mapEnd.lat) ||
+        lat > Math.max(this.mapStart.lat, this.mapEnd.lat) ||
+        lng < Math.min(this.mapStart.lng, this.mapEnd.lng) ||
+        lng > Math.max(this.mapStart.lng, this.mapEnd.lng)
+      );
+    },
+    // 设置小人的位置
+    setPersonPosition(posi) {
+      this.person.longitude = posi.lng;
+      this.person.latitude = posi.lat;
+    },
+    // 寻找最新点
+    findNearSpot(posi) {}
   },
   created() {
     console.log("create");
-    // this.getSpot();
-  },
-  onLoad() {
 
-    var that = this;
-    var key = 'f8a1f49bfc110fe1fb27f66d31ae51e6';//web key
-    var myAmapFun = new amapFile.AMapWX({key: '77e91d24d844c4829f423939f5df930b'});
-    myAmapFun.ImageLayer({
-      url:'https://gw.alicdn.com/tfs/TB1JlSPn7zoK1RjSZFlXXai4VXa-2835-2835.jpg',
-      bounds: myAmapFun.Bounds(
-        [116.451028, 39.949643],   //左下角
-        [116.471028, 39.929643]    //右上角
-      ),
-      zooms: [15, 18]
-    })
+    this.initAudio();
+
+    this.getSpot().then(() => {
+      if (this.spotList) {
+        this.lng = this.spotList[0].longitude;
+        this.lat = this.spotList[0].latitude;
+      }
+      this.createMarkers(this.spotList);
+      this.findCurrSpot(this.spotList);
+    });
   },
-  onReady() {
-    this.x = -1400;
-    this.y = -900;
+  onLoad(options) {
+    console.log(options);
+  },
+  onShow() {
+    // 轮询坐标
+    this.tForPosition = setInterval(() => {
+      this.getPosition().then(posi => {
+        if (posi) {
+          if (!this.hasShowOutTip) {
+            if (this.isPositionOut(posi.lng, posi.lat)) {
+              this.isShowOutTip = true;
+              this.hasShowOutTip = true;
+              setTimeout(() => {
+                this.isShowOutTip = false;
+              }, 2000);
+            }
+          }
+          // 设置小人的坐标
+          this.setPersonPosition(posi);
+          // 寻找距离本人较近的spot
+          this.findNearSpot(posi);
+        }
+      });
+    }, 5000);
+  },
+  onHide() {
+    // 清除轮询的句柄
+    clearInterval(this.tForPosition);
   }
 };
 </script>
 
 <style scoped lang="less">
-.flex-style{
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: flex;
+.container {
+  .modal {
+    position: fixed;
+    bottom: 0rpx;
+    width: 100%;
+    height: 176rpx;
+  }
+
+  .spot-item-window {
+    width: 522rpx;
+    height: 176rpx;
+    border-bottom: 1px solid #c7c7c7;
+    background: url("https://gw.alicdn.com/tfs/TB1PHRpnCzqK1RjSZPxXXc4tVXa-1809-607.png")
+      no-repeat center/contain;
+    position: absolute;
+    z-index: 999;
+    display: flex;
+    .left {
+      background: url("../../assets/box-left.png") no-repeat;
+    }
+    &-pic {
+      width: 136rpx;
+      height: 134rpx;
+      background: #fff;
+      margin: 12rpx 12rpx 0 32rpx;
+    }
+    &-text {
+      width: 280rpx;
+      display: flex;
+      flex-direction: column;
+      color: #101010;
+      text-align: left;
+      overflow: hidden;
+    }
+    &-title {
+      margin-top: 45rpx;
+      font-size: 28rpx;
+      line-height: 40rpx;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+    &-desc {
+      font-size: 20rpx;
+      color: #6f6f6f;
+      line-height: 30rpx;
+      word-break: break-all;
+      text-overflow: ellipsis;
+      display: -webkit-box; /** 对象作为伸缩盒子模型显示 **/
+      -webkit-box-orient: vertical; /** 设置或检索伸缩盒对象的子元素的排列方式 **/
+      -webkit-line-clamp: 2; /** 显示的行数 **/
+      overflow: hidden; /** 隐藏超出的内容 **/
+    }
+  }
 }
-.flex-item{
-  height: 35px; 
-  line-height: 35px;
-  text-align: center;
-  -webkit-box-flex: 1;
-  -webkit-flex: 1;
-  flex: 1
-}
-.flex-item.active{
-  color:#0091ff;
-}
-.map_box{
-  height:80%;
-  position:absolute;
-  top: 35px;
-  bottom: 90px;
-  left: 0px;
-  right: 0px;
-}
-#navi_map{
-  width: 100%;
-  height: 100%;
-}
-.text_box{
-  position:absolute;
-  height: 90px;
-  bottom: 0px;
-  left: 0px;
-  right: 0px;
-}
-.text_box .text{
-  margin: 15px;
-}
-.detail_button{
-  position:absolute;
-  bottom: 30px;
-  right: 10px;
-  padding: 3px 5px;
-  color: #fff;
-  background: #0091ff;
-  width:50px;
-  text-align:center;
-  border-radius:5px;
+.message {
+  @w: 80vw;
+  @h: 20vh;
+  width: @w;
+  height: @h;
+  position: absolute;
+  top: calc(50% - @h / 2);
+  left: calc(50% - @w / 2);
+  background-color: black;
+  opacity: 0.6;
+  color: white;
+  padding: 5% 15% 0;
+  box-sizing: border-box;
+  &-close {
+    position: absolute;
+    @size: 50rpx;
+    width: @size;
+    height: @size;
+    right: 20rpx;
+    top: 20rpx;
+    img {
+      width: 100%;
+      height: 100%;
+    }
+  }
 }
 </style>
