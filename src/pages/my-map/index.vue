@@ -9,13 +9,23 @@
       :markers="markers"
       :polyline="polyline"
       show-location
-      style="width: 100%; height: 100%;"
+      style="width: 100%; height:calc(100% - 176rpx)"
       @click="touchMap"
       @markertap="touchMarker"
     >
       <!-- <cover-view>
         <cover-image src="https://gw.alicdn.com/tfs/TB1JlSPn7zoK1RjSZFlXXai4VXa-2835-2835.jpg"></cover-image>
       </cover-view>-->
+      <cover-view class="message" v-if="isShowOutTip">
+        <cover-view>您当前不在研习径范围内,</cover-view>
+        <cover-view>不能进行定位讲解</cover-view>
+      </cover-view>
+      <cover-view class="reset" @click="resetPosition">
+        <cover-image class="img" src="../../assets/reset.png"/>
+      </cover-view>
+      <!-- <img class="img" src="../../assets/reset.png">
+      <img class="img" src="../../assets/spot-gray.png">
+      <img class="img" src="../../assets/spot-highlight.png">-->
     </map>
     <div class="modal">
       <div
@@ -38,10 +48,6 @@
         </div>
         <img class="right" mode="aspectFit" src="../../assets/box-right.png" alt>
       </div>
-    </div>
-    <div class="message" v-if="isShowOutTip">您当前不在研习径范围内,不能进行定位讲解</div>
-    <div class="reset" @click="resetPosition">
-      <img src="../../assets/reset.png" alt>
     </div>
   </div>
 </template>
@@ -522,26 +528,18 @@ export default {
   color: white;
   padding: 5% 15% 0;
   box-sizing: border-box;
-  &-close {
-    position: absolute;
-    @size: 50rpx;
-    width: @size;
-    height: @size;
-    right: 20rpx;
-    top: 20rpx;
-    img {
-      width: 100%;
-      height: 100%;
-    }
-  }
+  text-align: center;
 }
 .reset {
-  position: fixed;
-  top: 20rpx;
-  left: 40rpx;
+  position: absolute;
+  bottom: 20rpx;
+  right: 40rpx;
   img {
     width: 48rpx;
     height: 48rpx;
   }
+}
+#map {
+  height: 80vh;
 }
 </style>
