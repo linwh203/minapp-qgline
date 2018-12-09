@@ -54,8 +54,10 @@ export default {
   data() {
     return {
       // 调试
-      isMock: true,
-      // isMock:false,
+      // isMock: true,
+      isMock: false,
+      // 地图上下文
+      mapIns: undefined,
       // 人的位置
       lng: 0,
       lat: 0,
@@ -109,7 +111,6 @@ export default {
       wx.navigateTo({ url: "../list/main?spot_index=" + spot.sortNo });
     },
     getSpot(queryType) {
-      let queryTypeStr = queryType === 0 ? "NatrueList" : "PoetryList";
       let storageName, queryUrl;
       if (queryType === 0) {
         storageName = "NatrueList";
@@ -119,6 +120,7 @@ export default {
         queryUrl = config.base + "attraction/PoetryList";
       }
       return new Promise(resolve => {
+        console.log({ storageName });
         const storageData = wx.getStorageSync(storageName);
         if (storageData) {
           this.spotList = storageData;
@@ -135,7 +137,8 @@ export default {
           success: res => {
             // console.log(res)
             let data = res.data.data;
-            this.setStorage(storageName, data);
+            data = typeof data === "string" ? JSON.parse(data) : data;
+            wx.setStorageSync(storageName, data);
             this.spotList = data;
             resolve();
           },
@@ -165,19 +168,15 @@ export default {
       });
       this.person = {
         id: 999,
-        longitude: 0,
-        latitude: 0,
-        iconPath: "../../assets/icon-avator.png"
+        longitude: 114.35762024,
+        latitude: 22.61326927,
+        iconPath: "../../assets/icon-avator.png",
+        width: 40,
+        height: 40
       };
-      this.markers.pus(this.person);
+      this.markers.push(this.person);
     },
-    // 寻找一个合适的当前spot
-    // 如果不在目标区域内,则放弃
-    // 否则,就找个最近的
-    findCurrSpot(spotList) {
-      console.log("find current spot");
-      this.activeSpot(1);
-    },
+
     touchMap(e) {
       console.log(e);
       this.stopAudio();
@@ -195,14 +194,14 @@ export default {
     // 设置焦点坐标,通过markerId
     setFocusePositionBySortNo(sortNo) {
       let spot = this.spotList.find(n => n.sortNo === sortNo);
-      this.setPersonPosition(spot.longitude, spot.latitude);
+      this.setFocusePosition(spot.longitude, spot.latitude);
     },
     // 设置焦点坐标
     setFocusePosition(lng, lat) {
-      this.focus = {
-        lng,
-        lat
-      };
+      if (this.focus.lng !== lng || this.focus.lat !== lat) {
+        console.log("reset focus position");
+        this.focus = { lng, lat };
+      }
     },
     activeSpot(spotId) {
       // 反激活
@@ -304,12 +303,32 @@ export default {
     },
     // 设置小人的位置
     setPersonPosition(posi) {
-      if (
-        this.person.longitude !== posi.lng ||
-        this.person.latitude !== posi.lat
-      ) {
-        this.person.longitude = posi.lng;
-        this.person.latitude = posi.lat;
+      if (this.isMock) {
+        posi = {
+          lng: 114.3576889,
+          lat: 22.61283875
+        };
+      }
+      let { lng, lat } = posi;
+      // console.log("this.mapIns", this.mapIns.getScale + "");
+      // this.mapIns.getScale({
+      //   success: res => {
+      //     console.log("map scale", res.scale);
+      //   },
+      //   fail: res => {
+      //     console.log("map fail", res);
+      //   }
+      // });
+      // this.mapIns.translateMarker({
+      //   markerId: 999,
+      //   destination: {
+      //     longitude: lng,
+      //     latitude: lat
+      //   }
+      // });
+      if (this.person.longitude !== lng || this.person.latitude !== lat) {
+        this.person.longitude = lng;
+        this.person.latitude = lat;
       }
     },
     // 寻找最新点
@@ -360,23 +379,26 @@ export default {
           this.setFocusePosition(posi.lng, posi.lat);
         }
       });
+    },
+    initMap() {
+      this.mapIns = wx.createMapContext("map");
+      console.log("map instance:", this.mapIns);
     }
   },
   created() {
     console.log("create");
-
+    this.initMap();
     this.initAudio();
-
-    this.getSpot().then(() => {
-      this.createMarkers(this.spotList);
-      this.findCurrSpot(this.spotList);
-    });
   },
   onLoad(options) {
-    // todo
     console.log(options);
+    this.queryType = options.queryType - 0;
+    this.getSpot(this.queryType).then(() => {
+      this.createMarkers(this.spotList);
+    });
   },
   onShow() {
+    let index = 0;
     // 轮询坐标
     this.tForPosition = setInterval(() => {
       this.getPosition().then(posi => {
@@ -384,6 +406,10 @@ export default {
           if (this.isMock) {
             posi.lng = 114.35762024;
             posi.lat = 22.61326927;
+          }
+          index++;
+          if (index == 0) {
+            this.setFocusePosition(posi.lng, posi.lat);
           }
           // 当前坐标
           // 防止闪烁

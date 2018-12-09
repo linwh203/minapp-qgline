@@ -1,54 +1,101 @@
 <template>
   <div class="container" :style="{height:bodyHeight}">
     <div class="index-tab">
-      <div class="index-tab-item icon-map" @click="bindTab('../map/main')">
-        <img src="https://gw.alicdn.com/tfs/TB1hOhEmMDqK1RjSZSyXXaxEVXa-90-101.png" alt="">
+      <div class="index-tab-item icon-map" @click="bindTab('../my-map/main?queryType=0')">
+        <img src="https://gw.alicdn.com/tfs/TB1hOhEmMDqK1RjSZSyXXaxEVXa-90-101.png" alt>
       </div>
       <div class="index-tab-item icon-list" @click="showRoadName">
-        <img src="https://gw.alicdn.com/tfs/TB1dgd8nzTpK1RjSZKPXXa3UpXa-91-101.png" v-if="showRoadSelect">
+        <img
+          src="https://gw.alicdn.com/tfs/TB1dgd8nzTpK1RjSZKPXXa3UpXa-91-101.png"
+          v-if="showRoadSelect"
+        >
         <img src="https://gw.alicdn.com/tfs/TB1gqFKmHvpK1RjSZFqXXcXUVXa-91-101.png" v-else>
       </div>
       <div class="index-tab-item icon-scan" @click="bindTab('../scan/main')">
-        <img src="https://gw.alicdn.com/tfs/TB1gWBKmHvpK1RjSZFqXXcXUVXa-91-101.png" alt="">
+        <img src="https://gw.alicdn.com/tfs/TB1gWBKmHvpK1RjSZFqXXcXUVXa-91-101.png" alt>
       </div>
       <div class="index-tab-item icon-audio" @click="playAudio">
-        <img src="https://gw.alicdn.com/tfs/TB1PStFmSzqK1RjSZFLXXcn2XXa-91-101.png" alt="" v-if="!isPlaying">
-        <img src="https://gw.alicdn.com/tfs/TB1mMsUomzqK1RjSZFLXXcn2XXa-91-101.png" alt="" v-if="isPlaying">
+        <img
+          src="https://gw.alicdn.com/tfs/TB1PStFmSzqK1RjSZFLXXcn2XXa-91-101.png"
+          alt
+          v-if="!isPlaying"
+        >
+        <img
+          src="https://gw.alicdn.com/tfs/TB1mMsUomzqK1RjSZFLXXcn2XXa-91-101.png"
+          alt
+          v-if="isPlaying"
+        >
       </div>
       <div class="index-tab-item icon-quiz" @click="bindTab('../quiz/main')">
-        <img src="https://gw.alicdn.com/tfs/TB1mz8HmQvoK1RjSZFNXXcxMVXa-91-101.png" alt="">
+        <img src="https://gw.alicdn.com/tfs/TB1mz8HmQvoK1RjSZFNXXcxMVXa-91-101.png" alt>
       </div>
       <div class="index-tab-item icon-rule" @click="bindTab('../my-rule/main')">
-        <img src="https://gw.alicdn.com/tfs/TB1QrFHmSzqK1RjSZFHXXb3CpXa-91-100.png" alt="">
+        <img src="https://gw.alicdn.com/tfs/TB1QrFHmSzqK1RjSZFHXXb3CpXa-91-100.png" alt>
       </div>
       <div class="index-tab-item icon-my" @click="bindTab('../my/main')">
-        <img src="https://gw.alicdn.com/tfs/TB1TXlImMHqK1RjSZFgXXa7JXXa-92-99.png" alt="">
+        <img src="https://gw.alicdn.com/tfs/TB1TXlImMHqK1RjSZFgXXa7JXXa-92-99.png" alt>
       </div>
       <div class="index-tab-line"></div>
     </div>
-    <scroll-view scroll-y class="scroll" :scroll-into-view="toView" >
+    <scroll-view scroll-y class="scroll" :scroll-into-view="toView">
       <div class="scroll-title">
         <img :src="titleSrc" class="scroll-title-pic">
-        <img src="https://gw.alicdn.com/tfs/TB1ZJh6mSzqK1RjSZPxXXc4tVXa-245-52.png" class="scroll-title-text">
-        <img src="https://gw.alicdn.com/tfs/TB1jUCamRLoK1RjSZFuXXXn0XXa-343-214.png" class="scroll-title-body">
+        <img
+          src="https://gw.alicdn.com/tfs/TB1ZJh6mSzqK1RjSZPxXXc4tVXa-245-52.png"
+          class="scroll-title-text"
+        >
+        <img
+          src="https://gw.alicdn.com/tfs/TB1jUCamRLoK1RjSZFuXXXn0XXa-343-214.png"
+          class="scroll-title-body"
+        >
       </div>
       <div class="spot">
-        <div class="spot-item" :class="activeIndex == 1?'active':''" id="spot1" :style="{top:firstY+'%'}">
-          <div @click="firstSpot">1</div> 
+        <div
+          class="spot-item"
+          :class="activeIndex == 1?'active':''"
+          id="spot1"
+          :style="{top:firstY+'%'}"
+        >
+          <div @click="firstSpot">1</div>
           <div class="spot-item-tri" v-if="activeIndex == 1"></div>
-          <div class="spot-item-window" :style="{right:calcRight+'rpx'}" v-if="activeIndex == 1" @click=goDetail>
-            <img class="spot-item-window-pic" :src="prefix + currentSpot.spot_coverurl" v-if=currentSpot.spot_coverurl>
+          <div
+            class="spot-item-window"
+            :style="{right:calcRight+'rpx'}"
+            v-if="activeIndex == 1"
+            @click="goDetail"
+          >
+            <img
+              class="spot-item-window-pic"
+              :src="prefix + currentSpot.spot_coverurl"
+              v-if="currentSpot.spot_coverurl"
+            >
             <div class="spot-item-window-text">
               <div class="spot-item-window-title">{{currentSpot.spot_title}}</div>
               <div class="spot-item-window-desc">{{currentSpot.spot_describe}}</div>
             </div>
           </div>
         </div>
-        <div class="spot-item" v-for="(item,index) in fullSpot" :key="index" :class="activeIndex == index+2?'active':''" :id="'spot'+item.num" :style="{top:item.y+'%'}">
-          <div @click="chooseSpot(item,index)">{{item.num}}</div> 
+        <div
+          class="spot-item"
+          v-for="(item,index) in fullSpot"
+          :key="index"
+          :class="activeIndex == index+2?'active':''"
+          :id="'spot'+item.num"
+          :style="{top:item.y+'%'}"
+        >
+          <div @click="chooseSpot(item,index)">{{item.num}}</div>
           <div class="spot-item-tri" v-if="activeIndex == index+2"></div>
-          <div class="spot-item-window" :style="{right:calcRight+'rpx'}" v-if="activeIndex == index+2" @click=goDetail>
-            <img class="spot-item-window-pic" :src="prefix + currentSpot.spot_coverurl" v-if=currentSpot.spot_coverurl>
+          <div
+            class="spot-item-window"
+            :style="{right:calcRight+'rpx'}"
+            v-if="activeIndex == index+2"
+            @click="goDetail"
+          >
+            <img
+              class="spot-item-window-pic"
+              :src="prefix + currentSpot.spot_coverurl"
+              v-if="currentSpot.spot_coverurl"
+            >
             <div class="spot-item-window-text">
               <div class="spot-item-window-title">{{currentSpot.spot_title}}</div>
               <div class="spot-item-window-desc">{{currentSpot.spot_describe}}</div>
@@ -57,34 +104,61 @@
         </div>
       </div>
       <!-- <img src="https://gw.alicdn.com/tfs/TB1KDtrqQvoK1RjSZPfXXXPKFXa-565-9495.png" mode="widthFix" class="scroll-road"> -->
-      <img src="https://gw.alicdn.com/tfs/TB1IvF1mSzqK1RjSZFHXXb3CpXa-580-9295.png" mode="widthFix" class="scroll-road">
-      <img src="https://gw.alicdn.com/tfs/TB1xbXBmSzqK1RjSZFpXXakSXXa-532-8080.png" mode="widthFix" class="scroll-bg" style="height: 6316px;" @load=finishLoadImg>
+      <img
+        src="https://gw.alicdn.com/tfs/TB1IvF1mSzqK1RjSZFHXXb3CpXa-580-9295.png"
+        mode="widthFix"
+        class="scroll-road"
+      >
+      <img
+        src="https://gw.alicdn.com/tfs/TB1xbXBmSzqK1RjSZFpXXakSXXa-532-8080.png"
+        mode="widthFix"
+        class="scroll-bg"
+        style="height: 6316px;"
+        @load="finishLoadImg"
+      >
     </scroll-view>
     <div class="cover" @click="showRoadSelect = false" v-if="showRoadSelect"></div>
     <div class="modal" v-if="showRoadSelect">
       <div class="modal-tab">
         <div class="modal-tab-title" @click="tab1 = !tab1">
-          <img src="https://gw.alicdn.com/tfs/TB1uLyAnxjaK1RjSZKzXXXVwXXa-80-80.png" class="modal-tab-title-logo" >
+          <img
+            src="https://gw.alicdn.com/tfs/TB1uLyAnxjaK1RjSZKzXXXVwXXa-80-80.png"
+            class="modal-tab-title-logo"
+          >
           <div class="modal-tab-title-text">
             <div class="modal-tab-title-text-stage">第一段</div>
             <div class="modal-tab-title-text-name">自然研习径</div>
           </div>
-          <img class="modal-tab-title-icon" :class="tab1?'':'rotate'" src="https://gw.alicdn.com/tfs/TB19EKcnpzqK1RjSZFvXXcB7VXa-22-25.png">
+          <img
+            class="modal-tab-title-icon"
+            :class="tab1?'':'rotate'"
+            src="https://gw.alicdn.com/tfs/TB19EKcnpzqK1RjSZFvXXcB7VXa-22-25.png"
+          >
         </div>
-        <div class="modal-tab-content" v-if=tab1>
-          <div class="modal-tab-content-item" v-for="(item,index) in natureList" :key="index"  @click="toSmallLine(index)">
-            {{item}}
-          </div>
+        <div class="modal-tab-content" v-if="tab1">
+          <div
+            class="modal-tab-content-item"
+            v-for="(item,index) in natureList"
+            :key="index"
+            @click="toSmallLine(index)"
+          >{{item}}</div>
         </div>
       </div>
       <div class="modal-tab">
         <div class="modal-tab-title" @click="bindTab('../index-sg/main')">
-          <img src="https://gw.alicdn.com/tfs/TB1WEmfnxTpK1RjSZFMXXbG_VXa-79-80.png" class="modal-tab-title-logo">
+          <img
+            src="https://gw.alicdn.com/tfs/TB1WEmfnxTpK1RjSZFMXXbG_VXa-79-80.png"
+            class="modal-tab-title-logo"
+          >
           <div class="modal-tab-title-text">
             <div class="modal-tab-title-text-stage">第二段</div>
             <div class="modal-tab-title-text-name">诗歌研习径</div>
           </div>
-          <img class="modal-tab-title-icon" :class="tab2?'':'rotate'" src="https://gw.alicdn.com/tfs/TB19EKcnpzqK1RjSZFvXXcB7VXa-22-25.png">
+          <img
+            class="modal-tab-title-icon"
+            :class="tab2?'':'rotate'"
+            src="https://gw.alicdn.com/tfs/TB19EKcnpzqK1RjSZFvXXcB7VXa-22-25.png"
+          >
         </div>
       </div>
     </div>
@@ -783,7 +857,7 @@ export default {
 .rotate {
   transform: rotate(180deg);
 }
-#spot1{
+#spot1 {
   margin-left: 52%;
 }
 </style>
