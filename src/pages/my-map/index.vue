@@ -2,8 +2,8 @@
   <div class="container">
     <map
       id="map"
-      :longitude="lng"
-      :latitude="lat"
+      :longitude="focus.lng"
+      :latitude="focus.lat"
       scale="20"
       :controls="controls"
       :markers="markers"
@@ -24,20 +24,25 @@
         :class="'window-'+currSpot.sortNo"
         @click="viewDetail(currSpot)"
       >
-        <div class="left"></div>
-        <img
-          class="spot-item-window-pic"
-          :src="prefix + currSpot.spot_coverurl"
-          v-if="currSpot.spot_coverurl"
-        >
-        <div class="spot-item-window-text">
-          <div class="spot-item-window-title">{{currSpot.spot_title}}</div>
-          <div class="spot-item-window-desc">{{currSpot.spot_describe}}</div>
+        <img class="left" mode="aspectFit" src="../../assets/box-left.png" alt>
+        <div class="middle">
+          <img
+            class="spot-item-window-pic"
+            :src="prefix + currSpot.spot_coverurl"
+            v-if="currSpot.spot_coverurl"
+          >
+          <div class="spot-item-window-text">
+            <div class="spot-item-window-title">{{currSpot.spot_title}}</div>
+            <div class="spot-item-window-desc">{{currSpot.spot_describe}}</div>
+          </div>
         </div>
-        <div class="right"></div>
+        <img class="right" mode="aspectFit" src="../../assets/box-right.png" alt>
       </div>
     </div>
     <div class="message" v-if="isShowOutTip">您当前不在研习径范围内,不能进行定位讲解</div>
+    <div class="reset" @click="resetPosition">
+      <img src="../../assets/reset.png" alt>
+    </div>
   </div>
 </template>
 
@@ -48,8 +53,17 @@ var amapFile = require("../../utils/amap-wx.js");
 export default {
   data() {
     return {
+      // 调试
+      isMock: true,
+      // isMock:false,
+      // 人的位置
       lng: 0,
       lat: 0,
+      // 焦点位置
+      focus: {
+        lng: 114.35762024,
+        lat: 22.61326927
+      },
       prefix: config.prefix,
       // 查询的类型,"自然线"或者"诗歌线"
       queryType: 0,
@@ -175,6 +189,20 @@ export default {
 
       this.isTryActivePlay = true;
       this.activeSpot(markerId);
+
+      this.setFocusePositionBySortNo(markerId);
+    },
+    // 设置焦点坐标,通过markerId
+    setFocusePositionBySortNo(sortNo) {
+      let spot = this.spotList.find(n => n.sortNo === sortNo);
+      this.setPersonPosition(spot.longitude, spot.latitude);
+    },
+    // 设置焦点坐标
+    setFocusePosition(lng, lat) {
+      this.focus = {
+        lng,
+        lat
+      };
     },
     activeSpot(spotId) {
       // 反激活
@@ -276,11 +304,63 @@ export default {
     },
     // 设置小人的位置
     setPersonPosition(posi) {
-      this.person.longitude = posi.lng;
-      this.person.latitude = posi.lat;
+      if (
+        this.person.longitude !== posi.lng ||
+        this.person.latitude !== posi.lat
+      ) {
+        this.person.longitude = posi.lng;
+        this.person.latitude = posi.lat;
+      }
     },
     // 寻找最新点
-    findNearSpot(posi) {}
+    findNearSpot(posi) {
+      // 30米的经纬度差距
+      const LNG_INTERVAL = 0.00029505;
+      const LAT_INTERVAL = 0.00029608;
+      const DIST = 30;
+      let getDistance = (lng1, lat1, lng2, lat2) => {
+        let d1 = Math.abs(lng1 - lng2) / LNG_INTERVAL * DIST;
+        let d2 = Math.abs(lat1 - lat2) / LAT_INTERVAL * DIST;
+        return Math.sqrt(d1 * d1 + d2 * d2);
+      };
+      //       我设置的起点是114.496872, 22.605782
+      // 得到的30米偏差的经纬度坐标114.496602505415, 22.6055332100731
+      // console.log(
+      //   "getDistance",
+      //   getDistance(114.496872, 22.605782, 114.496602505415, 22.6055332100731)
+      // );
+
+      if (this.spotList) {
+        this.spotList.find(n => {
+          let { longitude, latitude, sortNo } = n;
+          if (
+            this.lng &&
+            this.lat &&
+            getDistance(this.lng, this.lat, longitude, latitude) <= DIST &&
+            1
+          ) {
+            // 激活最近点
+            console.log("尝试激活最近点", sortNo - 1);
+            if (this.isActivePlay) {
+              return;
+            }
+            if (this.currSpot && this.currSpot.sortNo === sortNo) {
+              return;
+            }
+            console.log("激活最近点", sortNo);
+            this.activeSpot(sortNo);
+            return true;
+          }
+        });
+      }
+    },
+    resetPosition() {
+      this.getPosition().then(posi => {
+        if (posi) {
+          this.setFocusePosition(posi.lng, posi.lat);
+        }
+      });
+    }
   },
   created() {
     console.log("create");
@@ -288,15 +368,12 @@ export default {
     this.initAudio();
 
     this.getSpot().then(() => {
-      if (this.spotList) {
-        this.lng = this.spotList[0].longitude;
-        this.lat = this.spotList[0].latitude;
-      }
       this.createMarkers(this.spotList);
       this.findCurrSpot(this.spotList);
     });
   },
   onLoad(options) {
+    // todo
     console.log(options);
   },
   onShow() {
@@ -304,6 +381,17 @@ export default {
     this.tForPosition = setInterval(() => {
       this.getPosition().then(posi => {
         if (posi) {
+          if (this.isMock) {
+            posi.lng = 114.35762024;
+            posi.lat = 22.61326927;
+          }
+          // 当前坐标
+          // 防止闪烁
+          if (this.lng !== posi.lng || this.lat !== posi.lat) {
+            this.lng = posi.lng;
+            this.lat = posi.lat;
+          }
+          // mock
           if (!this.hasShowOutTip) {
             if (this.isPositionOut(posi.lng, posi.lat)) {
               this.isShowOutTip = true;
@@ -313,6 +401,7 @@ export default {
               }, 2000);
             }
           }
+
           // 设置小人的坐标
           this.setPersonPosition(posi);
           // 寻找距离本人较近的spot
@@ -324,6 +413,8 @@ export default {
   onHide() {
     // 清除轮询的句柄
     clearInterval(this.tForPosition);
+
+    this.stopAudio();
   }
 };
 </script>
@@ -338,16 +429,25 @@ export default {
   }
 
   .spot-item-window {
-    width: 522rpx;
+    width: 100%;
     height: 176rpx;
     border-bottom: 1px solid #c7c7c7;
-    background: url("https://gw.alicdn.com/tfs/TB1PHRpnCzqK1RjSZPxXXc4tVXa-1809-607.png")
-      no-repeat center/contain;
     position: absolute;
     z-index: 999;
     display: flex;
     .left {
-      background: url("../../assets/box-left.png") no-repeat;
+      width: 26rpx;
+      height: 100%;
+    }
+    .right {
+      width: 60rpx;
+      height: 100%;
+    }
+    .middle {
+      flex: 1;
+      background-color: #fff;
+      display: flex;
+      align-items: center;
     }
     &-pic {
       width: 136rpx;
@@ -356,7 +456,8 @@ export default {
       margin: 12rpx 12rpx 0 32rpx;
     }
     &-text {
-      width: 280rpx;
+      // width: 280rpx;
+      flex: 1;
       display: flex;
       flex-direction: column;
       color: #101010;
@@ -364,7 +465,6 @@ export default {
       overflow: hidden;
     }
     &-title {
-      margin-top: 45rpx;
       font-size: 28rpx;
       line-height: 40rpx;
       white-space: nowrap;
@@ -407,6 +507,15 @@ export default {
       width: 100%;
       height: 100%;
     }
+  }
+}
+.reset {
+  position: fixed;
+  top: 20rpx;
+  left: 40rpx;
+  img {
+    width: 48rpx;
+    height: 48rpx;
   }
 }
 </style>
