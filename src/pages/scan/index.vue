@@ -29,6 +29,11 @@
       </div>
     </div>
     <div class="modal" v-if="showResult" @click="init"></div>
+    <div class="waiting" v-if="isWaiting">
+      <div class="text">努力识别中...</div>
+      <img src="../../assets/waiting.png" alt>
+      <div class="sub-text">不要着急,马上有结果</div>
+    </div>
     <div class="result-tab" v-if="showResult">
       <scroll-view scroll-x class="result-tab-scroll" :scroll-into-view="toView">
         <div class="result-tab-box">
@@ -68,7 +73,8 @@ export default {
       showResult: false,
       userCode: "",
       matchItem: [],
-      toView: "result0"
+      toView: "result0",
+      isWaiting: false
     };
   },
 
@@ -108,6 +114,8 @@ export default {
       });
     },
     upload(file) {
+      this.isWaiting = true;
+
       wx.uploadFile({
         url: config.base + "photo/UpdatePhoto", //开发者服务器 url
         filePath: file, //要上传文件资源的路径
@@ -117,7 +125,9 @@ export default {
           console.log(data);
           this.postPhoto(data);
         },
-        fail: () => {},
+        fail: () => {
+          this.isWaiting = false;
+        },
         complete: () => {}
       });
     },
@@ -160,7 +170,9 @@ export default {
           }
         },
         fail: () => {},
-        complete: () => {}
+        complete: () => {
+          this.isWaiting = false;
+        }
       });
     },
     error(e) {
@@ -360,6 +372,41 @@ img {
   }
 }
 
-.webview {
+.waiting {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: 60%;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 999;
+  img {
+    @perc: 60vw;
+    width: @perc;
+    height: @perc;
+    animation: spin 6s linear infinite;
+  }
+  .text {
+    color: #00cbff;
+    font-size: 60rpx;
+    line-height: 120rpx;
+    margin-bottom: 30rpx;
+  }
+  .sub-text {
+    margin-top: 30rpx;
+    color: black;
+    font-size: 36rpx;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 </style>
