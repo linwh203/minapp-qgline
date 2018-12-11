@@ -172,15 +172,17 @@ export default {
           }
         };
       });
-      this.person = {
-        id: 999,
-        longitude: 114.35762024,
-        latitude: 22.61326927,
-        iconPath: "../../assets/icon-avator.png",
-        width: 40,
-        height: 40
-      };
-      this.markers.push(this.person);
+
+      // 因为真机在地图上已经有了蓝色箭头,所以不需要小人了
+      // this.person = {
+      //   id: 999,
+      //   longitude: 114.35762024,
+      //   latitude: 22.61326927,
+      //   iconPath: "../../assets/icon-avator.png",
+      //   width: 40,
+      //   height: 40
+      // };
+      // this.markers.push(this.person);
     },
 
     touchMap(e) {
@@ -435,7 +437,7 @@ export default {
           }
 
           // 设置小人的坐标
-          this.setPersonPosition(posi);
+          // this.setPersonPosition(posi);
           // 寻找距离本人较近的spot
           this.findNearSpot(posi);
         }

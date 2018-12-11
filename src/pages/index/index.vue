@@ -135,7 +135,8 @@
             src="https://gw.alicdn.com/tfs/TB19EKcnpzqK1RjSZFvXXcB7VXa-22-25.png"
           >
         </div>
-        <div class="modal-tab-content" v-if="tab1">
+        <!-- <div class="modal-tab-content" v-if="tab1"> -->
+        <div class="modal-tab-content" v-if="1">
           <div
             class="modal-tab-content-item"
             v-for="(item,index) in natureList"
@@ -501,17 +502,17 @@ export default {
       success: res => {
         console.log("model", res);
         this.windowHeight = res.windowHeight;
-        if (res.model == "iPhone X") {
+        if (res.model.indexOf("iPhone X") >= 0) {
           this.isIPX = true;
         }
         if (
-          res.model == "iPhone 6 Plus" ||
-          res.model == "iPhone 7 Plus" ||
-          res.model == "iPhone 8 Plus"
+          res.model.indexOf("iPhone 6 Plus") ||
+          res.model.indexOf("iPhone 7 Plus") ||
+          res.model.indexOf("iPhone 8 Plus")
         ) {
           this.isPlus = true;
         }
-        if (res.model == "iPhone 5") {
+        if (res.model.indexOf("iPhone 5") >= 0) {
           this.isIP5 = true;
         }
         if (res.model.indexOf("iPhone11") >= 0) {
@@ -851,6 +852,9 @@ export default {
       line-height: 80rpx;
       font-size: 28rpx;
       background: #f6f7f6;
+      &-item:hover {
+        color: #a8368e;
+      }
     }
   }
 }
