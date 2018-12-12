@@ -1,13 +1,18 @@
 <template>
   <div class="container">
     <div class="first-visit">
-      <img src="https://gw.alicdn.com/tfs/TB1QpJimSrqK1RjSZK9XXXyypXa-640-1136.png" alt="">
+      <img src="https://gw.alicdn.com/tfs/TB1QpJimSrqK1RjSZK9XXXyypXa-640-1136.png" alt>
       <div class="close-btn" @click="bindNext"></div>
     </div>
     <div class="modal" v-if="motto">
       <div class="modal-container">
-        <img src="https://gw.alicdn.com/tfs/TB1UNN3qCzqK1RjSZFpXXakSXXa-544-700.png" alt="">
-        <button class="auth-confirm" open-type="getUserInfo" @getuserinfo="bindGetUserInfo" @click="getUserInfo1">授权登录</button>
+        <img src="https://gw.alicdn.com/tfs/TB1UNN3qCzqK1RjSZFpXXakSXXa-544-700.png" alt>
+        <button
+          class="auth-confirm"
+          open-type="getUserInfo"
+          @getuserinfo="bindGetUserInfo"
+          @click="getUserInfo1"
+        >授权登录</button>
         <!-- <button class="auth-cancel" @click="cancelAuth">拒绝授权</button> -->
       </div>
     </div>
@@ -18,7 +23,9 @@
 export default {
   data() {
     return {
-      motto: false,
+      isMock: false,
+      // isMock: true,
+      motto: false
     };
   },
 
@@ -27,24 +34,28 @@ export default {
   methods: {
     setStorage(key, val) {
       try {
-        wx.setStorageSync(key,val)
-      } catch(e) {
-        wx.setStorage(key,val)
+        wx.setStorageSync(key, val);
+      } catch (e) {
+        wx.setStorage(key, val);
       }
     },
     getStorage(key) {
       try {
-        wx.getStorageSync(key)
-      } catch(e) {
-        wx.getStorage(key)
+        wx.getStorageSync(key);
+      } catch (e) {
+        wx.getStorage(key);
       }
     },
     bindNext() {
-      wx.setStorageSync('firsttime', true)
+      wx.setStorageSync("firsttime", true);
       const url = "../index/main";
       wx.redirectTo({ url: url });
     },
     getUser() {
+      if (this.isMock) {
+        this.motto = true;
+        return;
+      }
       var that = this;
       // 查看是否授权
       wx.getSetting({
@@ -54,7 +65,7 @@ export default {
             // 已经授权，可以直接调用 getUserInfo 获取头像昵称
             wx.getUserInfo({
               success: function(res) {
-                console.log('first page',res.userInfo);
+                console.log("first page", res.userInfo);
               }
             });
           } else {
@@ -90,7 +101,7 @@ export default {
         const city = userInfo.city;
         const country = userInfo.country;
         // wx.setStorageSync("userInfo", userInfo);
-        this.setStorage("userInfo", userInfo)
+        this.setStorage("userInfo", userInfo);
         this.motto = false;
       } else {
         //用户按了拒绝按钮

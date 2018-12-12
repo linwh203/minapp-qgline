@@ -26,7 +26,8 @@
           v-if="isPlaying"
         >
       </div>
-      <div class="index-tab-item icon-quiz" @click="bindTab('../quiz/main')">
+      <!-- <div class="index-tab-item icon-quiz" @click="bindTab('../quiz/main')"> -->
+      <div class="index-tab-item icon-quiz" @click="bindTab('../developing/main')">
         <img src="https://gw.alicdn.com/tfs/TB1mz8HmQvoK1RjSZFNXXcxMVXa-91-101.png" alt>
       </div>
       <div class="index-tab-item icon-rule" @click="bindTab('../my-rule/main')">

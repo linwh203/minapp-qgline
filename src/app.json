@@ -21,7 +21,8 @@
     "pages/my-suggest/main",
     "pages/logs/main",
     "pages/counter/main",
-    "pages/webview/main"
+    "pages/webview/main",
+    "pages/developing/main"
   ],
   "window": {
     "backgroundTextStyle": "light",
