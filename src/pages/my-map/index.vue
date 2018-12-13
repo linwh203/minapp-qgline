@@ -291,7 +291,7 @@ export default {
     getPosition() {
       return new Promise(resolve => {
         wx.getLocation({
-          type: "wgs84", //默认为 wgs84 返回 gps 坐标，gcj02 返回可用于wx.openLocation的坐标,
+          type: "gcj02", //默认为 wgs84 返回 gps 坐标，gcj02 返回可用于wx.openLocation的坐标,
           success: res => {
             resolve({ lng: res.longitude, lat: res.latitude });
           },
