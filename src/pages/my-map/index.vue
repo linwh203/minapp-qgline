@@ -21,7 +21,7 @@
         <cover-view>不能进行定位讲解</cover-view>
       </cover-view>
       <cover-view class="reset" @click="resetPosition">
-        <cover-image class="img" src="../../assets/reset.png"/>
+        <cover-image class="img" src="https://gw.alicdn.com/tfs/TB1RwLAvQzoK1RjSZFlXXai4VXa-57-96.png"/>
       </cover-view>
       <!-- <img class="img" src="../../assets/reset.png">
       <img class="img" src="../../assets/spot-gray.png">
@@ -34,7 +34,7 @@
         :class="'window-'+currSpot.sortNo"
         @click="viewDetail(currSpot)"
       >
-        <img class="left" mode="aspectFit" src="../../assets/box-left.png" alt>
+        <img class="left" mode="aspectFit" src="https://gw.alicdn.com/tfs/TB1HPbzvQvoK1RjSZFwXXciCFXa-20-140.png" alt>
         <div class="middle">
           <img
             class="spot-item-window-pic"
@@ -46,7 +46,7 @@
             <div class="spot-item-window-desc">{{currSpot.spot_describe}}</div>
           </div>
         </div>
-        <img class="right" mode="aspectFit" src="../../assets/box-right.png" alt>
+        <img class="right" mode="aspectFit" src="https://gw.alicdn.com/tfs/TB1wj_vvQvoK1RjSZFNXXcxMVXa-48-140.png" alt>
       </div>
     </div>
   </div>
@@ -161,7 +161,7 @@ export default {
           title: n.spot_name,
           longitude: n.longitude,
           latitude: n.latitude,
-          iconPath: "../../assets/spot-gray.png",
+          iconPath: "https://gw.alicdn.com/tfs/TB11oPzvIfpK1RjSZFOXXa6nFXa-35-54.png",
           callout: {
             content: n.spot_title,
             color: "#ff0000",
@@ -215,13 +215,13 @@ export default {
       // 反激活
       if (this.currSpot) {
         let ma = this.markers.find(n => n.id == this.currSpot.sortNo);
-        ma.iconPath = "../../assets/spot-gray.png";
+        ma.iconPath = "https://gw.alicdn.com/tfs/TB11oPzvIfpK1RjSZFOXXa6nFXa-35-54.png";
       }
 
       // 激活
       this.currSpot = this.spotList.find(n => n.sortNo == spotId);
       let ma = this.markers.find(n => n.id == spotId);
-      ma.iconPath = "../../assets/spot-highlight.png";
+      ma.iconPath = "https://gw.alicdn.com/tfs/TB1jyYuvSzqK1RjSZFjXXblCFXa-71-55.png";
 
       // 激活audio的播放
       this.playAudio(this.currSpot.spot_id);
@@ -445,6 +445,12 @@ export default {
     }, 5000);
   },
   onHide() {
+    // 清除轮询的句柄
+    clearInterval(this.tForPosition);
+
+    this.stopAudio();
+  },
+  onUnload() {
     // 清除轮询的句柄
     clearInterval(this.tForPosition);
 
