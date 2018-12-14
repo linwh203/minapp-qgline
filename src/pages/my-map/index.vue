@@ -21,7 +21,10 @@
         <cover-view>不能进行定位讲解</cover-view>
       </cover-view>
       <cover-view class="reset" @click="resetPosition">
-        <cover-image class="img" src="https://gw.alicdn.com/tfs/TB1RwLAvQzoK1RjSZFlXXai4VXa-57-96.png"/>
+        <cover-image
+          class="img"
+          src="https://gw.alicdn.com/tfs/TB1RwLAvQzoK1RjSZFlXXai4VXa-57-96.png"
+        />
       </cover-view>
       <!-- <img class="img" src="../../assets/reset.png">
       <img class="img" src="../../assets/spot-gray.png">
@@ -34,7 +37,12 @@
         :class="'window-'+currSpot.sortNo"
         @click="viewDetail(currSpot)"
       >
-        <img class="left" mode="aspectFit" src="https://gw.alicdn.com/tfs/TB1HPbzvQvoK1RjSZFwXXciCFXa-20-140.png" alt>
+        <img
+          class="left"
+          mode="aspectFit"
+          src="https://gw.alicdn.com/tfs/TB1HPbzvQvoK1RjSZFwXXciCFXa-20-140.png"
+          alt
+        >
         <div class="middle">
           <img
             class="spot-item-window-pic"
@@ -46,7 +54,12 @@
             <div class="spot-item-window-desc">{{currSpot.spot_describe}}</div>
           </div>
         </div>
-        <img class="right" mode="aspectFit" src="https://gw.alicdn.com/tfs/TB1wj_vvQvoK1RjSZFNXXcxMVXa-48-140.png" alt>
+        <img
+          class="right"
+          mode="aspectFit"
+          src="https://gw.alicdn.com/tfs/TB1wj_vvQvoK1RjSZFNXXcxMVXa-48-140.png"
+          alt
+        >
       </div>
     </div>
   </div>
@@ -154,14 +167,19 @@ export default {
       });
     },
     createMarkers(spotList) {
-      console.log("create Markers");
+      console.log("create Markers", spotList.length);
+      let geo = this.initGeoTrans();
+      console.log("geo", geo.gcj_encrypt);
       this.markers = spotList.map(n => {
+        let trans = geo.gcj_encrypt(n.latitude, n.longitude);
+        console.log(trans);
         return {
           id: n.sortNo,
           title: n.spot_name,
-          longitude: n.longitude,
-          latitude: n.latitude,
-          iconPath: "https://gw.alicdn.com/tfs/TB11oPzvIfpK1RjSZFOXXa6nFXa-35-54.png",
+          longitude: trans.lon,
+          latitude: trans.lat,
+          iconPath:
+            "https://gw.alicdn.com/tfs/TB11oPzvIfpK1RjSZFOXXa6nFXa-35-54.png",
           callout: {
             content: n.spot_title,
             color: "#ff0000",
@@ -215,13 +233,15 @@ export default {
       // 反激活
       if (this.currSpot) {
         let ma = this.markers.find(n => n.id == this.currSpot.sortNo);
-        ma.iconPath = "https://gw.alicdn.com/tfs/TB11oPzvIfpK1RjSZFOXXa6nFXa-35-54.png";
+        ma.iconPath =
+          "https://gw.alicdn.com/tfs/TB11oPzvIfpK1RjSZFOXXa6nFXa-35-54.png";
       }
 
       // 激活
       this.currSpot = this.spotList.find(n => n.sortNo == spotId);
       let ma = this.markers.find(n => n.id == spotId);
-      ma.iconPath = "https://gw.alicdn.com/tfs/TB1jyYuvSzqK1RjSZFjXXblCFXa-71-55.png";
+      ma.iconPath =
+        "https://gw.alicdn.com/tfs/TB1jyYuvSzqK1RjSZFjXXblCFXa-71-55.png";
 
       // 激活audio的播放
       this.playAudio(this.currSpot.spot_id);
@@ -391,6 +411,93 @@ export default {
     initMap() {
       this.mapIns = wx.createMapContext("map");
       console.log("map instance:", this.mapIns);
+    },
+    initGeoTrans() {
+      var GPS = {
+        PI: 3.14159265358979324,
+        x_pi: 3.14159265358979324 * 3000.0 / 180.0,
+        delta: function(lat, lon) {
+          // Krasovsky 1940
+          // // a = 6378245.0, 1/f = 298.3
+          // b = a * (1 - f)
+          // ee = (a^2 - b^2) / a^2;
+          var a = 6378245.0; //  a: 卫星椭球坐标投影到平面地图坐标系的投影因子。
+          var ee = 0.00669342162296594323;
+          //  ee: 椭球的偏心率。
+          var dLat = this.transformLat(lon - 105.0, lat - 35.0);
+          var dLon = this.transformLon(lon - 105.0, lat - 35.0);
+          var radLat = lat / 180.0 * this.PI;
+          var magic = Math.sin(radLat);
+          magic = 1 - ee * magic * magic;
+          var sqrtMagic = Math.sqrt(magic);
+          dLat = dLat * 180.0 / (a * (1 - ee) / (magic * sqrtMagic) * this.PI);
+          dLon = dLon * 180.0 / (a / sqrtMagic * Math.cos(radLat) * this.PI);
+          return { lat: dLat, lon: dLon };
+        },
+        //GPS---高德
+        gcj_encrypt: function(wgsLat, wgsLon) {
+          if (this.outOfChina(wgsLat, wgsLon))
+            return { lat: wgsLat, lon: wgsLon };
+          var d = this.delta(wgsLat, wgsLon);
+          return { lat: wgsLat + d.lat, lon: wgsLon + d.lon };
+        },
+        outOfChina: function(lat, lon) {
+          if (lon < 72.004 || lon > 137.8347) return true;
+          if (lat < 0.8293 || lat > 55.8271) return true;
+          return false;
+        },
+        transformLat: function(x, y) {
+          var ret =
+            -100.0 +
+            2.0 * x +
+            3.0 * y +
+            0.2 * y * y +
+            0.1 * x * y +
+            0.2 * Math.sqrt(Math.abs(x));
+          ret +=
+            (20.0 * Math.sin(6.0 * x * this.PI) +
+              20.0 * Math.sin(2.0 * x * this.PI)) *
+            2.0 /
+            3.0;
+          ret +=
+            (20.0 * Math.sin(y * this.PI) +
+              40.0 * Math.sin(y / 3.0 * this.PI)) *
+            2.0 /
+            3.0;
+          ret +=
+            (160.0 * Math.sin(y / 12.0 * this.PI) +
+              320 * Math.sin(y * this.PI / 30.0)) *
+            2.0 /
+            3.0;
+          return ret;
+        },
+        transformLon: function(x, y) {
+          var ret =
+            300.0 +
+            x +
+            2.0 * y +
+            0.1 * x * x +
+            0.1 * x * y +
+            0.1 * Math.sqrt(Math.abs(x));
+          ret +=
+            (20.0 * Math.sin(6.0 * x * this.PI) +
+              20.0 * Math.sin(2.0 * x * this.PI)) *
+            2.0 /
+            3.0;
+          ret +=
+            (20.0 * Math.sin(x * this.PI) +
+              40.0 * Math.sin(x / 3.0 * this.PI)) *
+            2.0 /
+            3.0;
+          ret +=
+            (150.0 * Math.sin(x / 12.0 * this.PI) +
+              300.0 * Math.sin(x / 30.0 * this.PI)) *
+            2.0 /
+            3.0;
+          return ret;
+        }
+      };
+      return GPS;
     }
   },
   created() {
