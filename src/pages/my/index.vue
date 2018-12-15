@@ -6,8 +6,8 @@
     <open-data type="userNickName" class="userName"></open-data>
     <div class="my-tab">
       <div class="my-tab-body">
-        <div class="my-tab-body-item" @click="bindTab('../my-reward/main')">
-        <!-- <div class="my-tab-body-item" @click="bindTab('../developing/main')"> -->
+        <!-- <div class="my-tab-body-item" @click="bindTab('../my-reward/main')"> -->
+        <div class="my-tab-body-item" @click="bindTab('../developing/main')">
           <img src="https://gw.alicdn.com/tfs/TB18fNUqSzqK1RjSZPcXXbTepXa-74-67.png" class="my-tab-body-item-icon"/>
           <div class="my-tab-body-item-name">个人成就</div>
         </div>
