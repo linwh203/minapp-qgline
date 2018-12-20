@@ -2,7 +2,7 @@
   <div class="container">
     <div class="note-area">
       <div class="textarea" @click="touchTextarea">
-        <textarea placeholder="__ 留下笔记" :placeholder-style="style" auto-height v-model="text"/>
+        <textarea placeholder="__ 留下笔记" :placeholder-style="style" auto-height fixed v-model="text"/>
       </div>
       <div class="submit" @click="submit">发布</div>
       <cover-view class="note-area-icon" v-if="!text">
@@ -22,11 +22,21 @@
               {{item.content}}
             </div>
             <div class="main-item-right-down">
-              <div class="main-item-right-down-time">"2018-12-18 12:00"</div>
-              <div class="main-item-right-down-del">删除</div>
+              <div class="main-item-right-down-time">2018-12-18 12:00</div>
+              <div class="main-item-right-down-del" @click="openDialog(item.id)">删除</div>
             </div>
           </div>
           <div class="main-item-right-margin"></div>
+        </div>
+      </div>
+    </div>
+    <div class="dialog" v-if="dialog">
+      <div class="dialog-box">
+        <div class="dialog-box-first">您确定要删除</div>
+        <div class="dialog-box-second">此笔记吗？</div>
+        <div class="dialog-box-btns">
+          <div class="dialog-box-btns-item confirm" @click="confirmDel">确定</div>
+          <div class="dialog-box-btns-item cancel" @click="dialog=false">取消</div>
         </div>
       </div>
     </div>
@@ -40,9 +50,21 @@ export default {
     return {
       text: "",
       contact: "",
-      noteList: [{id:1,content:"ajhsdkahsdkhaskdjh"},{id:2,content:"暗红色的卡是的接口哈数据库等哈可接受的黄金卡山东矿机啊还是打开就哈斯卡级等哈就开始单解卡山艾克就圣诞款"}],
+      noteList: [{id:1,content:"ajhsdkahsdkhaskdjh"},
+      {id:2,content:"暗红色的卡是的接口哈数据库等哈可接受的黄金卡山东矿机啊还是打开就哈斯卡级等哈就开始单解卡山艾克就圣诞款"},
+      {id:3,content:"暗红色的卡是的接口哈数据库等哈可接受的黄金卡山东矿机啊还是打开就哈斯卡级等哈就开始单解卡山艾克就圣诞款"},
+      {id:4,content:"暗红色的卡是的接口哈数据库等哈可接受的黄金卡山东矿机啊还是打开就哈斯卡级等哈就开始单解卡山艾克就圣诞款"},
+      {id:5,content:"暗红色的卡是的接口哈数据库等哈可接受的黄金卡山东矿机啊还是打开就哈斯卡级等哈就开始单解卡山艾克就圣诞款"},
+      {id:6,content:"暗红色的卡是的接口哈数据库等哈可接受的黄金卡山东矿机啊还是打开就哈斯卡级等哈就开始单解卡山艾克就圣诞款"},
+      {id:7,content:"暗红色的卡是的接口哈数据库等哈可接受的黄金卡山东矿机啊还是打开就哈斯卡级等哈就开始单解卡山艾克就圣诞款"},
+      {id:8,content:"暗红色的卡是的接口哈数据库等哈可接受的黄金卡山东矿机啊还是打开就哈斯卡级等哈就开始单解卡山艾克就圣诞款"},
+      {id:9,content:"暗红色的卡是的接口哈数据库等哈可接受的黄金卡山东矿机啊还是打开就哈斯卡级等哈就开始单解卡山艾克就圣诞款"},
+      {id:10,content:"暗红色的卡是的接口哈数据库等哈可接受的黄金卡山东矿机啊还是打开就哈斯卡级等哈就开始单解卡山艾克就圣诞款"},
+      ],
       userCode: "",
-      isFoucs: false
+      isFoucs: false,
+      currentId:"",
+      dialog:false
     };
   },
 
@@ -52,6 +74,36 @@ export default {
     touchTextarea() {
       console.log("touch textarea");
       this.isFoucs = true;
+    },
+    openDialog(id) {
+      this.currentId = id;
+      this.dialog = true;
+    },
+    confirmDel() {
+      const token = wx.getStorageSync("userCode");
+      wx.request({
+        url: config.base + 'note/DeleteNoteList', //开发者服务器接口地址",
+        data: 'data', //请求的参数",
+        method: 'delete',
+        header: {
+          token: token,
+          id: this.currentId
+        },
+        dataType: 'json', //如果设为json，会尝试对返回的数据做一次 JSON.parse
+        success: res => {
+          wx.showToast({
+            title: "删除成功", //提示的内容,
+            icon: "success", //图标,
+            duration: 2000, //延迟时间,
+            mask: true, //显示透明蒙层，防止触摸穿透,
+            success: res => {}
+          });
+          this.dialog = false;
+          this.getNoteList();
+        },
+        fail: () => {},
+        complete: () => {}
+      });
     },
     submit() {
       if (!this.text) {
@@ -66,12 +118,9 @@ export default {
       }
       const token = wx.getStorageSync("userCode");
       wx.request({
-        url: config.base + "my/suggest", //开发者服务器接口地址",
+        url: config.base + "note/AddNoteList", //开发者服务器接口地址",
         data: {
-          lineId: config.lineId,
-          suggest: this.text,
-          phone: this.contact,
-          image_url_list: this.tempFile
+          content: this.text
         }, //请求的参数",
         method: "post",
         header: {
@@ -82,16 +131,14 @@ export default {
           console.log(res.data);
           if (res.data.res_code == 0) {
             wx.showToast({
-              title: "反馈成功", //提示的内容,
+              title: "发布成功", //提示的内容,
               icon: "success", //图标,
               duration: 2000, //延迟时间,
               mask: true, //显示透明蒙层，防止触摸穿透,
               success: res => {}
             });
             this.text = "";
-            this.contact = "";
-            this.imgList = [];
-            this.tempFile = [];
+            this.getNoteList();
           } else {
             wx.showToast({
               title: "反馈失败，请稍后再试", //提示的内容,
@@ -104,11 +151,28 @@ export default {
         fail: () => {},
         complete: () => {}
       });
+    },
+    getNoteList() {
+      const token = wx.getStorageSync("userCode");
+      wx.request({
+        url: config.base + 'note/noteList', //开发者服务器接口地址",
+        data: {
+          token:token
+        }, //请求的参数",
+        method: 'GET',
+        dataType: 'json', //如果设为json，会尝试对返回的数据做一次 JSON.parse
+        success: res => {
+          console.log('note',res.data)
+        },
+        fail: () => {},
+        complete: () => {}
+      });
     }
   },
 
   created() {
     this.userCode = wx.getStorageSync("userCode");
+    // this.getNoteList();
   },
   mounted() {}
 };
@@ -117,10 +181,10 @@ export default {
 <style scoped lang="less">
 .container {
   background: #f3f3f3;
-  padding:0 20rpx;
 }
 .main{
-  padding: 48rpx 0;
+  padding: 48rpx 20rpx 90rpx;
+  background: #f3f3f3;
   &-item{
     display: flex;
     &-left{
@@ -170,6 +234,26 @@ export default {
       &-margin{
         height: 48rpx;
       }
+      &-down{
+        height: 60rpx;
+        border-top:1px dashed #dcdcdc;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        &-time{
+          color:#cacaca;
+          margin-left: 20rpx;
+        }
+        &-del{
+          width: 78rpx;
+          line-height: 38rpx;
+          text-align: center;
+          border-radius: 10rpx;
+          color:#6f6f6f;
+          border:1px dashed #868686;
+          margin-right: 20rpx;
+        }
+      }
     }
   }
 }
@@ -181,10 +265,12 @@ export default {
   left: 0rpx;right: 0rpx;
   padding:20rpx;
   border-top:1px solid #dcdcdc;
+  background: #f3f3f3;
+  z-index: 88;
   &-icon{
-    position: absolute;
+    position: fixed;
     left: 38rpx;
-    top: 38rpx;
+    bottom: 62rpx;
     width: 40rpx;
     height: 40rpx;
   }
@@ -217,5 +303,47 @@ export default {
   justify-content: flex-start;
   align-items: center;
   position: relative;
+}
+.dialog{
+  position: fixed;z-index: 999;
+  top: 0;bottom: 0;left: 0;right: 0; background: rgba(0,0,0,.5);
+  display: flex;justify-content: center;align-items:center;
+  &-box{
+    width: 380rpx;
+    height: 380rpx;
+    padding:20rpx;
+    border-radius: 20rpx;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 36rpx;
+    &-first{
+      margin-top: 80rpx;
+      margin-bottom: 20rpx;
+    }
+    &-second{
+      margin-bottom: 96rpx;
+    }
+    &-btns{
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      &-item{
+        width: 160rpx;
+        line-height: 80rpx;
+        color:#fff;
+        text-align: center;
+        border-radius: 10rpx;
+      }
+    }
+  }
+}
+.confirm{
+  background: #292770;
+}
+.cancel{
+  background: #6f6f6f;
 }
 </style>
