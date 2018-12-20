@@ -19,6 +19,7 @@
     "pages/my-statement/main",
     "pages/my-about/main",
     "pages/my-suggest/main",
+    "pages/my-note/main",
     "pages/logs/main",
     "pages/counter/main",
     "pages/webview/main",
