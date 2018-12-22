@@ -520,7 +520,8 @@ export default {
             {
               points: data,
               strokeColor: "#258a57AA",
-              fillColor: "#258a57AA"
+              // fillColor: "#258a57AA"
+              fillColor: "#22258a57"
             }
           ];
           console.log(data);
