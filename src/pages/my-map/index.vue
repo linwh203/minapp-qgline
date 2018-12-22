@@ -7,6 +7,7 @@
       scale="20"
       :controls="controls"
       :markers="markers"
+      :polygons="polygons"
       :polyline="polyline"
       show-location
       style="width: 100%; height:calc(100% - 176rpx)"
@@ -92,6 +93,7 @@ export default {
       currSpot: undefined,
       controls: [],
       markers: [],
+      polygons: undefined,
       distance: "",
       cost: "",
       polyline: [],
@@ -172,7 +174,7 @@ export default {
       console.log("geo", geo.gcj_encrypt);
       this.markers = spotList.map(n => {
         let trans = geo.gcj_encrypt(n.latitude, n.longitude);
-        console.log(trans);
+        // console.log(trans);
         return {
           id: n.sortNo,
           title: n.spot_name,
@@ -498,6 +500,32 @@ export default {
         }
       };
       return GPS;
+    },
+    createPolygons() {
+      let geo = this.initGeoTrans();
+      let url = config.base + "Attraction/map";
+      wx.request({
+        url,
+        success: res => {
+          let data = res.data.data;
+          data = data.map(n => {
+            let format = geo.gcj_encrypt(n.latitude, n.longitude);
+            return {
+              latitude: format.lat,
+              longitude: format.lon
+            };
+          });
+
+          this.polygons = [
+            {
+              points: data,
+              strokeColor: "#258a57AA",
+              fillColor: "#258a57AA"
+            }
+          ];
+          console.log(data);
+        }
+      });
     }
   },
   created() {
@@ -511,6 +539,7 @@ export default {
     this.getSpot(this.queryType).then(() => {
       this.createMarkers(this.spotList);
     });
+    this.createPolygons();
   },
   onShow() {
     let index = 0;
