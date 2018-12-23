@@ -12,6 +12,7 @@
       show-location
       style="width: 100%; height:calc(100% - 176rpx)"
       @click="touchMap"
+      @regionchange="onRegionChange"
       @markertap="touchMarker"
     >
       <!-- <cover-view>
@@ -170,11 +171,7 @@ export default {
     },
     createMarkers(spotList) {
       console.log("create markers ...");
-      let geo = (this.geo = this.geo || this.initGeoTrans());
-
       this.markers = spotList.map(n => {
-        let trans = geo.gcj_encrypt(n.latitude, n.longitude);
-        // console.log(trans);
         // 语音：https://etx.forestvisual.com/File/Download?fileName=Icon/Audio/1.png&;fileType=QGLineFile
         // 自然线地图 https://etx.forestvisual.com/File/Download?fileName=Icon/NaturalMap/1.png&fileType=QGLineFile
         // 诗歌线线地图 https://etx.forestvisual.com/File/Download?fileName=Icon/PoetryMap/1.png&fileType=QGLineFile
@@ -193,8 +190,8 @@ export default {
           // id: n.sortNo,
           id: n.id,
           title: n.spot_name,
-          longitude: trans.lon,
-          latitude: trans.lat,
+          longitude: n.realLng,
+          latitude: n.realLat,
           iconPath,
           callout: {
             content: n.spot_title,
@@ -221,6 +218,9 @@ export default {
     touchMap(e) {
       console.log(e);
       this.stopAudio();
+    },
+    onRegionChange(e) {
+      console.log("on region change:", e);
     },
     touchMarker(e) {
       console.log("touch marker");
@@ -540,6 +540,13 @@ export default {
           console.log(data);
         }
       });
+    },
+    // 判断经纬度是不是一样
+    equalPosi(p1, p2) {
+      let equal = (a, b) => {
+        return Math.round(a * 1e4) === Math.round(b * 1e4);
+      };
+      return equal(p1.lat, p2.lat) && equal(p1.lng, p2.lng);
     }
   },
   created() {
@@ -549,6 +556,7 @@ export default {
   },
   onLoad(options) {
     console.log(options);
+    let geo = (this.geo = this.geo || this.initGeoTrans());
     this.queryType = options.queryType - 0;
     Promise.all([this.getSpot(0), this.getSpot(1)]).then(data => {
       this.spotList = this.spotList || [];
@@ -559,6 +567,9 @@ export default {
         n = n.map(n => {
           n.id = 10000 * i + n.sortNo;
           n.queryType = i;
+          let realPosi = geo.gcj_encrypt(n.latitude, n.longitude);
+          n.realLng = realPosi.lon;
+          n.realLat = realPosi.lat;
           return n;
         });
 
@@ -584,7 +595,10 @@ export default {
           }
           // 当前坐标
           // 防止闪烁
-          if (this.lng !== posi.lng || this.lat !== posi.lat) {
+          if (!this.equalPosi(this, posi)) {
+            // if (this.lng !== posi.lng || this.lat !== posi.lat) {
+            console.log("this.posi", this.lng, this.lat);
+            console.log("new.posi", posi.lng, posi.lat);
             this.lng = posi.lng;
             this.lat = posi.lat;
           }
