@@ -130,11 +130,11 @@ export default {
   methods: {
     // 去浏览spot的详细界面
     viewDetail(spot) {
-      wx.navigateTo({ url: "../list/main?spot_index=" + spot.sortNo });
+      wx.navigateTo({ url: "../list/main?spot_index=" + spot.id });
     },
     getSpot(queryType) {
       let storageName, queryUrl;
-      if (queryType === 0) {
+      if (queryType === 1) {
         storageName = "NatrueList";
         queryUrl = config.base + "attraction/NaturalList";
       } else {
@@ -177,27 +177,19 @@ export default {
         // 诗歌线线地图 https://etx.forestvisual.com/File/Download?fileName=Icon/PoetryMap/1.png&fileType=QGLineFile
         let iconPath;
         let queryType = n.queryType;
-        if (queryType === 1) {
-          iconPath = `https://etx.forestvisual.com/File/Download?fileName=Icon/NaturalMap/${
-            n.sortNo
-          }.png&fileType=QGLineFile`;
-        } else {
-          iconPath = `https://etx.forestvisual.com/File/Download?fileName=Icon/PoetryMap/${
-            n.sortNo
-          }.png&fileType=QGLineFile`;
-        }
+        iconPath = this.getIconPath(n.sortNo, queryType);
         return {
           // id: n.sortNo,
           id: n.id,
-          title: n.spot_name,
+          // title: n.spot_name,
           longitude: n.realLng,
           latitude: n.realLat,
           iconPath,
-          callout: {
-            content: n.spot_title,
-            color: "#ff0000",
-            bgColor: "333333"
-          },
+          // callout: {
+          //   content: n.spot_title,
+          //   color: "#ff0000",
+          //   bgColor: "333333"
+          // },
           label: {
             content: n.spot_name
           }
@@ -230,12 +222,12 @@ export default {
       this.isTryActivePlay = true;
       this.activeSpot(markerId);
 
-      this.setFocusePositionBySortNo(markerId);
+      this.setFocusePositionById(markerId);
     },
     // 设置焦点坐标,通过markerId
-    setFocusePositionBySortNo(sortNo) {
-      let spot = this.spotList.find(n => n.sortNo === sortNo);
-      this.setFocusePosition(spot.longitude, spot.latitude);
+    setFocusePositionById(id) {
+      let spot = this.spotList.find(n => n.id === id);
+      this.setFocusePosition(spot.realLng, spot.realLat);
     },
     // 设置焦点坐标
     setFocusePosition(lng, lat) {
@@ -245,18 +237,24 @@ export default {
       }
     },
     activeSpot(spotId) {
+      // 语音：https://etx.forestvisual.com/File/Download?fileName=Icon/Audio/1.png&;fileType=QGLineFile
+      // 自然线地图 https://etx.forestvisual.com/File/Download?fileName=Icon/NaturalMap/1.png&fileType=QGLineFile
+      // 诗歌线线地图 https://etx.forestvisual.com/File/Download?fileName=Icon/PoetryMap/1.png&fileType=QGLineFile
       // 反激活
       if (this.currSpot) {
-        let ma = this.markers.find(n => n.id == this.currSpot.sortNo);
-        ma.iconPath =
-          "https://gw.alicdn.com/tfs/TB11oPzvIfpK1RjSZFOXXa6nFXa-35-54.png";
+        let ma = this.markers.find(n => n.id == this.currSpot.id);
+        if (ma) {
+          ma.iconPath = this.getIconPath(
+            this.currSpot.sortNo,
+            this.currSpot.queryType
+          );
+        }
       }
 
       // 激活
-      this.currSpot = this.spotList.find(n => n.sortNo == spotId);
+      this.currSpot = this.spotList.find(n => n.id == spotId);
       let ma = this.markers.find(n => n.id == spotId);
-      ma.iconPath =
-        "https://gw.alicdn.com/tfs/TB1jyYuvSzqK1RjSZFjXXblCFXa-71-55.png";
+      ma.iconPath = this.getIconPath(this.currSpot.sortNo, -1);
 
       // 激活audio的播放
       this.playAudio(this.currSpot.spot_id);
@@ -547,6 +545,17 @@ export default {
         return Math.round(a * 1e4) === Math.round(b * 1e4);
       };
       return equal(p1.lat, p2.lat) && equal(p1.lng, p2.lng);
+    },
+    getIconPath(number, type) {
+      if (type === -1) {
+        return `../../assets/map-audio/${number}.png`;
+      }
+      if (type === 0) {
+        return `../../assets/map-poetry/${number}.png`;
+      }
+      if (type === 1) {
+        return `../../assets/map-nature/${number}.png`;
+      }
     }
   },
   created() {
@@ -562,10 +571,12 @@ export default {
       this.spotList = this.spotList || [];
       data.forEach((n, i) => {
         // 添加一个id属性
-        // 自然线的sortNo=1,id=1
-        // 诗歌线的sortNo=1,id=10000+1=10001;
+        // 魔幻数89,别动!!!
+        // 自然线的sortNo=1,id=sortNo
+        // 诗歌线的sortNo=1,id=sortNo+89
+        let magicNum = 89;
         n = n.map(n => {
-          n.id = 10000 * i + n.sortNo;
+          n.id = (i === 0 ? magicNum : 0) + n.sortNo;
           n.queryType = i;
           let realPosi = geo.gcj_encrypt(n.latitude, n.longitude);
           n.realLng = realPosi.lon;
