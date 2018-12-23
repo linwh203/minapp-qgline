@@ -144,8 +144,8 @@ export default {
         console.log({ storageName });
         const storageData = wx.getStorageSync(storageName);
         if (storageData) {
-          this.spotList = storageData;
-          resolve();
+          // this.spotList = storageData;
+          resolve(storageData);
           return;
         }
         wx.request({
@@ -160,8 +160,8 @@ export default {
             let data = res.data.data;
             data = typeof data === "string" ? JSON.parse(data) : data;
             wx.setStorageSync(storageName, data);
-            this.spotList = data;
-            resolve();
+            // this.spotList = data;
+            resolve(data);
           },
           fail: () => {},
           complete: () => {}
@@ -169,19 +169,33 @@ export default {
       });
     },
     createMarkers(spotList) {
-      console.log("create Markers", spotList.length);
-      let geo = this.initGeoTrans();
-      console.log("geo", geo.gcj_encrypt);
+      console.log("create markers ...");
+      let geo = (this.geo = this.geo || this.initGeoTrans());
+
       this.markers = spotList.map(n => {
         let trans = geo.gcj_encrypt(n.latitude, n.longitude);
         // console.log(trans);
+        // 语音：https://etx.forestvisual.com/File/Download?fileName=Icon/Audio/1.png&;fileType=QGLineFile
+        // 自然线地图 https://etx.forestvisual.com/File/Download?fileName=Icon/NaturalMap/1.png&fileType=QGLineFile
+        // 诗歌线线地图 https://etx.forestvisual.com/File/Download?fileName=Icon/PoetryMap/1.png&fileType=QGLineFile
+        let iconPath;
+        let queryType = n.queryType;
+        if (queryType === 1) {
+          iconPath = `https://etx.forestvisual.com/File/Download?fileName=Icon/NaturalMap/${
+            n.sortNo
+          }.png&fileType=QGLineFile`;
+        } else {
+          iconPath = `https://etx.forestvisual.com/File/Download?fileName=Icon/PoetryMap/${
+            n.sortNo
+          }.png&fileType=QGLineFile`;
+        }
         return {
-          id: n.sortNo,
+          // id: n.sortNo,
+          id: n.id,
           title: n.spot_name,
           longitude: trans.lon,
           latitude: trans.lat,
-          iconPath:
-            "https://gw.alicdn.com/tfs/TB11oPzvIfpK1RjSZFOXXa6nFXa-35-54.png",
+          iconPath,
           callout: {
             content: n.spot_title,
             color: "#ff0000",
@@ -192,7 +206,6 @@ export default {
           }
         };
       });
-
       // 因为真机在地图上已经有了蓝色箭头,所以不需要小人了
       // this.person = {
       //   id: 999,
@@ -537,7 +550,20 @@ export default {
   onLoad(options) {
     console.log(options);
     this.queryType = options.queryType - 0;
-    this.getSpot(this.queryType).then(() => {
+    Promise.all([this.getSpot(0), this.getSpot(1)]).then(data => {
+      this.spotList = this.spotList || [];
+      data.forEach((n, i) => {
+        // 添加一个id属性
+        // 自然线的sortNo=1,id=1
+        // 诗歌线的sortNo=1,id=10000+1=10001;
+        n = n.map(n => {
+          n.id = 10000 * i + n.sortNo;
+          n.queryType = i;
+          return n;
+        });
+
+        this.spotList = this.spotList.concat(n);
+      });
       this.createMarkers(this.spotList);
     });
     this.createPolygons();
