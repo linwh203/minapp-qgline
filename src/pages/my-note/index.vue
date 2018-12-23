@@ -82,9 +82,8 @@ export default {
     confirmDel() {
       const token = wx.getStorageSync("userCode");
       wx.request({
-        url: config.base + 'note/DeleteNoteList', //开发者服务器接口地址",
-        data: 'data', //请求的参数",
-        method: 'delete',
+        url: config.base + 'note/deleteNoteList', //开发者服务器接口地址"
+        method: 'POST',
         header: {
           token: token,
           id: this.currentId
@@ -156,9 +155,12 @@ export default {
       const token = wx.getStorageSync("userCode");
       wx.request({
         url: config.base + 'note/noteList', //开发者服务器接口地址",
-        data: {
-          token:token
-        }, //请求的参数",
+        // data: {
+        //   token:token
+        // }, //请求的参数",
+        header: {
+          token: token
+        },
         method: 'GET',
         dataType: 'json', //如果设为json，会尝试对返回的数据做一次 JSON.parse
         success: res => {
@@ -172,7 +174,7 @@ export default {
 
   created() {
     this.userCode = wx.getStorageSync("userCode");
-    // this.getNoteList();
+    this.getNoteList();
   },
   mounted() {}
 };
