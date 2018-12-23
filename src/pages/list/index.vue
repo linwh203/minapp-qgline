@@ -5,9 +5,9 @@
         <div class="nav-line"></div>
         <div class="nav-content">
           <div class="nav-item" :class="audioOff?'audio':'pause'" @click="playAudio"></div>
-          <div class="point"></div>
-          <div class="nav-item video" @click="goVideo"></div>
-          <div class="point"></div>
+          <!-- <div class="point"></div> -->
+          <!-- <div class="nav-item video" @click="goVideo"></div> -->
+          <!-- <div class="point"></div> -->
           <div class="nav-item note" v-if="false"></div>
           <!-- <button class="nav-item share" style="margin-left:0;margin-right:0;" open-type="share"></button> -->
           <div class="nav-item share">
@@ -23,25 +23,24 @@
         <div v-if="item.author">
           <div class="article-author">{{item.author}}</div>
           <div class="article-title">{{item.title}}</div>
-
         </div>
         <div v-else>
-          <div class="article-title-full" >{{item.title}}</div>
+          <div class="article-title-full">{{item.title}}</div>
         </div>
         <div class="article-text" v-html="item.content"></div>
       </div>
-     
+
       <img class="article-img" :src="prefix + item.url" v-if="item.url" mode="widthFix">
       <!-- <div class="writer" v-if="articleData[1]">
         <div class="writer-title">{{articleData[1].title}}</div>
         <div class="writer-text" v-html="articleData[1].content"></div>
-      </div> -->
+      </div>-->
     </div>
     <div class="share-box" v-if="sharebox">
       <div class="share-box-body">
         <div class="share-box-body-item">
           <button open-type="share" class="btn-share-origin"></button>
-          <img src="../../assets/icon-share-weixin.png" alt="">
+          <img src="../../assets/icon-share-weixin.png" alt>
         </div>
       </div>
       <div class="share-box-close" @click="hideShareBox">取消</div>
@@ -398,7 +397,7 @@ export default {
     justify-content: space-between;
   }
   &-item {
-    width: 92rpx;
+    width: 213rpx;
     height: 86rpx;
     margin-bottom: 15rpx;
     position: relative;
@@ -409,12 +408,10 @@ export default {
     background: #fff;
   }
   .audio {
-    background: url("https://gw.alicdn.com/tfs/TB1rngUnAvoK1RjSZPfXXXPKFXa-91-83.png")
-      no-repeat center/cover;
+    background: url("../../assets/list-audio-play.png") no-repeat center/cover;
   }
   .pause {
-    background: url("https://gw.alicdn.com/tfs/TB1A5HfnYvpK1RjSZPiXXbmwXXa-91-84.png")
-      no-repeat center/cover;
+    background: url("../../assets/list-audio-pause.png") no-repeat center/cover;
   }
   // .audio:after,.video:after,.note:after,.pause:after{
   //   content:'';
@@ -445,8 +442,8 @@ export default {
   }
   .share {
     // margin-left: 6%;
-    background: url("https://gw.alicdn.com/tfs/TB1B.35nxYaK1RjSZFnXXa80pXa-91-83.png")
-      no-repeat center/cover;
+    background: url("../../assets/list-knowledge-share.png") no-repeat
+      center/cover;
     transform: translateX(12rpx);
   }
   &-border {
