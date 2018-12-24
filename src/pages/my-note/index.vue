@@ -13,7 +13,7 @@
       <div class="main-item" v-for="(item,index) in noteList" :key=item.id>
         <div class="main-item-left">
           <img class="main-item-left-icon" src="https://gw.alicdn.com/tfs/TB13VGlxkPoK1RjSZKbXXX1IXXa-35-18.png">
-          <div class="main-item-left-number">{{item.id}}</div>
+          <div class="main-item-left-number">{{index+1}}</div>
           <div class="main-item-left-line" v-if="index!=noteList.length-1"></div>
         </div>
         <div class="main-item-right">
@@ -22,7 +22,7 @@
               {{item.content}}
             </div>
             <div class="main-item-right-down">
-              <div class="main-item-right-down-time">2018-12-18 12:00</div>
+              <div class="main-item-right-down-time">{{item.time}}</div>
               <div class="main-item-right-down-del" @click="openDialog(item.id)">删除</div>
             </div>
           </div>
@@ -44,23 +44,14 @@
 </template>
 
 <script>
-import { config, formatTime } from "../../utils/index";
+import { config, formatDate } from "../../utils/index";
+
 export default {
   data() {
     return {
       text: "",
       contact: "",
-      noteList: [{id:1,content:"ajhsdkahsdkhaskdjh"},
-      {id:2,content:"暗红色的卡是的接口哈数据库等哈可接受的黄金卡山东矿机啊还是打开就哈斯卡级等哈就开始单解卡山艾克就圣诞款"},
-      {id:3,content:"暗红色的卡是的接口哈数据库等哈可接受的黄金卡山东矿机啊还是打开就哈斯卡级等哈就开始单解卡山艾克就圣诞款"},
-      {id:4,content:"暗红色的卡是的接口哈数据库等哈可接受的黄金卡山东矿机啊还是打开就哈斯卡级等哈就开始单解卡山艾克就圣诞款"},
-      {id:5,content:"暗红色的卡是的接口哈数据库等哈可接受的黄金卡山东矿机啊还是打开就哈斯卡级等哈就开始单解卡山艾克就圣诞款"},
-      {id:6,content:"暗红色的卡是的接口哈数据库等哈可接受的黄金卡山东矿机啊还是打开就哈斯卡级等哈就开始单解卡山艾克就圣诞款"},
-      {id:7,content:"暗红色的卡是的接口哈数据库等哈可接受的黄金卡山东矿机啊还是打开就哈斯卡级等哈就开始单解卡山艾克就圣诞款"},
-      {id:8,content:"暗红色的卡是的接口哈数据库等哈可接受的黄金卡山东矿机啊还是打开就哈斯卡级等哈就开始单解卡山艾克就圣诞款"},
-      {id:9,content:"暗红色的卡是的接口哈数据库等哈可接受的黄金卡山东矿机啊还是打开就哈斯卡级等哈就开始单解卡山艾克就圣诞款"},
-      {id:10,content:"暗红色的卡是的接口哈数据库等哈可接受的黄金卡山东矿机啊还是打开就哈斯卡级等哈就开始单解卡山艾克就圣诞款"},
-      ],
+      noteList: [],
       userCode: "",
       isFoucs: false,
       currentId:"",
@@ -81,13 +72,15 @@ export default {
     },
     confirmDel() {
       const token = wx.getStorageSync("userCode");
+      const delUrl = `${config.base}Note/deleteNoteList?token=${token}&id=${this.currentId}`;
       wx.request({
-        url: config.base + 'note/deleteNoteList', //开发者服务器接口地址"
-        method: 'POST',
-        header: {
-          token: token,
-          id: this.currentId
-        },
+        // url: config.base + 'Note/deleteNoteList', //开发者服务器接口地址"
+        url: delUrl, //开发者服务器接口地址"
+        method: 'DELETE',
+        // data: {
+        //   token: token,
+        //   id: this.currentId
+        // },
         dataType: 'json', //如果设为json，会尝试对返回的数据做一次 JSON.parse
         success: res => {
           wx.showToast({
@@ -165,6 +158,10 @@ export default {
         dataType: 'json', //如果设为json，会尝试对返回的数据做一次 JSON.parse
         success: res => {
           console.log('note',res.data)
+          this.noteList = res.data && res.data.data;
+          this.noteList.forEach(item => {
+            item.time = formatDate(item.time);
+          })
         },
         fail: () => {},
         complete: () => {}
