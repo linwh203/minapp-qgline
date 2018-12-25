@@ -2,8 +2,8 @@
   <div class="container">
     <map
       id="map"
-      :longitude="focus.lng"
-      :latitude="focus.lat"
+      longitude="114.35762024"
+      latitude="22.61326927"
       scale="20"
       :controls="controls"
       :markers="markers"
@@ -25,7 +25,7 @@
       <cover-view class="reset" @click="resetPosition">
         <cover-image
           class="img"
-          src="https://gw.alicdn.com/tfs/TB1RwLAvQzoK1RjSZFlXXai4VXa-57-96.png"
+          src="https://qg-line.oss-cn-shenzhen.aliyuncs.com/map/map-position.png"
         />
       </cover-view>
       <!-- <img class="img" src="../../assets/reset.png">
@@ -237,9 +237,6 @@ export default {
       }
     },
     activeSpot(spotId) {
-      // 语音：https://etx.forestvisual.com/File/Download?fileName=Icon/Audio/1.png&;fileType=QGLineFile
-      // 自然线地图 https://etx.forestvisual.com/File/Download?fileName=Icon/NaturalMap/1.png&fileType=QGLineFile
-      // 诗歌线线地图 https://etx.forestvisual.com/File/Download?fileName=Icon/PoetryMap/1.png&fileType=QGLineFile
       // 反激活
       if (this.currSpot) {
         let ma = this.markers.find(n => n.id == this.currSpot.id);
@@ -392,23 +389,20 @@ export default {
 
       if (this.spotList) {
         this.spotList.find(n => {
-          let { longitude, latitude, sortNo } = n;
-          if (
-            this.lng &&
-            this.lat &&
-            getDistance(this.lng, this.lat, longitude, latitude) <= DIST &&
-            1
-          ) {
+          let { longitude, latitude, id } = n;
+          let dist = getDistance(posi.lng, posi.lat, longitude, latitude);
+          // console.log("dist:", posi.lng, posi.lat, longitude, latitude, dist);
+          if (posi.lng && posi.lat && dist <= DIST && 1) {
             // 激活最近点
-            console.log("尝试激活最近点", sortNo - 1);
+            console.log("尝试激活最近点", id);
             if (this.isActivePlay) {
-              return;
+              return true;
             }
-            if (this.currSpot && this.currSpot.sortNo === sortNo) {
-              return;
+            if (this.currSpot && this.currSpot.id === id) {
+              return true;
             }
-            console.log("激活最近点", sortNo);
-            this.activeSpot(sortNo);
+            console.log("激活最近点", id);
+            this.activeSpot(id);
             return true;
           }
         });
@@ -592,6 +586,20 @@ export default {
   },
   onShow() {
     let index = 0;
+
+    // 是否在区域内,就探测一次
+    this.getPosition().then(posi => {
+      if (!this.hasShowOutTip) {
+        if (this.isPositionOut(posi.lng, posi.lat)) {
+          this.isShowOutTip = true;
+          this.hasShowOutTip = true;
+          setTimeout(() => {
+            this.isShowOutTip = false;
+          }, 2000);
+        }
+      }
+    });
+
     // 轮询坐标
     this.tForPosition = setInterval(() => {
       this.getPosition().then(posi => {
@@ -613,21 +621,20 @@ export default {
             this.lng = posi.lng;
             this.lat = posi.lat;
           }
-          // mock
-          if (!this.hasShowOutTip) {
-            if (this.isPositionOut(posi.lng, posi.lat)) {
-              this.isShowOutTip = true;
-              this.hasShowOutTip = true;
-              setTimeout(() => {
-                this.isShowOutTip = false;
-              }, 2000);
-            }
-          }
 
           // 设置小人的坐标
           // this.setPersonPosition(posi);
           // 寻找距离本人较近的spot
           this.findNearSpot(posi);
+
+          // 下面的代码用以测试是能激活最近点
+          // 线上版本请注释
+          // /*
+          // this.findNearSpot({
+          //   lng: 114.35762024,
+          //   lat: 22.61326927
+          // });
+          //*/
         }
       });
     }, 5000);
@@ -728,8 +735,9 @@ export default {
 }
 .reset {
   position: absolute;
-  bottom: 20rpx;
-  right: 40rpx;
+  bottom: 10rpx;
+  right: 20rpx;
+  transform: scale(0.8);
   img {
     width: 48rpx;
     height: 48rpx;
