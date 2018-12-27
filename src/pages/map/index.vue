@@ -1,12 +1,42 @@
 <template>
   <movable-area class="container">
-    <movable-view class="index-bg" :scale="false" :x="x" :y="y" :animation="false" scale-max="1.2" scale-min="1" direction="all"  @scale="startScale" @change="startTouch" >
-      <img class="mapImg" src="https://gw.alicdn.com/tfs/TB1JlSPn7zoK1RjSZFlXXai4VXa-2835-2835.jpg" alt="" >
-      <div class="spot-icon"  :class="activeSpot == index?'changeBG':''" v-for="(item,index) in spotList" :key="item.sortNo"
-            @click="showWindow(index)" :style="{top:item.top+'rpx',left:item.left+'rpx',transform:'scale('+spotScale+')'}">
-        <span >{{item.sortNo}}</span>
-        <div class="spot-item-window" :class="'window-'+item.sortNo" v-if="activeWindow == index" @click="viewDetail(item)">
-          <img class="spot-item-window-pic" :src="prefix + item.spot_coverurl" v-if=item.spot_coverurl>
+    <movable-view
+      class="index-bg"
+      :scale="false"
+      :x="x"
+      :y="y"
+      :animation="false"
+      scale-max="1.2"
+      scale-min="1"
+      direction="all"
+      @scale="startScale"
+      @change="startTouch"
+    >
+      <img
+        class="mapImg"
+        src="https://gw.alicdn.com/tfs/TB1JlSPn7zoK1RjSZFlXXai4VXa-2835-2835.jpg"
+        alt
+      >
+      <div
+        class="spot-icon"
+        :class="activeSpot == index?'changeBG':''"
+        v-for="(item,index) in spotList"
+        :key="item.sortNo"
+        @click="showWindow(index)"
+        :style="{top:item.top+'rpx',left:item.left+'rpx',transform:'scale('+spotScale+')'}"
+      >
+        <span>{{item.sortNo}}</span>
+        <div
+          class="spot-item-window"
+          :class="'window-'+item.sortNo"
+          v-if="activeWindow == index"
+          @click="viewDetail(item)"
+        >
+          <img
+            class="spot-item-window-pic"
+            :src="prefix + item.spot_coverurl"
+            v-if="item.spot_coverurl"
+          >
           <div class="spot-item-window-text">
             <div class="spot-item-window-title">{{item.spot_title}}</div>
             <div class="spot-item-window-desc">{{item.spot_describe}}</div>
@@ -17,24 +47,24 @@
     <div class="index-tab">
       <!-- <div class="index-tab-item icon-map" @click="bindTab('../index/main')" >
         <img src="https://gw.alicdn.com/tfs/TB1hOhEmMDqK1RjSZSyXXaxEVXa-90-101.png" alt="">
-      </div> -->
+      </div>-->
       <div class="index-tab-item icon-list" @click="bindTab('../index/main')">
         <img src="https://gw.alicdn.com/tfs/TB1gqFKmHvpK1RjSZFqXXcXUVXa-91-101.png">
       </div>
       <div class="index-tab-item icon-scan" @click="bindTab('../scan/main')">
-        <img src="https://gw.alicdn.com/tfs/TB1gWBKmHvpK1RjSZFqXXcXUVXa-91-101.png" alt="">
+        <img src="https://gw.alicdn.com/tfs/TB1gWBKmHvpK1RjSZFqXXcXUVXa-91-101.png" alt>
       </div>
       <div class="index-tab-item icon-audio" @click="playAudio" v-if="false">
-        <img src="https://gw.alicdn.com/tfs/TB1PStFmSzqK1RjSZFLXXcn2XXa-91-101.png" alt="">
+        <img src="https://gw.alicdn.com/tfs/TB1PStFmSzqK1RjSZFLXXcn2XXa-91-101.png" alt>
       </div>
       <div class="index-tab-item icon-quiz" @click="bindTab('../quiz/main')">
-        <img src="https://gw.alicdn.com/tfs/TB1mz8HmQvoK1RjSZFNXXcxMVXa-91-101.png" alt="">
+        <img src="https://gw.alicdn.com/tfs/TB1mz8HmQvoK1RjSZFNXXcxMVXa-91-101.png" alt>
       </div>
       <div class="index-tab-item icon-rule" @click="bindTab('../my-rule/main')">
-        <img src="https://gw.alicdn.com/tfs/TB1QrFHmSzqK1RjSZFHXXb3CpXa-91-100.png" alt="">
+        <img src="https://gw.alicdn.com/tfs/TB1QrFHmSzqK1RjSZFHXXb3CpXa-91-100.png" alt>
       </div>
       <div class="index-tab-item icon-my" @click="bindTab('../my/main')">
-        <img src="https://gw.alicdn.com/tfs/TB1TXlImMHqK1RjSZFgXXa7JXXa-92-99.png" alt="">
+        <img src="https://gw.alicdn.com/tfs/TB1TXlImMHqK1RjSZFgXXa7JXXa-92-99.png" alt>
       </div>
       <div class="index-tab-line"></div>
     </div>
@@ -52,8 +82,8 @@ export default {
       activeWindow: -1,
       x: 0,
       y: 0,
-      left:0,
-      top:0,
+      left: 0,
+      top: 0,
       mapStart: {
         lng: 114.32751775,
         lat: 22.63737202
@@ -94,7 +124,7 @@ export default {
       console.log("start scale", e);
       let detail = e.mp.detail;
       let scale = detail.scale;
-      if(scale > 1) {
+      if (scale > 1) {
         // this.x = e.x;
         // this.y = e.y;
       }
@@ -251,7 +281,7 @@ export default {
     }
   },
   created() {
-    this.getSpot();
+    // this.getSpot();
   },
   mounted() {},
   onReady() {
@@ -337,7 +367,7 @@ export default {
   background: #a8368e;
   color: #fff;
   border: yellow;
-  z-index:1000;
+  z-index: 1000;
 }
 .index-tab {
   position: fixed;

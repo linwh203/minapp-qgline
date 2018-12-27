@@ -82,11 +82,7 @@ export default {
       // 人的位置
       lng: 0,
       lat: 0,
-      // 焦点位置
-      focus: {
-        lng: 114.35762024,
-        lat: 22.61326927
-      },
+
       prefix: config.prefix,
       // 查询的类型,"自然线"或者"诗歌线"
       queryType: 0,
@@ -184,15 +180,15 @@ export default {
           // title: n.spot_name,
           longitude: n.realLng,
           latitude: n.realLat,
-          iconPath,
+          iconPath
           // callout: {
           //   content: n.spot_title,
           //   color: "#ff0000",
           //   bgColor: "333333"
           // },
-          label: {
-            content: n.spot_name
-          }
+          // label: {
+          //   content: n.spot_name
+          // }
         };
       });
       // 因为真机在地图上已经有了蓝色箭头,所以不需要小人了
@@ -221,21 +217,8 @@ export default {
 
       this.isTryActivePlay = true;
       this.activeSpot(markerId);
+    },
 
-      this.setFocusePositionById(markerId);
-    },
-    // 设置焦点坐标,通过markerId
-    setFocusePositionById(id) {
-      let spot = this.spotList.find(n => n.id === id);
-      this.setFocusePosition(spot.realLng, spot.realLat);
-    },
-    // 设置焦点坐标
-    setFocusePosition(lng, lat) {
-      if (this.focus.lng !== lng || this.focus.lat !== lat) {
-        console.log("reset focus position");
-        this.focus = { lng, lat };
-      }
-    },
     activeSpot(spotId) {
       // 反激活
       if (this.currSpot) {
@@ -409,11 +392,7 @@ export default {
       }
     },
     resetPosition() {
-      this.getPosition().then(posi => {
-        if (posi) {
-          this.setFocusePosition(posi.lng, posi.lat);
-        }
-      });
+      this.mapIns.moveToLocation();
     },
     initMap() {
       this.mapIns = wx.createMapContext("map");
@@ -554,6 +533,9 @@ export default {
   },
   created() {
     console.log("create");
+  },
+  onReady() {
+    console.log("onReady");
     this.initMap();
     this.initAudio();
   },
@@ -608,23 +590,6 @@ export default {
             posi.lng = 114.35762024;
             posi.lat = 22.61326927;
           }
-          index++;
-          if (index == 0) {
-            this.setFocusePosition(posi.lng, posi.lat);
-          }
-          // 当前坐标
-          // 防止闪烁
-          if (!this.equalPosi(this, posi)) {
-            // if (this.lng !== posi.lng || this.lat !== posi.lat) {
-            console.log("this.posi", this.lng, this.lat);
-            console.log("new.posi", posi.lng, posi.lat);
-            this.lng = posi.lng;
-            this.lat = posi.lat;
-          }
-
-          // 设置小人的坐标
-          // this.setPersonPosition(posi);
-          // 寻找距离本人较近的spot
           this.findNearSpot(posi);
 
           // 下面的代码用以测试是能激活最近点
