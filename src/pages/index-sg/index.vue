@@ -68,9 +68,9 @@
             <img
               class="spot-item-window-pic"
               :src="prefix + currentSpot.spot_coverurl"
-              v-if="currentSpot.spot_coverurl"
+              v-if="currentSpot && currentSpot.spot_coverurl"
             >
-            <div class="spot-item-window-text">
+            <div class="spot-item-window-text" v-if="currentSpot">
               <div class="spot-item-window-title">{{currentSpot.spot_title}}</div>
               <div class="spot-item-window-desc">{{currentSpot.spot_describe}}</div>
             </div>
@@ -95,9 +95,9 @@
             <img
               class="spot-item-window-pic"
               :src="prefix + currentSpot.spot_coverurl"
-              v-if="currentSpot.spot_coverurl"
+              v-if="currentSpot && currentSpot.spot_coverurl"
             >
-            <div class="spot-item-window-text">
+            <div class="spot-item-window-text" v-if="currentSpot">
               <div class="spot-item-window-title">{{currentSpot.spot_title}}</div>
               <div class="spot-item-window-desc">{{currentSpot.spot_describe}}</div>
             </div>
@@ -472,10 +472,6 @@ export default {
       ];
     }
   },
-  mounted() {
-    this.getSpot();
-    // console.log(this.GLOBAL);
-  },
   onLoad() {
     // 判断是否第一次使用
     const firsttime = wx.getStorageSync("firsttime");
@@ -485,6 +481,7 @@ export default {
     } else {
       console.log(firsttime);
     }
+    this.getSpot();
     wx.getSystemInfo({
       success: res => {
         if (res.model.indexOf("iPhone X") >= 0) {
