@@ -534,15 +534,12 @@ export default {
   created() {
     console.log("create");
   },
-  onReady() {
-    console.log("onReady");
-    this.initMap();
-    this.initAudio();
-  },
   onLoad(options) {
     console.log(options);
     let geo = (this.geo = this.geo || this.initGeoTrans());
     this.queryType = options.queryType - 0;
+    console.warn("this.spotList", this.spotList ? this.spotList.length : -1);
+    this.spotList = [];
     Promise.all([this.getSpot(0), this.getSpot(1)]).then(data => {
       this.spotList = this.spotList || [];
       data.forEach((n, i) => {
@@ -565,6 +562,11 @@ export default {
       this.createMarkers(this.spotList);
     });
     this.createPolygons();
+  },
+  onReady() {
+    console.log("onReady");
+    this.initMap();
+    this.initAudio();
   },
   onShow() {
     let index = 0;
