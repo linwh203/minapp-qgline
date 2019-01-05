@@ -18,6 +18,22 @@ export function formatTime (date) {
   return `${t1} ${t2}`
 }
 
+export const formatDate = (time,YYYY) => {
+  let t = parseInt(time);
+  let d=new Date(t),
+      year = d.getFullYear(),
+      month = d.getMonth() + 1,
+      date = d.getDate(),
+      hour = d.getHours()<10?`0${d.getHours()}`:d.getHours(),
+      minute = d.getMinutes()<10?`0${d.getMinutes()}`:d.getMinutes(),
+      second = d.getSeconds()<10?`0${d.getSeconds()}`:d.getSeconds();
+  if(YYYY){
+    return year + "-" + month + "-" + date + " " + hour + ":" + minute;
+  }else{
+    return month + "月" + date + "日" + hour + ":" + minute;
+  }
+};
+
 export const config = {
   prefix: 'https://etx.forestvisual.com',
   base: 'https://etx.forestvisual.com/guidewechat/',

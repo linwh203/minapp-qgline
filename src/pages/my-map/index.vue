@@ -2,8 +2,8 @@
   <div class="container">
     <map
       id="map"
-      :longitude="focus.lng"
-      :latitude="focus.lat"
+      longitude="114.35762024"
+      latitude="22.61326927"
       scale="20"
       :controls="controls"
       :markers="markers"
@@ -12,6 +12,7 @@
       show-location
       style="width: 100%; height:calc(100% - 176rpx)"
       @click="touchMap"
+      @regionchange="onRegionChange"
       @markertap="touchMarker"
     >
       <!-- <cover-view>
@@ -24,7 +25,7 @@
       <cover-view class="reset" @click="resetPosition">
         <cover-image
           class="img"
-          src="https://gw.alicdn.com/tfs/TB1RwLAvQzoK1RjSZFlXXai4VXa-57-96.png"
+          src="https://qg-line.oss-cn-shenzhen.aliyuncs.com/map/map-position.png"
         />
       </cover-view>
       <!-- <img class="img" src="../../assets/reset.png">
@@ -81,11 +82,7 @@ export default {
       // 人的位置
       lng: 0,
       lat: 0,
-      // 焦点位置
-      focus: {
-        lng: 114.35762024,
-        lat: 22.61326927
-      },
+
       prefix: config.prefix,
       // 查询的类型,"自然线"或者"诗歌线"
       queryType: 0,
@@ -129,11 +126,11 @@ export default {
   methods: {
     // 去浏览spot的详细界面
     viewDetail(spot) {
-      wx.navigateTo({ url: "../list/main?spot_index=" + spot.sortNo });
+      wx.navigateTo({ url: "../list/main?spot_index=" + spot.id });
     },
     getSpot(queryType) {
       let storageName, queryUrl;
-      if (queryType === 0) {
+      if (queryType === 1) {
         storageName = "NatrueList";
         queryUrl = config.base + "attraction/NaturalList";
       } else {
@@ -170,40 +167,28 @@ export default {
     },
     createMarkers(spotList) {
       console.log("create markers ...");
-      let geo = (this.geo = this.geo || this.initGeoTrans());
-
       this.markers = spotList.map(n => {
-        let trans = geo.gcj_encrypt(n.latitude, n.longitude);
-        // console.log(trans);
         // 语音：https://etx.forestvisual.com/File/Download?fileName=Icon/Audio/1.png&;fileType=QGLineFile
         // 自然线地图 https://etx.forestvisual.com/File/Download?fileName=Icon/NaturalMap/1.png&fileType=QGLineFile
         // 诗歌线线地图 https://etx.forestvisual.com/File/Download?fileName=Icon/PoetryMap/1.png&fileType=QGLineFile
         let iconPath;
         let queryType = n.queryType;
-        if (queryType === 1) {
-          iconPath = `https://etx.forestvisual.com/File/Download?fileName=Icon/NaturalMap/${
-            n.sortNo
-          }.png&fileType=QGLineFile`;
-        } else {
-          iconPath = `https://etx.forestvisual.com/File/Download?fileName=Icon/PoetryMap/${
-            n.sortNo
-          }.png&fileType=QGLineFile`;
-        }
+        iconPath = this.getIconPath(n.sortNo, queryType);
         return {
           // id: n.sortNo,
           id: n.id,
-          title: n.spot_name,
-          longitude: trans.lon,
-          latitude: trans.lat,
-          iconPath,
-          callout: {
-            content: n.spot_title,
-            color: "#ff0000",
-            bgColor: "333333"
-          },
-          label: {
-            content: n.spot_name
-          }
+          // title: n.spot_name,
+          longitude: n.realLng,
+          latitude: n.realLat,
+          iconPath
+          // callout: {
+          //   content: n.spot_title,
+          //   color: "#ff0000",
+          //   bgColor: "333333"
+          // },
+          // label: {
+          //   content: n.spot_name
+          // }
         };
       });
       // 因为真机在地图上已经有了蓝色箭头,所以不需要小人了
@@ -222,6 +207,9 @@ export default {
       console.log(e);
       this.stopAudio();
     },
+    onRegionChange(e) {
+      console.log("on region change:", e);
+    },
     touchMarker(e) {
       console.log("touch marker");
       console.log(e);
@@ -229,34 +217,24 @@ export default {
 
       this.isTryActivePlay = true;
       this.activeSpot(markerId);
+    },
 
-      this.setFocusePositionBySortNo(markerId);
-    },
-    // 设置焦点坐标,通过markerId
-    setFocusePositionBySortNo(sortNo) {
-      let spot = this.spotList.find(n => n.sortNo === sortNo);
-      this.setFocusePosition(spot.longitude, spot.latitude);
-    },
-    // 设置焦点坐标
-    setFocusePosition(lng, lat) {
-      if (this.focus.lng !== lng || this.focus.lat !== lat) {
-        console.log("reset focus position");
-        this.focus = { lng, lat };
-      }
-    },
     activeSpot(spotId) {
       // 反激活
       if (this.currSpot) {
-        let ma = this.markers.find(n => n.id == this.currSpot.sortNo);
-        ma.iconPath =
-          "https://gw.alicdn.com/tfs/TB11oPzvIfpK1RjSZFOXXa6nFXa-35-54.png";
+        let ma = this.markers.find(n => n.id == this.currSpot.id);
+        if (ma) {
+          ma.iconPath = this.getIconPath(
+            this.currSpot.sortNo,
+            this.currSpot.queryType
+          );
+        }
       }
 
       // 激活
-      this.currSpot = this.spotList.find(n => n.sortNo == spotId);
+      this.currSpot = this.spotList.find(n => n.id == spotId);
       let ma = this.markers.find(n => n.id == spotId);
-      ma.iconPath =
-        "https://gw.alicdn.com/tfs/TB1jyYuvSzqK1RjSZFjXXblCFXa-71-55.png";
+      ma.iconPath = this.getIconPath(this.currSpot.sortNo, -1);
 
       // 激活audio的播放
       this.playAudio(this.currSpot.spot_id);
@@ -394,34 +372,27 @@ export default {
 
       if (this.spotList) {
         this.spotList.find(n => {
-          let { longitude, latitude, sortNo } = n;
-          if (
-            this.lng &&
-            this.lat &&
-            getDistance(this.lng, this.lat, longitude, latitude) <= DIST &&
-            1
-          ) {
+          let { longitude, latitude, id } = n;
+          let dist = getDistance(posi.lng, posi.lat, longitude, latitude);
+          // console.log("dist:", posi.lng, posi.lat, longitude, latitude, dist);
+          if (posi.lng && posi.lat && dist <= DIST && 1) {
             // 激活最近点
-            console.log("尝试激活最近点", sortNo - 1);
+            console.log("尝试激活最近点", id);
             if (this.isActivePlay) {
-              return;
+              return true;
             }
-            if (this.currSpot && this.currSpot.sortNo === sortNo) {
-              return;
+            if (this.currSpot && this.currSpot.id === id) {
+              return true;
             }
-            console.log("激活最近点", sortNo);
-            this.activeSpot(sortNo);
+            console.log("激活最近点", id);
+            this.activeSpot(id);
             return true;
           }
         });
       }
     },
     resetPosition() {
-      this.getPosition().then(posi => {
-        if (posi) {
-          this.setFocusePosition(posi.lng, posi.lat);
-        }
-      });
+      this.mapIns.moveToLocation();
     },
     initMap() {
       this.mapIns = wx.createMapContext("map");
@@ -540,25 +511,49 @@ export default {
           console.log(data);
         }
       });
+    },
+    // 判断经纬度是不是一样
+    equalPosi(p1, p2) {
+      let equal = (a, b) => {
+        return Math.round(a * 1e4) === Math.round(b * 1e4);
+      };
+      return equal(p1.lat, p2.lat) && equal(p1.lng, p2.lng);
+    },
+    getIconPath(number, type) {
+      if (type === -1) {
+        return `../../assets/map-audio/${number}.png`;
+      }
+      if (type === 0) {
+        return `../../assets/map-poetry/${number}.png`;
+      }
+      if (type === 1) {
+        return `../../assets/map-nature/${number}.png`;
+      }
     }
   },
   created() {
     console.log("create");
-    this.initMap();
-    this.initAudio();
   },
   onLoad(options) {
     console.log(options);
+    let geo = (this.geo = this.geo || this.initGeoTrans());
     this.queryType = options.queryType - 0;
+    console.warn("this.spotList", this.spotList ? this.spotList.length : -1);
+    this.spotList = [];
     Promise.all([this.getSpot(0), this.getSpot(1)]).then(data => {
       this.spotList = this.spotList || [];
       data.forEach((n, i) => {
         // 添加一个id属性
-        // 自然线的sortNo=1,id=1
-        // 诗歌线的sortNo=1,id=10000+1=10001;
+        // 魔幻数89,别动!!!
+        // 自然线的sortNo=1,id=sortNo
+        // 诗歌线的sortNo=1,id=sortNo+89
+        let magicNum = 89;
         n = n.map(n => {
-          n.id = 10000 * i + n.sortNo;
+          n.id = (i === 0 ? magicNum : 0) + n.sortNo;
           n.queryType = i;
+          let realPosi = geo.gcj_encrypt(n.latitude, n.longitude);
+          n.realLng = realPosi.lon;
+          n.realLat = realPosi.lat;
           return n;
         });
 
@@ -568,8 +563,27 @@ export default {
     });
     this.createPolygons();
   },
+  onReady() {
+    console.log("onReady");
+    this.initMap();
+    this.initAudio();
+  },
   onShow() {
     let index = 0;
+
+    // 是否在区域内,就探测一次
+    this.getPosition().then(posi => {
+      if (!this.hasShowOutTip) {
+        if (this.isPositionOut(posi.lng, posi.lat)) {
+          this.isShowOutTip = true;
+          this.hasShowOutTip = true;
+          setTimeout(() => {
+            this.isShowOutTip = false;
+          }, 2000);
+        }
+      }
+    });
+
     // 轮询坐标
     this.tForPosition = setInterval(() => {
       this.getPosition().then(posi => {
@@ -578,31 +592,16 @@ export default {
             posi.lng = 114.35762024;
             posi.lat = 22.61326927;
           }
-          index++;
-          if (index == 0) {
-            this.setFocusePosition(posi.lng, posi.lat);
-          }
-          // 当前坐标
-          // 防止闪烁
-          if (this.lng !== posi.lng || this.lat !== posi.lat) {
-            this.lng = posi.lng;
-            this.lat = posi.lat;
-          }
-          // mock
-          if (!this.hasShowOutTip) {
-            if (this.isPositionOut(posi.lng, posi.lat)) {
-              this.isShowOutTip = true;
-              this.hasShowOutTip = true;
-              setTimeout(() => {
-                this.isShowOutTip = false;
-              }, 2000);
-            }
-          }
-
-          // 设置小人的坐标
-          // this.setPersonPosition(posi);
-          // 寻找距离本人较近的spot
           this.findNearSpot(posi);
+
+          // 下面的代码用以测试是能激活最近点
+          // 线上版本请注释
+          // /*
+          // this.findNearSpot({
+          //   lng: 114.35762024,
+          //   lat: 22.61326927
+          // });
+          //*/
         }
       });
     }, 5000);
@@ -703,8 +702,9 @@ export default {
 }
 .reset {
   position: absolute;
-  bottom: 20rpx;
-  right: 40rpx;
+  bottom: 10rpx;
+  right: 20rpx;
+  transform: scale(0.8);
   img {
     width: 48rpx;
     height: 48rpx;

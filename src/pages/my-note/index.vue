@@ -2,27 +2,35 @@
   <div class="container">
     <div class="note-area">
       <div class="textarea" @click="touchTextarea">
-        <textarea placeholder="__ 留下笔记" :placeholder-style="style" auto-height fixed v-model="text"/>
+        <textarea
+          :placeholder="holderText"
+          :placeholder-style="style"
+          @focus="onFocus"
+          auto-height
+          fixed
+          v-model="text"
+        />
       </div>
       <div class="submit" @click="submit">发布</div>
-      <cover-view class="note-area-icon" v-if="!text">
+      <cover-view class="note-area-icon" v-if="showHolder">
         <cover-image src="https://gw.alicdn.com/tfs/TB1GU03xlLoK1RjSZFuXXXn0XXa-30-32.png"></cover-image>
       </cover-view>
     </div>
     <div class="main">
-      <div class="main-item" v-for="(item,index) in noteList" :key=item.id>
+      <div class="main-item" v-for="(item,index) in noteList" :key="item.id">
         <div class="main-item-left">
-          <img class="main-item-left-icon" src="https://gw.alicdn.com/tfs/TB13VGlxkPoK1RjSZKbXXX1IXXa-35-18.png">
-          <div class="main-item-left-number">{{item.id}}</div>
+          <img
+            class="main-item-left-icon"
+            src="https://gw.alicdn.com/tfs/TB13VGlxkPoK1RjSZKbXXX1IXXa-35-18.png"
+          >
+          <div class="main-item-left-number">{{index+1}}</div>
           <div class="main-item-left-line" v-if="index!=noteList.length-1"></div>
         </div>
         <div class="main-item-right">
           <div class="main-item-right-container">
-            <div class="main-item-right-up">
-              {{item.content}}
-            </div>
+            <div class="main-item-right-up">{{item.content}}</div>
             <div class="main-item-right-down">
-              <div class="main-item-right-down-time">2018-12-18 12:00</div>
+              <div class="main-item-right-down-time">{{item.time}}</div>
               <div class="main-item-right-down-del" @click="openDialog(item.id)">删除</div>
             </div>
           </div>
@@ -44,27 +52,20 @@
 </template>
 
 <script>
-import { config, formatTime } from "../../utils/index";
+import { config, formatDate } from "../../utils/index";
+
 export default {
   data() {
     return {
       text: "",
       contact: "",
-      noteList: [{id:1,content:"ajhsdkahsdkhaskdjh"},
-      {id:2,content:"暗红色的卡是的接口哈数据库等哈可接受的黄金卡山东矿机啊还是打开就哈斯卡级等哈就开始单解卡山艾克就圣诞款"},
-      {id:3,content:"暗红色的卡是的接口哈数据库等哈可接受的黄金卡山东矿机啊还是打开就哈斯卡级等哈就开始单解卡山艾克就圣诞款"},
-      {id:4,content:"暗红色的卡是的接口哈数据库等哈可接受的黄金卡山东矿机啊还是打开就哈斯卡级等哈就开始单解卡山艾克就圣诞款"},
-      {id:5,content:"暗红色的卡是的接口哈数据库等哈可接受的黄金卡山东矿机啊还是打开就哈斯卡级等哈就开始单解卡山艾克就圣诞款"},
-      {id:6,content:"暗红色的卡是的接口哈数据库等哈可接受的黄金卡山东矿机啊还是打开就哈斯卡级等哈就开始单解卡山艾克就圣诞款"},
-      {id:7,content:"暗红色的卡是的接口哈数据库等哈可接受的黄金卡山东矿机啊还是打开就哈斯卡级等哈就开始单解卡山艾克就圣诞款"},
-      {id:8,content:"暗红色的卡是的接口哈数据库等哈可接受的黄金卡山东矿机啊还是打开就哈斯卡级等哈就开始单解卡山艾克就圣诞款"},
-      {id:9,content:"暗红色的卡是的接口哈数据库等哈可接受的黄金卡山东矿机啊还是打开就哈斯卡级等哈就开始单解卡山艾克就圣诞款"},
-      {id:10,content:"暗红色的卡是的接口哈数据库等哈可接受的黄金卡山东矿机啊还是打开就哈斯卡级等哈就开始单解卡山艾克就圣诞款"},
-      ],
+      noteList: [],
       userCode: "",
       isFoucs: false,
-      currentId:"",
-      dialog:false
+      currentId: "",
+      dialog: false,
+      showHolder:true,
+      holderText:"__ 留下笔记"
     };
   },
 
@@ -79,17 +80,24 @@ export default {
       this.currentId = id;
       this.dialog = true;
     },
+    onFocus() {
+      this.showHolder = false;
+      this.holderText = "";
+    },
     confirmDel() {
       const token = wx.getStorageSync("userCode");
+      const delUrl = `${config.base}Note/deleteNoteList?token=${token}&id=${
+        this.currentId
+      }`;
       wx.request({
-        url: config.base + 'note/DeleteNoteList', //开发者服务器接口地址",
-        data: 'data', //请求的参数",
-        method: 'delete',
-        header: {
-          token: token,
-          id: this.currentId
-        },
-        dataType: 'json', //如果设为json，会尝试对返回的数据做一次 JSON.parse
+        // url: config.base + 'Note/deleteNoteList', //开发者服务器接口地址"
+        url: delUrl, //开发者服务器接口地址"
+        method: "DELETE",
+        // data: {
+        //   token: token,
+        //   id: this.currentId
+        // },
+        dataType: "json", //如果设为json，会尝试对返回的数据做一次 JSON.parse
         success: res => {
           wx.showToast({
             title: "删除成功", //提示的内容,
@@ -155,25 +163,32 @@ export default {
     getNoteList() {
       const token = wx.getStorageSync("userCode");
       wx.request({
-        url: config.base + 'note/noteList', //开发者服务器接口地址",
-        data: {
-          token:token
-        }, //请求的参数",
-        method: 'GET',
-        dataType: 'json', //如果设为json，会尝试对返回的数据做一次 JSON.parse
+        url: config.base + "note/noteList", //开发者服务器接口地址",
+        // data: {
+        //   token:token
+        // }, //请求的参数",
+        header: {
+          token: token
+        },
+        method: "GET",
+        dataType: "json", //如果设为json，会尝试对返回的数据做一次 JSON.parse
         success: res => {
-          console.log('note',res.data)
+          console.log("note", res.data);
+          this.noteList = res.data && res.data.data;
+          this.noteList.forEach(item => {
+            item.time = formatDate(item.time);
+          });
         },
         fail: () => {},
         complete: () => {}
       });
     }
   },
-
-  created() {
+  onReady() {
     this.userCode = wx.getStorageSync("userCode");
-    // this.getNoteList();
+    this.getNoteList();
   },
+  created() {},
   mounted() {}
 };
 </script>
@@ -182,92 +197,93 @@ export default {
 .container {
   background: #f3f3f3;
 }
-.main{
+.main {
   padding: 48rpx 20rpx 90rpx;
   background: #f3f3f3;
-  &-item{
+  &-item {
     display: flex;
-    &-left{
+    &-left {
       margin-right: 20rpx;
       display: flex;
       flex-direction: column;
       align-items: center;
       position: relative;
-      &-number{
+      &-number {
         width: 66rpx;
         line-height: 66rpx;
         text-align: center;
         background: #292770;
-        color:#fff;
+        color: #fff;
         border-radius: 50%;
       }
-      &-line{
+      &-line {
         height: 100%;
         width: 2px;
         background: #292770;
       }
-      &-icon{
+      &-icon {
         width: 36rpx;
         height: 18rpx;
         position: absolute;
         top: -14rpx;
         left: 0;
         right: 0;
-        margin:auto;
+        margin: auto;
       }
     }
-    &-right{
+    &-right {
       width: 100%;
       font-size: 28rpx;
-      &-up{
-        padding:20rpx;
+      &-up {
+        padding: 20rpx;
       }
-      &-container{
+      &-container {
         background: #fff;
-        border:1px solid #eaebea;
-        min-height:240rpx;
+        border: 1px solid #eaebea;
+        min-height: 240rpx;
         border-radius: 8rpx;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
       }
-      &-margin{
+      &-margin {
         height: 48rpx;
       }
-      &-down{
+      &-down {
         height: 60rpx;
-        border-top:1px dashed #dcdcdc;
+        border-top: 1px dashed #dcdcdc;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        &-time{
-          color:#cacaca;
+        &-time {
+          color: #cacaca;
           margin-left: 20rpx;
         }
-        &-del{
+        &-del {
           width: 78rpx;
           line-height: 38rpx;
           text-align: center;
           border-radius: 10rpx;
-          color:#6f6f6f;
-          border:1px dashed #868686;
+          color: #6f6f6f;
+          border: 1px dashed #868686;
           margin-right: 20rpx;
         }
       }
     }
   }
 }
-.note-area{
+.note-area {
   display: flex;
   align-items: center;
-  position:fixed;
+  position: fixed;
   bottom: 0rpx;
-  left: 0rpx;right: 0rpx;
-  padding:20rpx;
-  border-top:1px solid #dcdcdc;
+  left: 0rpx;
+  right: 0rpx;
+  padding: 20rpx;
+  border-top: 1px solid #dcdcdc;
   background: #f3f3f3;
   z-index: 88;
-  &-icon{
+  &-icon {
     position: fixed;
     left: 38rpx;
     bottom: 62rpx;
@@ -276,14 +292,14 @@ export default {
   }
 }
 .textarea {
-  min-height:36rpx;
+  min-height: 36rpx;
   font-size: 30rpx;
   border-radius: 12rpx;
-  border:1px solid #dcdcdc;
+  border: 1px solid #dcdcdc;
   width: 78%;
   background: #fff;
   padding: 24rpx;
-  textarea{
+  textarea {
     width: 100%;
   }
 }
@@ -304,46 +320,53 @@ export default {
   align-items: center;
   position: relative;
 }
-.dialog{
-  position: fixed;z-index: 999;
-  top: 0;bottom: 0;left: 0;right: 0; background: rgba(0,0,0,.5);
-  display: flex;justify-content: center;align-items:center;
-  &-box{
+.dialog {
+  position: fixed;
+  z-index: 999;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  &-box {
     width: 380rpx;
     height: 380rpx;
-    padding:20rpx;
+    padding: 20rpx;
     border-radius: 20rpx;
     background: #fff;
     display: flex;
     flex-direction: column;
     align-items: center;
     font-size: 36rpx;
-    &-first{
+    &-first {
       margin-top: 80rpx;
       margin-bottom: 20rpx;
     }
-    &-second{
+    &-second {
       margin-bottom: 96rpx;
     }
-    &-btns{
+    &-btns {
       width: 100%;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      &-item{
+      &-item {
         width: 160rpx;
         line-height: 80rpx;
-        color:#fff;
+        color: #fff;
         text-align: center;
         border-radius: 10rpx;
       }
     }
   }
 }
-.confirm{
+.confirm {
   background: #292770;
 }
-.cancel{
+.cancel {
   background: #6f6f6f;
 }
 </style>
