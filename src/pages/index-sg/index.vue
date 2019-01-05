@@ -332,10 +332,7 @@ export default {
         dataType: "json", //如果设为json，会尝试对返回的数据做一次 JSON.parse
         success: res => {
           console.log(res.data.data);
-          this.audioUrl =
-            res.data.data.audio_url == null
-              ? ""
-              : config.prefix + res.data.data.audio_url;
+          this.audioUrl = res.data.data.audio_url;
           if (this.audioUrl) {
             this.innerAudioContext.src = this.audioUrl;
             this.innerAudioContext.play();
