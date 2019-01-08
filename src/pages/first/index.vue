@@ -25,7 +25,8 @@ export default {
     return {
       isMock: false,
       // isMock: true,
-      motto: false
+      motto: false,
+      tForAutoClose: undefined
     };
   },
 
@@ -50,6 +51,12 @@ export default {
       wx.setStorageSync("firsttime", true);
       const url = "../index/main";
       wx.redirectTo({ url: url });
+      clearTimeout(this.tForAutoClose);
+    },
+    autoClose() {
+      this.tForAutoClose = setTimeout(() => {
+        this.bindNext();
+      }, 5000);
     },
     getUser() {
       if (this.isMock) {
@@ -68,6 +75,7 @@ export default {
                 console.log("first page", res.userInfo);
               }
             });
+            this.autoClose();
           } else {
             that.motto = true;
           }
@@ -103,6 +111,7 @@ export default {
         // wx.setStorageSync("userInfo", userInfo);
         this.setStorage("userInfo", userInfo);
         this.motto = false;
+        this.autoClose();
       } else {
         //用户按了拒绝按钮
         console.log("用户按了拒绝按钮");
