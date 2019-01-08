@@ -337,7 +337,7 @@ export default {
   border: 8rpx solid #fff;
   padding: 20rpx;
   font-size: 36rpx;
-  // background-color: rgb(23, 25, 74);
+  background-color: rgba(23, 25, 74, 0.7);
   &-author {
     text-align: center;
     margin: 40rpx 0 10rpx;
