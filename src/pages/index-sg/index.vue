@@ -226,7 +226,7 @@ export default {
     },
     calcRight() {
       if (this.activeIndex == 1) {
-        return -50;
+        return -110;
       }
       const a = this.activeIndex % 6;
       switch (a) {
