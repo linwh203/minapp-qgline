@@ -337,7 +337,7 @@ export default {
   border: 8rpx solid #fff;
   padding: 20rpx;
   font-size: 36rpx;
-  background-color: rgb(23, 25, 74);
+  // background-color: rgb(23, 25, 74);
   &-author {
     text-align: center;
     margin: 40rpx 0 10rpx;
@@ -360,7 +360,8 @@ export default {
     border-right: 8rpx solid #fff;
     border-bottom: 8rpx solid #fff;
     height: 400rpx;
-    width: 97.7%;
+    width: 100%;
+    box-sizing: border-box;
   }
 }
 .writer {
@@ -406,6 +407,7 @@ export default {
   }
   .audio {
     background: url("../../assets/list-audio-play.png") no-repeat center/cover;
+    transform: translateX(-2rpx);
   }
   .pause {
     background: url("../../assets/list-audio-pause.png") no-repeat center/cover;
