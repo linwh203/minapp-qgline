@@ -196,7 +196,7 @@ export default {
       tab1: false,
       tab2: false,
       natureList: [
-        "滨海线研习段",
+        "溪涌海岸段",
         "二线关研习段",
         "大岭古研习段",
         "红花岭水库研习段",
