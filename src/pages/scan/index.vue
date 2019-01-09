@@ -389,7 +389,7 @@ img {
     animation: spin 6s linear infinite;
   }
   .text {
-    color: #00cbff;
+    color: #292770;
     font-size: 60rpx;
     line-height: 120rpx;
     margin-bottom: 30rpx;

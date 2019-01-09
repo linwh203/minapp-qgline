@@ -12,7 +12,7 @@
         <img src="https://gw.alicdn.com/tfs/TB1gqFKmHvpK1RjSZFqXXcXUVXa-91-101.png" v-else>
       </div>
       <div class="index-tab-item icon-scan" @click="bindTab('../scan/main')">
-        <img src="https://gw.alicdn.com/tfs/TB1gWBKmHvpK1RjSZFqXXcXUVXa-91-101.png" alt>
+        <img src="../../assets/scan.png" alt>
       </div>
       <div class="index-tab-item icon-audio" @click="playAudio">
         <img
