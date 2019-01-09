@@ -122,8 +122,9 @@
       <div class="modal-tab">
         <div class="modal-tab-title" @click="bindTab('../index/main')">
           <img
-            src="https://gw.alicdn.com/tfs/TB1uLyAnxjaK1RjSZKzXXXVwXXa-80-80.png"
+            src="https://gw.alicdn.com/tfs/TB1udN_A4TpK1RjSZFMXXbG_VXa-80-80.png"
             class="modal-tab-title-logo"
+            style="border:2px solid #fff"
           >
           <div class="modal-tab-title-text">
             <div class="modal-tab-title-text-stage">第一段</div>
@@ -139,7 +140,7 @@
       <div class="modal-tab">
         <div class="modal-tab-title" @click="tab2 = !tab2">
           <img
-            src="https://gw.alicdn.com/tfs/TB1WEmfnxTpK1RjSZFMXXbG_VXa-79-80.png"
+            src="https://gw.alicdn.com/tfs/TB1sTB_A3HqK1RjSZFPXXcwapXa-80-80.png"
             class="modal-tab-title-logo"
           >
           <div class="modal-tab-title-text">
@@ -159,6 +160,7 @@
             v-for="(item,index) in natureList"
             :key="index"
             @click="toSmallLine(index)"
+            :style="{color:lineIndex==index?'#a8368e':''}"
           >{{item}}</div>
         </div>
       </div>
@@ -179,6 +181,7 @@ export default {
         spot_describe: "",
         spot_id: ""
       },
+      lineIndex:0,
       fullHeight: "",
       activeIndex: 1,
       toView: "spot1",
@@ -278,6 +281,7 @@ export default {
       this.showRoadSelect = true;
     },
     toSmallLine(index) {
+      this.lineIndex = index;
       let lineNo = parseInt(index + 1);
       let top;
       switch (lineNo) {
