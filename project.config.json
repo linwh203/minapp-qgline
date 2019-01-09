@@ -11,7 +11,7 @@
 	"compileType": "miniprogram",
 	"appid": "wx64104ee36c863058",
 	"projectname": "qgx",
-	"libVersion": "2.4.0",
+	"libVersion": "2.4.3",
 	"condition": {
 		"search": {
 			"current": -1,
@@ -35,7 +35,7 @@
 				{
 					"id": 0,
 					"name": "单页",
-					"pathName": "pages/my-note/main",
+					"pathName": "pages/my/main",
 					"query": ""
 				},
 				{
