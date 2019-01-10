@@ -724,7 +724,7 @@ export default {
   position: absolute;
   bottom: 10rpx;
   right: 20rpx;
-  transform: scale(0.8);
+  transform: scale(0.5);
   img {
     width: 48rpx;
     height: 48rpx;
