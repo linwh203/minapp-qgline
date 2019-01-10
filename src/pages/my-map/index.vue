@@ -261,7 +261,7 @@ export default {
         });
       }).then(audioUrl => {
         if (audioUrl) {
-          this.innerAudioContext.src = config.prefix + audioUrl;
+          this.innerAudioContext.src = audioUrl;
           this.innerAudioContext.play();
           console.log(this.innerAudioContext.src, "play audio");
         }
