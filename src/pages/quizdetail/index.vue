@@ -49,7 +49,7 @@
         <span>+ {{bonus}}</span>
       </div> 
        <div class="result-line"></div> 
-       <div class="quiz-result-btn-top" @click="bindTab('../quiz/main')">继续挑战</div>
+       <div class="quiz-result-btn-top" @click="newStage">继续挑战</div>
        <div class="quiz-result-btn-btm" @click="bindTab('../my-reward/main')">查看成就</div>
     </div>
     <div class="quiz-fail" v-if="quizFail">
@@ -90,6 +90,7 @@
 <script>
 import { config } from "../../utils/index";
 import { setTimeout } from 'timers';
+import { mquery } from 'mongoose';
 export default {
   data() {
     return {
@@ -131,7 +132,8 @@ export default {
           right_answer: -1,
           is_right: false
         }
-      ]
+      ],
+      timer: null
     };
   },
   computed: {
@@ -160,6 +162,13 @@ export default {
     bindTab(url) {
       wx.redirectTo({ url: url });
     },
+    newStage() {
+      this.checkpoint >= 5 ? this.bindTab('../quiz/main') : this.checkpoint++;
+      this.countNumber = 3;
+      this.showCountdown = true;
+      this.getList();
+      this.restart();
+    },
     chooseItem(index, item) {
       this.choiceIndex = index;
       if(this.choiceIndex == this.rightAnswer){
@@ -169,6 +178,7 @@ export default {
         if(this.index == this.stageNum){
           this.rightCount ++
           this.quizSuccess = true
+          this.requestAnswer(this.currentQuiz.id, this.choiceIndex + 1);
           return
         }
         setTimeout(()=>{
@@ -269,6 +279,7 @@ export default {
         return
       }
       this.quizFail = false
+      this.quizSuccess = false
       this.choiceIndex = -1
       this.showRight = -1
       this.showWrong = -1
@@ -311,8 +322,10 @@ export default {
   },
   onShow(option) {
     this.userCode = wx.getStorageSync("userCode");
-    this.getList()
-    setInterval(()=>{
+    this.showCountdown = true;
+    this.getList();
+    this.restart();
+    this.timer = setInterval(()=>{
       if(this.countNumber > 0){
         this.countNumber-- 
       } else {
@@ -321,39 +334,16 @@ export default {
       } 
     },1000)
   },
-  onHide() {
-    this.index = 0;
-    this.choiceIndex = -1;
-    this.currentQuiz = {
-      id: null,
-      title: null,
-      type: null,
-      tooltip: null,
-      quiz: null,
-      answer_list: [],
-      right_answer: null,
-      is_right: null
-    };
-    this.wrongAnswer = false;
-  },
+  onHide() {},
   onUnload() {
-    this.index = 0;
-    this.choiceIndex = -1;
-    this.currentQuiz = {
-      id: null,
-      title: null,
-      type: null,
-      tooltip: null,
-      quiz: null,
-      answer_list: [],
-      right_answer: null,
-      is_right: null
-    };
-    this.wrongAnswer = false;
+    this.countNumber = 3;
+    clearInterval(this.timer);
   },
   onShareAppMessage(result) {
-    let title = "青谷研习径";
-    let path = "/pages/index/main";
+    this.closeLayer();
+    this.addCount();
+    let title = "青谷研习径智趣问答";
+    let path = "/pages/index/main?share_from=quiz";
     let imageUrl = "https://gw.alicdn.com/tfs/TB1uLyAnxjaK1RjSZKzXXXVwXXa-80-80.png";
     return {
       title,
@@ -362,8 +352,6 @@ export default {
       // desc,
       success: res => {
         console.log("success", res);
-        this.closeLayer();
-        this.addCount();
       },
       fail(e) {
         console.log(e);

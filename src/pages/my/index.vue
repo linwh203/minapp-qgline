@@ -104,7 +104,7 @@ export default {
     }
   },
 
-  onLoad() {
+  created() {
     wx.login({
       success: res => {
         console.log(res);

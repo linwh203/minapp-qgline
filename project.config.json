@@ -35,13 +35,13 @@
 				{
 					"id": 0,
 					"name": "单页",
-					"pathName": "pages/my/main",
-					"query": ""
+					"pathName": "pages/index/main",
+					"query": "share_from=my-reward"
 				},
 				{
 					"id": 1,
 					"name": "问答",
-					"pathName": "pages/index-sg/main",
+					"pathName": "pages/quiz/main",
 					"query": ""
 				}
 			]
