@@ -33,6 +33,7 @@
       <img class="img" src="../../assets/spot-highlight.png">-->
     </map>
     <div class="modal">
+      <img mode="widthFix" v-if="!currSpot" class="def" src="../../assets/map-tip.jpg">
       <div
         v-if="currSpot"
         class="spot-item-window"
@@ -156,7 +157,7 @@ export default {
             // console.log(res)
             let data = res.data.data;
             data = typeof data === "string" ? JSON.parse(data) : data;
-            wx.setStorageSync(storageName, data);
+            wx.SyncSync(storageName, data);
             // this.spotList = data;
             resolve(data);
           },
@@ -485,32 +486,46 @@ export default {
       };
       return GPS;
     },
+    getPolygonsData() {
+      return new Promise(resolve => {
+        let data = wx.getStorageSync("polygons");
+        if (data) {
+          resolve(data);
+        } else {
+          let url = config.base + "Attraction/map";
+          wx.request({
+            url,
+            success: res => {
+              let data = res.data.data;
+              wx.setStorageSync("polygons", data);
+              resolve(data);
+
+              console.log(data);
+            }
+          });
+        }
+      });
+    },
     createPolygons() {
       let geo = this.initGeoTrans();
-      let url = config.base + "Attraction/map";
-      wx.request({
-        url,
-        success: res => {
-          let data = res.data.data;
-          data = data.map(n => {
-            let format = geo.gcj_encrypt(n.latitude, n.longitude);
-            return {
-              latitude: format.lat,
-              longitude: format.lon
-            };
-          });
+      this.getPolygonsData().then(data => {
+        data = data.map(n => {
+          let format = geo.gcj_encrypt(n.latitude, n.longitude);
+          return {
+            latitude: format.lat,
+            longitude: format.lon
+          };
+        });
 
-          this.polygons = [
-            {
-              points: data,
-              strokeColor: "#191B4A",
-              strokeWidth: 4,
-              // fillColor: "#258a57AA"
-              fillColor: "#22258a57"
-            }
-          ];
-          console.log(data);
-        }
+        this.polygons = [
+          {
+            points: data,
+            strokeColor: "#191B4A",
+            strokeWidth: 4,
+            // fillColor: "#258a57AA"
+            fillColor: "#22258a57"
+          }
+        ];
       });
     },
     // 判断经纬度是不是一样
@@ -629,6 +644,10 @@ export default {
     bottom: 0rpx;
     width: 100%;
     height: 176rpx;
+
+    .def {
+      width: 100%;
+    }
   }
 
   .spot-item-window {
