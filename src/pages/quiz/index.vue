@@ -203,8 +203,10 @@ export default {
     // this.userCode = wx.getStorageSync('userCode');
   },
   onShareAppMessage(result) {
-    let title = "青谷研习径";
-    let path = "/pages/index/main";
+    console.log("share success", result);
+    this.addCount();
+    let title = "青谷研习径智趣问答";
+    let path = "/pages/quiz/main";
     let imageUrl =
       "https://gw.alicdn.com/tfs/TB1uLyAnxjaK1RjSZKzXXXVwXXa-80-80.png";
     return {
@@ -212,15 +214,12 @@ export default {
       path,
       imageUrl,
       // desc,
-      success: res => {
-        console.log("success", res);
-        this.showCover = true;
-        this.shareLayer = true;
-        this.addCount();
-      },
-      fail(e) {
-        console.log(e);
-      }
+      // success: res => {
+      //   console.log('share success');
+      // },
+      // fail(e) {
+      //   console.log(e);
+      // }
     };
   }
 };
