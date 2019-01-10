@@ -206,7 +206,7 @@ export default {
     console.log("share success", result);
     this.addCount();
     let title = "青谷研习径智趣问答";
-    let path = "/pages/quiz/main";
+    let path = "/pages/index/main?share_from=quiz";
     let imageUrl =
       "https://gw.alicdn.com/tfs/TB1uLyAnxjaK1RjSZKzXXXVwXXa-80-80.png";
     return {

@@ -488,7 +488,10 @@ export default {
       ];
     }
   },
-  onLoad() {
+  onLoad(option) {
+    if(option.share_from){
+      this.bindTab(`../${option.share_from}/main`);
+    }
     // 判断是否第一次使用
     const firsttime = wx.getStorageSync("firsttime");
     if (!firsttime) {

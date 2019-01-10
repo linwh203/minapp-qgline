@@ -214,7 +214,7 @@ export default {
   },
   onShareAppMessage(result) {
     let title = `我已获得${this.level}个勋章`;
-    let path = "/pages/index/main";
+    let path = "/pages/index/main?share_from=my-reward";
     let imageUrl =
       "https://etx.forestvisual.com/File/Download?fileName=poetry/share.png&fileType=QGLineFile";
     return {

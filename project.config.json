@@ -30,13 +30,13 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 1,
+			"current": 0,
 			"list": [
 				{
 					"id": 0,
 					"name": "单页",
-					"pathName": "pages/my/main",
-					"query": ""
+					"pathName": "pages/index/main",
+					"query": "share_from=my-reward"
 				},
 				{
 					"id": 1,
