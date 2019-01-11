@@ -102,7 +102,6 @@
 
 <script>
 import { config } from "../../utils/index";
-import { setTimeout } from "timers";
 export default {
   data() {
     return {
