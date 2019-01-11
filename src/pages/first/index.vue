@@ -48,13 +48,14 @@ export default {
       }
     },
     bindNext() {
+      clearTimeout(this.tForAutoClose);
       wx.setStorageSync("firsttime", true);
       const url = "../index/main";
       wx.redirectTo({ url: url });
-      clearTimeout(this.tForAutoClose);
     },
     autoClose() {
       this.tForAutoClose = setTimeout(() => {
+        console.log("!!!!!!!!!!!!!!!!!!!!");
         this.bindNext();
       }, 5000);
     },
@@ -121,10 +122,11 @@ export default {
       this.motto = false;
     }
   },
-
+  onLoad() {
+    this.getUser();
+  },
   created() {
     // 调用应用实例的方法获取全局数据
-    this.getUser();
   }
 };
 </script>

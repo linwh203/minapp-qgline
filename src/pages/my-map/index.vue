@@ -157,8 +157,7 @@ export default {
             // console.log(res)
             let data = res.data.data;
             data = typeof data === "string" ? JSON.parse(data) : data;
-            wx.SyncSync(storageName, data);
-            // this.spotList = data;
+            wx.setStorageSync(storageName, data);
             resolve(data);
           },
           fail: () => {},

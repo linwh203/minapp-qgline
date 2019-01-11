@@ -500,8 +500,14 @@ export default {
     }
   },
   onLoad(option) {
-    if(option.share_from){
-      this.bindTab(`../${option.share_from}/main`);
+    if (option.share_from) {
+      if (option.share_from === "list") {
+        this.bindTab(
+          `../${option.share_from}/main?spot_index=${option.spot_index}`
+        );
+      } else {
+        this.bindTab(`../${option.share_from}/main`);
+      }
     }
     // 判断是否第一次使用
     const firsttime = wx.getStorageSync("firsttime");
