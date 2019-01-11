@@ -90,7 +90,6 @@
 <script>
 import { config } from "../../utils/index";
 import { setTimeout } from 'timers';
-import { mquery } from 'mongoose';
 export default {
   data() {
     return {
