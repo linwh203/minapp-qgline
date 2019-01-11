@@ -103,6 +103,17 @@ export default {
       if (this.score < id - 1) {
         return;
       }
+      if (this.score >= id) {
+        let msg = this.score == 5 ? "恭喜你完成所有关卡" : "此关您已经闯关成功,请对下一关进行挑战";
+        wx.showToast({
+          title: msg, //提示的内容,
+          icon: 'none', //图标,
+          duration: 2000, //延迟时间,
+          mask: true, //显示透明蒙层，防止触摸穿透,
+          success: res => {}
+        });
+        return
+      }
       wx.navigateTo({
         url: "../quizdetail/main?checkpoint=" + id + "&count=" + this.count
       });
@@ -228,13 +239,6 @@ export default {
       title,
       path,
       imageUrl,
-      // desc,
-      // success: res => {
-      //   console.log('share success');
-      // },
-      // fail(e) {
-      //   console.log(e);
-      // }
     };
   }
 };
