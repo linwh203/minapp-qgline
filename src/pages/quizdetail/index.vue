@@ -85,6 +85,9 @@
       <div class="endLayer" v-if="endLayer">
         <div class="close" @click="closeLayer"></div>
       </div>
+      <div class="failLayer" v-if="failLayer">
+        <div class="close" @click="closeLayer"></div>
+      </div>
     </div>
     <div class="countdown" v-if="showCountdown">
       <div class="user">
@@ -122,6 +125,7 @@ export default {
       showCover: false,
       ruleLayer: false,
       endLayer: false,
+      failLayer:false,
       currentQuiz: {
         id: null,
         title: "1.大陆河边有什么鸟",
@@ -215,6 +219,9 @@ export default {
     closeLayer() {
       this.showCover = false;
       this.ruleLayer = false;
+      if (this.failLayer) {
+        this.bindTab('../quiz/main');
+      }
     },
     init() {
       this.choiceIndex = -1;
@@ -317,6 +324,9 @@ export default {
           console.log(res.data);
           if (res.data.res_code == 0) {
             this.count = res.data.data.count;
+          } else if (res.data.res_code == -1) {
+            this.failLayer = true;
+            this.showCover = true;
           } else {
             wx.showToast({
               title: res.data.res_msg, //提示的内容,
@@ -662,6 +672,18 @@ export default {
   right: 0;
   margin: auto;
   background: url("https://gw.alicdn.com/tfs/TB1tIq0nQvoK1RjSZFDXXXY3pXa-460-700.png")
+    no-repeat top/cover;
+}
+.failLayer {
+  width: 500rpx;
+  height: 760rpx;
+  position: fixed;
+  z-index: 81;
+  top: 20%;
+  left: 0;
+  right: 0;
+  margin: auto;
+  background: url("https://qg-line.oss-cn-shenzhen.aliyuncs.com/other/share_fail.png")
     no-repeat top/cover;
 }
 </style>
