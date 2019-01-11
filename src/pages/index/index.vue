@@ -12,9 +12,9 @@
         <img src="https://gw.alicdn.com/tfs/TB1gqFKmHvpK1RjSZFqXXcXUVXa-91-101.png" v-else>
       </div>
       <div class="index-tab-item icon-scan" @click="bindTab('../scan/main')">
-        <img src="https://gw.alicdn.com/tfs/TB1gWBKmHvpK1RjSZFqXXcXUVXa-91-101.png" alt>
+        <img src="../../assets/scan.png" alt>
       </div>
-      <div class="index-tab-item icon-audio" @click="playAudio">
+      <div class="index-tab-item icon-audio" @click="toggleAutoPlay">
         <img
           src="https://gw.alicdn.com/tfs/TB1PStFmSzqK1RjSZFLXXcn2XXa-91-101.png"
           alt
@@ -327,16 +327,30 @@ export default {
         ? (this.activeIndex = -1)
         : (this.activeIndex = index + 2);
       this.currentSpot = this.spotList[this.activeIndex - 1];
+
+      if (this.isPlaying) {
+        this.stopAudio();
+        this.playAudio();
+      }
     },
     firstSpot() {
       this.activeIndex = 1;
       this.currentSpot = this.spotList[0];
     },
+    toggleAutoPlay() {
+      this.isPlaying = !this.isPlaying;
+      if (this.isPlaying) {
+        this.playAudio();
+      } else {
+        this.stopAudio();
+      }
+    },
+    stopAudio() {
+      this.innerAudioContext.stop();
+    },
     playAudio() {
       // console.log(this.currentSpot.spot_id)
-      if (this.isPlaying) {
-        this.innerAudioContext.stop();
-        this.isPlaying = false;
+      if (!this.isPlaying) {
         return;
       }
       wx.request({
@@ -352,11 +366,8 @@ export default {
           if (this.audioUrl) {
             this.innerAudioContext.src = this.audioUrl;
             this.innerAudioContext.play();
-            this.isPlaying = true;
           }
-        },
-        fail: () => {},
-        complete: () => {}
+        }
       });
     },
     login(code) {
@@ -524,8 +535,20 @@ export default {
         }
       }
     });
+    console.log(this.innerAudioContext);
   },
-  onReady() {
+  created() {
+    this.innerAudioContext.onPlay(() => {
+      console.log("audio play");
+    });
+    this.innerAudioContext.onEnded(() => {
+      console.log("audio end");
+      let index = this.spotList.indexOf(this.currentSpot);
+      console.log(index);
+      if (this.spotList[index + 1]) {
+        this.chooseSpot(null, index);
+      }
+    });
     // this.toView = 'spot12'
   },
   onShow() {},

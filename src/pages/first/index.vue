@@ -75,7 +75,7 @@ export default {
                 console.log("first page", res.userInfo);
               }
             });
-            this.autoClose();
+            that.autoClose();
           } else {
             that.motto = true;
           }
