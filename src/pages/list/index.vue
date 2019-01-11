@@ -177,29 +177,30 @@ export default {
         storageData = wx.getStorageSync("NatureList");
         requestUrl = "attraction/NaturalList";
       }
-      if (storageData) {
-        this.spotList = storageData;
-        return;
-      }
-      wx.request({
-        url: config.base + requestUrl, //开发者服务器接口地址",
-        data: {
-          lineId: config.lineId
-        }, //请求的参数",
-        method: "GET",
-        dataType: "json", //如果设为json，会尝试对返回的数据做一次 JSON.parse
-        success: res => {
-          // console.log(res)
-          const data = this.res.data.data;
-          if (line == "shige") {
-            this.setStorage("PoetryList", data);
-          } else {
-            this.setStorage("NatureList", data);
+
+      return new Promise(resolve => {
+        if (storageData) {
+          resolve(storageData);
+          return;
+        }
+        wx.request({
+          url: config.base + requestUrl, //开发者服务器接口地址",
+          data: {
+            lineId: config.lineId
+          }, //请求的参数",
+          method: "GET",
+          dataType: "json", //如果设为json，会尝试对返回的数据做一次 JSON.parse
+          success: res => {
+            // console.log(res)
+            const data = res.data.data;
+            if (line == "shige") {
+              this.setStorage("PoetryList", data);
+            } else {
+              this.setStorage("NatureList", data);
+            }
+            resolve(data);
           }
-          this.spotList = data;
-        },
-        fail: () => {},
-        complete: () => {}
+        });
       });
     }
   },
@@ -214,7 +215,11 @@ export default {
       this.spotLine = "ziran";
       this.currentIndex = index;
     }
-    this.getSpot(this.spotLine);
+    this.getSpot(this.spotLine).then(data => {
+      console.log("after getSpot");
+      this.spotList = data;
+      this.loadDetail();
+    });
     this.innerAudioContext = wx.createInnerAudioContext();
   },
   onHide() {
@@ -232,18 +237,18 @@ export default {
   },
   onShow() {
     if (this.init) {
-      this.loadDetail();
+      // this.loadDetail();
     }
     // this.innerAudioContext = wx.createInnerAudioContext();
   },
   onReady() {
     console.log("onReady");
-    this.loadDetail();
+    // this.loadDetail();
   },
   onShareAppMessage(result) {
     let title = "青谷研习径";
     let path =
-      "/pages/index/main?share_from=list&spot_index=" + this.activeIndex;
+      "/pages/index/main?share_from=list&spot_index=" + (this.currentIndex + 1);
     let imageUrl = "../../assets/list-pic-1.png";
     // let desc = '这里是描述哦'
     // if (result.from === "button") {
