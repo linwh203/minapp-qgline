@@ -68,7 +68,8 @@ export default {
       articleData: [],
       spotLine: "",
       currentIndex: 1,
-      url: "/File/Download?fileName=DetailPhoto/01.jpg&fileType=QGLineFile"
+      url: "/File/Download?fileName=DetailPhoto/01.jpg&fileType=QGLineFile",
+      activeIndex:0,
     };
   },
   computed: {},
@@ -203,6 +204,7 @@ export default {
     }
   },
   onLoad(option) {
+    this.activeIndex = option.spot_index;
     const index = option.spot_index - 1;
     console.log(index);
     if (index >= 89) {

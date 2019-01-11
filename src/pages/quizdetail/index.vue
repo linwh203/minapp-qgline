@@ -179,11 +179,12 @@ export default {
       wx.redirectTo({ url: url });
     },
     newStage() {
-      this.checkpoint >= 5 ? this.bindTab("../quiz/main") : this.checkpoint++;
-      this.countNumber = 3;
-      this.showCountdown = true;
-      this.getList();
-      this.restart();
+      // this.checkpoint >= 5 ? this.bindTab("../quiz/main") : this.checkpoint++;
+      // this.countNumber = 3;
+      // this.showCountdown = true;
+      // this.getList();
+      // this.restart();
+      this.bindTab(`../quiz/main?stage_clear=${this.checkpoint}`);
     },
     chooseItem(index, item) {
       this.choiceIndex = index;

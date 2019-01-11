@@ -193,7 +193,22 @@ export default {
 
   created() {},
   mounted() {},
-  onShow() {
+  onLoad(option) {
+    console.log('onload',option)
+    const stage = option && option.stage_clear;
+    let msg = stage && stage == 5 ? "恭喜你完成所有关卡" : "此关您已经闯关成功,请对下一关进行挑战";
+    console.log(stage,msg);
+    if(stage){
+      wx.showToast({
+        title: msg, //提示的内容,
+        icon: 'none', //图标,
+        duration: 2000, //延迟时间,
+        mask: true, //显示透明蒙层，防止触摸穿透,
+        success: res => {}
+      });
+    }
+  },
+  onShow(option) {
     wx.login({
       success: res => {
         console.log(res);
