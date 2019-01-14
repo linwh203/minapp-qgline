@@ -79,7 +79,8 @@ export default {
       showCover: false,
       ruleLayer: false,
       shareLayer: false,
-      failLayer:false
+      failLayer:false,
+      shareCount:0
     };
   },
 
@@ -119,7 +120,7 @@ export default {
         return
       }
       wx.navigateTo({
-        url: "../quizdetail/main?checkpoint=" + id + "&count=" + this.count
+        url: "../quizdetail/main?checkpoint=" + id + "&count=" + this.count + "&share_count=" + this.shareCount
       });
     },
     login(code) {
@@ -163,6 +164,7 @@ export default {
           this.count = res.data.data.count || 0;
           this.score = res.data.data.score || 0;
           this.coin = res.data.data.coin || 0;
+          this.shareCount = res.data.data.share_count || 0; 
         },
         fail: () => {},
         complete: () => {}
@@ -179,6 +181,11 @@ export default {
       this.failLayer = false;
     },
     addCount() {
+      if (this.shareCount = 0) {
+        this.failLayer = true;
+        this.showCover = true;
+        return
+      }
       wx.request({
         url: config.base + "quiz/addCount", //开发者服务器接口地址",
         data: {
@@ -193,6 +200,7 @@ export default {
           console.log(res.data);
           if (res.data.res_code == 0) {
             this.count = res.data.data.count;
+            this.shareCount--;
           } else if (res.data.res_code == -1) {
             this.failLayer = true;
             this.showCover = true;
@@ -242,7 +250,7 @@ export default {
     let title = "青谷研习径智趣问答";
     let path = "/pages/index/main?share_from=quiz";
     let imageUrl =
-      "https://gw.alicdn.com/tfs/TB1uLyAnxjaK1RjSZKzXXXVwXXa-80-80.png";
+      "https://qg-line.oss-cn-shenzhen.aliyuncs.com/other/share.jpg";
     return {
       title,
       path,

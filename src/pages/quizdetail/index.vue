@@ -2,7 +2,7 @@
   <div class="mainContainer">
     <div class="container" v-if="!showCountdown">
       <div class="quiz-top">
-        <div class="quiz-top-mid">挑战 第{{(index+1)>stageNum?stageNum:(index+1)}}/{{stageNum}}关</div>
+        <div class="quiz-top-mid">挑战 第{{snum}}/5关</div>
       </div>
       <div class="user">
         <open-data type="userAvatarUrl" class="userPic"></open-data>
@@ -108,6 +108,8 @@ import { config } from "../../utils/index";
 export default {
   data() {
     return {
+      snum:1,
+      shareCount:0,
       prefix: config.prefix,
       stageNum: 6,
       count: 0,
@@ -183,12 +185,32 @@ export default {
       wx.redirectTo({ url: url });
     },
     newStage() {
-      // this.checkpoint >= 5 ? this.bindTab("../quiz/main") : this.checkpoint++;
-      // this.countNumber = 3;
-      // this.showCountdown = true;
-      // this.getList();
-      // this.restart();
-      this.bindTab(`../quiz/main?stage_clear=${this.checkpoint}`);
+      if (this.checkpoint >= 5){
+        wx.showToast({
+          title: "恭喜你完成所有关卡,请返回上一页", //提示的内容,
+          icon: 'none', //图标,
+          duration: 2000, //延迟时间,
+          mask: true, //显示透明蒙层，防止触摸穿透,
+          success: res => {}
+        });
+      } else {
+        this.checkpoint++;
+      }
+      this.countNumber = 3;
+      this.showCountdown = true;
+      this.getList();
+      this.restart();
+      this.snum++;
+      this.timer = setInterval(() => {
+        if (this.countNumber > 0) {
+          this.countNumber--;
+        } else {
+          this.showCountdown = false;
+          clearInterval(this.timer);
+          return;
+        }
+      }, 1000);
+      // this.bindTab(`../quiz/main?stage_clear=${this.checkpoint}`);
     },
     chooseItem(index, item) {
       this.choiceIndex = index;
@@ -219,8 +241,12 @@ export default {
     closeLayer() {
       this.showCover = false;
       this.ruleLayer = false;
-      if (this.failLayer) {
-        this.bindTab('../quiz/main');
+      if (this.failLayer && this.count == 0) {
+        wx.navigateBack({
+          delta: 1 //返回的页面数，如果 delta 大于现有页面数，则返回到首页,
+        });
+      } else {
+        this.failLayer = false;
       }
     },
     init() {
@@ -297,7 +323,11 @@ export default {
     restart() {
       if (this.count == 0) {
         this.showCover = true;
-        this.ruleLayer = true;
+        if (this.shareCount == 0) {
+          this.failLayer = true;
+        } else {
+          this.ruleLayer = true;
+        }
         return;
       }
       this.quizFail = false;
@@ -310,6 +340,11 @@ export default {
       this.currentQuiz = this.questionList[0];
     },
     addCount() {
+      if (this.shareCount = 0) {
+        this.failLayer = true;
+        this.showCover = true;
+        return
+      }
       wx.request({
         url: config.base + "quiz/addCount", //开发者服务器接口地址",
         data: {
@@ -324,6 +359,7 @@ export default {
           console.log(res.data);
           if (res.data.res_code == 0) {
             this.count = res.data.data.count;
+            this.shareCount--;
           } else if (res.data.res_code == -1) {
             this.failLayer = true;
             this.showCover = true;
@@ -343,7 +379,9 @@ export default {
   onLoad(option) {
     console.log(option.checkpoint);
     this.checkpoint = option.checkpoint;
+    this.snum = this.checkpoint;
     this.count = option.count;
+    this.shareCount = option.share_count;
   },
   onShow(option) {
     this.userCode = wx.getStorageSync("userCode");
@@ -355,6 +393,7 @@ export default {
         this.countNumber--;
       } else {
         this.showCountdown = false;
+        clearInterval(this.timer);
         return;
       }
     }, 1000);
@@ -370,7 +409,7 @@ export default {
     let title = "青谷研习径智趣问答";
     let path = "/pages/index/main?share_from=quiz";
     let imageUrl =
-      "https://gw.alicdn.com/tfs/TB1uLyAnxjaK1RjSZKzXXXVwXXa-80-80.png";
+      "https://qg-line.oss-cn-shenzhen.aliyuncs.com/other/share.jpg";
     return {
       title,
       path,

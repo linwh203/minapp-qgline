@@ -38,8 +38,9 @@
               <span>兑换1个勋章</span>
             </div>
             <div class="main-body-list-item-right">
-              <span v-if="exchange1">兑换成功</span>
-              <span v-else @click="openLayer(150)">立即兑换</span>
+              <!-- <span v-if="exchange1">兑换成功</span> -->
+              <!-- <span v-else @click="openLayer(150)">立即兑换</span> -->
+              <span @click="openLayer(150)">立即兑换</span>
             </div>
           </div>
           <div class="main-body-list-item">
@@ -48,8 +49,9 @@
               <span>兑换3个勋章</span>
             </div>
             <div class="main-body-list-item-right">
-              <span v-if="exchange2">兑换成功</span>
-              <span v-else @click="openLayer(200)">立即兑换</span>
+              <!-- <span v-if="exchange2">兑换成功</span> -->
+              <!-- <span v-else @click="openLayer(200)">立即兑换</span> -->
+              <span @click="openLayer(200)">立即兑换</span>
             </div>
           </div>
           <div class="main-body-list-item">
@@ -58,8 +60,9 @@
               <span>兑换10个勋章</span>
             </div>
             <div class="main-body-list-item-right">
-              <span v-if="exchange3">兑换成功</span>
-              <span v-else @click="openLayer(480)">立即兑换</span>
+              <!-- <span v-if="exchange3">兑换成功</span> -->
+              <!-- <span v-else @click="openLayer(480)">立即兑换</span> -->
+              <span @click="openLayer(480)">立即兑换</span>
             </div>
           </div>
         </div>
@@ -155,19 +158,21 @@ export default {
           console.log(res.data);
           this.closeLayer();
           if (res.data.res_code == 0) {
-            this.level = res.data.data.count;
-            if (coin == 150) {
-              this.exchange1 = true;
-              return;
-            }
-            if (coin == 200) {
-              this.exchange2 = true;
-              return;
-            }
-            if (coin == 480) {
-              this.exchange3 = true;
-              return;
-            }
+            this.getLevel();
+            this.loadCheckPoint();
+            // this.level = res.data.data.count;
+            // if (coin == 150) {
+            //   this.exchange1 = true;
+            //   return;
+            // }
+            // if (coin == 200) {
+            //   this.exchange2 = true;
+            //   return;
+            // }
+            // if (coin == 480) {
+            //   this.exchange3 = true;
+            //   return;
+            // }
           } else {
             wx.showToast({
               title: res.data.res_msg, //提示的内容,
@@ -216,7 +221,7 @@ export default {
     let title = `我已获得${this.level}个勋章`;
     let path = "/pages/index/main?share_from=my-reward";
     let imageUrl =
-      "https://etx.forestvisual.com/File/Download?fileName=poetry/share.png&fileType=QGLineFile";
+      "https://qg-line.oss-cn-shenzhen.aliyuncs.com/other/share.jpg";
     return {
       title,
       path,
