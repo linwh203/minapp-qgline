@@ -324,6 +324,10 @@ export default {
     firstSpot() {
       this.activeIndex = 1;
       this.currentSpot = this.spotList[0];
+      if (this.isPlaying) {
+        this.stopAudio();
+        this.playAudio();
+      }
     },
     toggleAutoPlay() {
       this.isPlaying = !this.isPlaying;
@@ -389,8 +393,8 @@ export default {
     getSpot() {
       const self = this;
       let process = data => {
-        this.spotList = storageData;
-        this.currentSpot = storageData[0];
+        this.spotList = data;
+        this.currentSpot = data[0];
         this.firstY = this._fy(1);
         this.fullSpot.length = 0;
         for (let i = 2; i <= data.length; i++) {
