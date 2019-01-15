@@ -7,30 +7,30 @@
     <div class="mid">
       <div class="mid-item">
         挑战机会
-        <span><span style="font-size:40rpx">{{count}}</span>次</span>
+        <span>
+          <span style="font-size:40rpx">{{count}}</span>次
+        </span>
       </div>
       <div class="mid-line"></div>
       <div class="mid-item">
         累计奖金
-        <span><span style="font-size:40rpx">{{coin}}</span>币</span>
+        <span>
+          <span style="font-size:40rpx">{{coin}}</span>币
+        </span>
       </div>
     </div>
-    <div class="share">
-      Lv.{{level}}
-    </div>
+    <div class="share">Lv.{{level}}</div>
     <div class="main">
       <div class="main-share">
-         <button class="main-share-item" open-type="share">
-          <img src="https://gw.alicdn.com/tfs/TB1CAWCqNnaK1RjSZFtXXbC2VXa-36-33.png" alt=""> 炫耀战绩
-         </button>
-         <button class="main-share-item" open-type="share">
-          <img src="https://gw.alicdn.com/tfs/TB1AiyeqQvoK1RjSZPfXXXPKFXa-27-32.png" alt=""> 分享到微信群
-         </button>
+        <button class="main-share-item" data-name="person" open-type="share">
+          <img src="https://gw.alicdn.com/tfs/TB1CAWCqNnaK1RjSZFtXXbC2VXa-36-33.png" alt> 炫耀战绩
+        </button>
+        <button class="main-share-item" data-name="program" open-type="share">
+          <img src="https://gw.alicdn.com/tfs/TB1AiyeqQvoK1RjSZPfXXXPKFXa-27-32.png" alt> 分享到微信群
+        </button>
       </div>
       <div class="main-body">
-        <div class="main-body-head">
-          奖励兑换区
-        </div>
+        <div class="main-body-head">奖励兑换区</div>
         <div class="main-body-list">
           <div class="main-body-list-item">
             <div class="main-body-list-item-left">
@@ -218,10 +218,19 @@ export default {
     this.getLevel();
   },
   onShareAppMessage(result) {
-    let title = `我已获得${this.level}个勋章`;
-    let path = "/pages/index/main?share_from=my-reward";
-    let imageUrl =
-      "https://qg-line.oss-cn-shenzhen.aliyuncs.com/other/share.jpg";
+    let name = result.target.dataset.name;
+    // let title = `我已获得${this.level}个勋章`;
+    let title = `青古研习径`;
+    // 左边的分享按钮,person分享我的战绩;
+    // 右边的分享按钮,program分享整个小程序
+    let path, imageUrl;
+    if (name == "person") {
+      path = "/pages/index/main?share_from=quiz";
+    } else {
+      path = "/pages/index/main";
+      imageUrl = "https://qg-line.oss-cn-shenzhen.aliyuncs.com/other/share.jpg";
+    }
+    console.log(name, path);
     return {
       title,
       path,
