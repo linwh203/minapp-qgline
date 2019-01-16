@@ -88,6 +88,9 @@
       <div class="failLayer" v-if="failLayer">
         <div class="close" @click="closeLayer"></div>
       </div>
+      <div class="allclearLayer" v-if="showAllclear">
+        <div class="close" @click="closeLayer"></div>
+      </div>
     </div>
     <div class="countdown" v-if="showCountdown">
       <div class="user">
@@ -128,6 +131,7 @@ export default {
       ruleLayer: false,
       endLayer: false,
       failLayer:false,
+      showAllclear:false,
       currentQuiz: {
         id: null,
         title: "1.大陆河边有什么鸟",
@@ -163,19 +167,19 @@ export default {
       return this.currentQuiz.right_answer - 1;
     },
     bonus() {
-      if (this.checkpoint == 1) {
+      if (this.snum == 1) {
         return 100;
       }
-      if (this.checkpoint == 2) {
+      if (this.snum == 2) {
         return 180;
       }
-      if (this.checkpoint == 3) {
+      if (this.snum == 3) {
         return 260;
       }
-      if (this.checkpoint == 4) {
+      if (this.snum == 4) {
         return 380;
       }
-      if (this.checkpoint == 5) {
+      if (this.snum == 5) {
         return 460;
       }
     }
@@ -185,21 +189,21 @@ export default {
       wx.redirectTo({ url: url });
     },
     newStage() {
+      this.count--;
       if (this.checkpoint >= 5){
-        wx.showToast({
-          title: "恭喜你完成所有关卡,请返回上一页", //提示的内容,
-          icon: 'none', //图标,
-          duration: 2000, //延迟时间,
-          mask: true, //显示透明蒙层，防止触摸穿透,
-          success: res => {}
-        });
+        this.showAllclear = true;
+        return
       } else {
         this.checkpoint++;
       }
+      if (this.count <= 0) {
+        this.restart();
+        return
+      }
       this.countNumber = 3;
       this.showCountdown = true;
-      this.getList();
       this.restart();
+      this.getList();
       this.snum++;
       this.timer = setInterval(() => {
         if (this.countNumber > 0) {
@@ -242,6 +246,10 @@ export default {
       this.showCover = false;
       this.ruleLayer = false;
       if (this.failLayer && this.count == 0) {
+        wx.navigateBack({
+          delta: 1 //返回的页面数，如果 delta 大于现有页面数，则返回到首页,
+        });
+      } else if (this.showAllclear) {
         wx.navigateBack({
           delta: 1 //返回的页面数，如果 delta 大于现有页面数，则返回到首页,
         });
@@ -723,6 +731,18 @@ export default {
   right: 0;
   margin: auto;
   background: url("https://qg-line.oss-cn-shenzhen.aliyuncs.com/other/share_fail.png")
+    no-repeat top/cover;
+}
+.allclearLayer {
+  width: 500rpx;
+  height: 760rpx;
+  position: fixed;
+  z-index: 81;
+  top: 20%;
+  left: 0;
+  right: 0;
+  margin: auto;
+  background: url("https://gw.alicdn.com/tfs/TB1Tx3mCXzqK1RjSZSgXXcpAVXa-191-291.png")
     no-repeat top/cover;
 }
 </style>
