@@ -9,7 +9,7 @@
         <open-data type="userNickName" class="userName"></open-data>
       </div>
       <div class="quiz-status">已连续答对 {{rightCount}}/{{stageNum}}题</div>
-      <div class="quiz-title" v-if="!quizSuccess && !quizFail">{{currentQuiz.title}}</div>
+      <div class="quiz-title" v-if="!quizSuccess && !quizFail">{{rightCount+1}}. {{currentQuiz.title}}</div>
       <div class="quiz-choice" v-if="!quizSuccess && !quizFail">
         <div class="quiz-choice-body" v-if="currentQuiz.answer_list.length>0">
           <div
@@ -302,7 +302,7 @@ export default {
           lineId: config.lineId,
           token: token,
           checkpoint: this.checkpoint,
-          newExtract: 0
+          newExtract: 1
         }, //请求的参数",
         method: "GET",
         dataType: "json", //如果设为json，会尝试对返回的数据做一次 JSON.parse
@@ -312,8 +312,9 @@ export default {
             if (this.questionList.length > 0) {
               this.questionList.forEach(item => {
                 item.answer_list = selectSort(item.answer_list);
-                this.currentQuiz = this.questionList[0];
               });
+              this.questionList = this.getRandom(this.questionList, 6);
+              this.currentQuiz = this.questionList[0];
             }
           } else {
             wx.showToast({
@@ -382,6 +383,16 @@ export default {
           }
         }
       });
+    },
+    getRandom(arr, count) {
+      let shuffled = arr.slice(0), i = arr.length, min = i - count, temp, index;
+      while(i-- > min) {
+        index = Math.floor((i+1) * Math.random());
+        temp = shuffled[index];
+        shuffled[index] = shuffled[i];
+        shuffled[i] = temp;
+      }
+      return shuffled.slice(min);
     }
   },
   onLoad(option) {
