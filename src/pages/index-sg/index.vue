@@ -545,6 +545,10 @@ export default {
   onHide() {
     this.isPlaying = false;
     this.innerAudioContext.stop();
+  },
+  onUnload() {
+    this.isPlaying = false;
+    this.innerAudioContext.stop();
   }
 };
 </script>
