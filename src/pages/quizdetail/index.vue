@@ -753,7 +753,7 @@ export default {
   left: 0;
   right: 0;
   margin: auto;
-  background: url("https://gw.alicdn.com/tfs/TB1Tx3mCXzqK1RjSZSgXXcpAVXa-191-291.png")
+  background: url("https://gw.alicdn.com/tfs/TB1rS5lCRLoK1RjSZFuXXXn0XXa-1917-2917.png")
     no-repeat top/cover;
 }
 </style>
