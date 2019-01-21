@@ -69,7 +69,7 @@ export default {
       spotLine: "",
       currentIndex: 1,
       url: "/File/Download?fileName=DetailPhoto/01.jpg&fileType=QGLineFile",
-      activeIndex:0,
+      activeIndex: 0
     };
   },
   computed: {},
@@ -281,8 +281,8 @@ export default {
 }
 .container {
   position: relative;
-  background: url("https://gw.alicdn.com/tfs/TB1vzW6nxjaK1RjSZKzXXXVwXXa-640-1142.png")
-    repeat-y top/cover;
+  // background: url("https://gw.alicdn.com/tfs/TB1vzW6nxjaK1RjSZKzXXXVwXXa-640-1142.png")
+  //   repeat-y top/cover;
   color: #fff;
   padding: 20rpx;
 }
@@ -345,7 +345,7 @@ export default {
   border: 8rpx solid #fff;
   padding: 20rpx;
   font-size: 36rpx;
-  background-color: rgba(23, 25, 74, 0.7);
+  // background-color: rgba(23, 25, 74, 0.7);
   &-author {
     text-align: center;
     margin: 40rpx 0 10rpx;
