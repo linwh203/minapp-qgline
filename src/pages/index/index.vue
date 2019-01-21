@@ -665,8 +665,8 @@ export default {
     height: 24rpx;
     display: block;
     position: absolute;
-    right: 0;
-    top: 0;
+    right: -14rpx;
+    top: 16rpx;
     background: url("https://gw.alicdn.com/tfs/TB1.uXenxnaK1RjSZFBXXcW7VXa-28-24.png")
       no-repeat center/100%;
   }
