@@ -110,10 +110,15 @@
         </div>
       </div>
       <img
-        src="https://gw.alicdn.com/tfs/TB1rXqxnq6qK1RjSZFmXXX0PFXa-580-8690.png"
+        src="https://qg-line.oss-cn-shenzhen.aliyuncs.com/list/poetry_background.png"
         mode="widthFix"
         class="scroll-road"
       >
+      <!-- <img
+        src="https://gw.alicdn.com/tfs/TB1rXqxnq6qK1RjSZFmXXX0PFXa-580-8690.png"
+        mode="widthFix"
+        class="scroll-road"
+      >-->
       <!-- <img src="https://gw.alicdn.com/tfs/TB1DPxtqHvpK1RjSZPiXXbmwXXa-569-8806.png" mode="widthFix" class="scroll-road"> -->
       <img
         src="https://gw.alicdn.com/tfs/TB1M91vnAvoK1RjSZFNXXcxMVXa-640-9094.png"
