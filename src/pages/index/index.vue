@@ -40,7 +40,12 @@
     </div>
     <scroll-view scroll-y class="scroll" :scroll-into-view="toView">
       <div class="scroll-title">
-        <img :src="titleSrc" class="scroll-title-pic">
+        <img
+          class="logo"
+          src="https://qg-line.oss-cn-shenzhen.aliyuncs.com/list/natural_logo.png"
+          mode="aspectFit"
+        >
+        <!-- <img :src="titleSrc" class="scroll-title-pic">
         <img
           src="https://gw.alicdn.com/tfs/TB1ZJh6mSzqK1RjSZPxXXc4tVXa-245-52.png"
           class="scroll-title-text"
@@ -48,7 +53,7 @@
         <img
           src="https://gw.alicdn.com/tfs/TB1jUCamRLoK1RjSZFuXXXn0XXa-343-214.png"
           class="scroll-title-body"
-        >
+        >-->
       </div>
       <div class="spot">
         <div
@@ -756,13 +761,17 @@ export default {
   position: relative;
   &-title {
     width: 402rpx;
-    height: 234rpx;
+    height: 278rpx;
     position: absolute;
     top: 0.1%;
     left: 0;
     right: 0;
     margin: auto;
     z-index: 21;
+    .logo {
+      width: 100%;
+      height: 100%;
+    }
     &-body {
       width: 402rpx;
       height: 210rpx;
