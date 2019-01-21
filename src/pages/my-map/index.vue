@@ -674,7 +674,7 @@ export default {
       width: 136rpx;
       height: 134rpx;
       background: #fff;
-      margin: 12rpx 12rpx 0 32rpx;
+      margin: 12rpx 12rpx 0 12rpx;
     }
     &-text {
       // width: 280rpx;
