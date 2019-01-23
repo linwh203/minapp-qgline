@@ -535,9 +535,9 @@ export default {
           this.isIPX = true;
         }
         if (
-          res.model.indexOf("iPhone 6 Plus") ||
-          res.model.indexOf("iPhone 7 Plus") ||
-          res.model.indexOf("iPhone 8 Plus")
+          res.model.indexOf("iPhone 6 Plus") >= 0 ||
+          res.model.indexOf("iPhone 7 Plus") >= 0 ||
+          res.model.indexOf("iPhone 8 Plus") >= 0
         ) {
           this.isPlus = true;
         }

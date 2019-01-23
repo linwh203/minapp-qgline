@@ -42,7 +42,7 @@
 					"id": 1,
 					"name": "问答",
 					"pathName": "pages/quizdetail/main",
-					"query": "checkpoint=1&count=2&share_count=3"
+					"query": "checkpoint=1&count=20&share_count=3"
 				}
 			]
 		}

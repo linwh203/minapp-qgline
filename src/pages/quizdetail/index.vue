@@ -196,12 +196,11 @@ export default {
       if (this.checkpoint >= 5) {
         this.showAllclear = true;
         return;
-      } else {
-        this.checkpoint++;
-      }
-      if (this.count <= 0) {
+      } else if (this.count <= 0) {
         this.restart();
         return;
+      } else {
+        this.checkpoint++;
       }
       this.countNumber = 3;
       this.showCountdown = true;
