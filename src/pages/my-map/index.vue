@@ -18,7 +18,7 @@
       <!-- <cover-view>
         <cover-image src="https://gw.alicdn.com/tfs/TB1JlSPn7zoK1RjSZFlXXai4VXa-2835-2835.jpg"></cover-image>
       </cover-view>-->
-      <cover-view class="message" v-if="isShowOutTip">
+      <cover-view class="message" v-if="isShowOutTip||1">
         <cover-view>您当前不在研习径范围内,</cover-view>
         <cover-view>不能进行定位讲解</cover-view>
       </cover-view>
@@ -707,8 +707,8 @@ export default {
   }
 }
 .message {
-  @w: 80vw;
-  @h: 20vh;
+  @w: 70vw;
+  @h: 15vh;
   width: @w;
   height: @h;
   position: absolute;
@@ -717,10 +717,18 @@ export default {
   background-color: black;
   opacity: 0.6;
   color: white;
-  padding: 5% 15% 0;
+  padding: 0% 5% 0;
   box-sizing: border-box;
   text-align: center;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  div {
+    height: 80%;
+  }
 }
+
 .reset {
   position: absolute;
   bottom: 30rpx;
