@@ -12,8 +12,7 @@
         </div>
       </div>
     </div>
-    <button open-type="share" class="share">
-    </button>
+    <button open-type="share" class="share"></button>
     <scroll-view scroll-y class="index-list">
       <div class="index-list-item">
         <div class="index-list-item-img" @click="startQuiz(1)">
@@ -79,8 +78,8 @@ export default {
       showCover: false,
       ruleLayer: false,
       shareLayer: false,
-      failLayer:false,
-      shareCount:0
+      failLayer: false,
+      shareCount: 0
     };
   },
 
@@ -109,18 +108,27 @@ export default {
         return;
       }
       if (this.score >= id) {
-        let msg = this.score == 5 ? "恭喜你完成所有关卡" : "此关您已经闯关成功,请对下一关进行挑战";
+        let msg =
+          this.score == 5
+            ? "恭喜你完成所有关卡"
+            : "此关您已经闯关成功,请对下一关进行挑战";
         wx.showToast({
           title: msg, //提示的内容,
-          icon: 'none', //图标,
+          icon: "none", //图标,
           duration: 2000, //延迟时间,
           mask: true, //显示透明蒙层，防止触摸穿透,
           success: res => {}
         });
-        return
+        return;
       }
       wx.navigateTo({
-        url: "../quizdetail/main?checkpoint=" + id + "&count=" + this.count + "&share_count=" + this.shareCount
+        url:
+          "../quizdetail/main?checkpoint=" +
+          id +
+          "&count=" +
+          this.count +
+          "&share_count=" +
+          this.shareCount
       });
     },
     login(code) {
@@ -164,7 +172,7 @@ export default {
           this.count = res.data.data.count || 0;
           this.score = res.data.data.score || 0;
           this.coin = res.data.data.coin || 0;
-          this.shareCount = res.data.data.share_count || 0; 
+          this.shareCount = res.data.data.share_count || 0;
         },
         fail: () => {},
         complete: () => {}
@@ -181,10 +189,10 @@ export default {
       this.failLayer = false;
     },
     addCount() {
-      if (this.shareCount = 0) {
+      if ((this.shareCount = 0)) {
         this.failLayer = true;
         this.showCover = true;
-        return
+        return;
       }
       wx.request({
         url: config.base + "quiz/addCount", //开发者服务器接口地址",
@@ -221,14 +229,17 @@ export default {
   created() {},
   mounted() {},
   onLoad(option) {
-    console.log('onload',option)
+    console.log("onload", option);
     const stage = option && option.stage_clear;
-    let msg = stage && stage == 5 ? "恭喜你完成所有关卡" : "此关您已经闯关成功,请对下一关进行挑战";
-    console.log(stage,msg);
-    if(stage){
+    let msg =
+      stage && stage == 5
+        ? "恭喜你完成所有关卡"
+        : "此关您已经闯关成功,请对下一关进行挑战";
+    console.log(stage, msg);
+    if (stage) {
       wx.showToast({
         title: msg, //提示的内容,
-        icon: 'none', //图标,
+        icon: "none", //图标,
         duration: 2000, //延迟时间,
         mask: true, //显示透明蒙层，防止触摸穿透,
         success: res => {}
@@ -254,7 +265,7 @@ export default {
     return {
       title,
       path,
-      imageUrl,
+      imageUrl
     };
   }
 };
@@ -323,9 +334,10 @@ export default {
   }
 }
 .container {
+  height: auto;
   position: relative;
   padding: 20rpx;
-  background: url("https://gw.alicdn.com/tfs/TB1.nJ1nVzqK1RjSZFvXXcB7VXa-640-1008.png")
+  background: url("https://qg-line.oss-cn-shenzhen.aliyuncs.com/other/answer_background.png")
     no-repeat top/cover;
 }
 .index-list {

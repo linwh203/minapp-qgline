@@ -9,7 +9,10 @@
         <open-data type="userNickName" class="userName"></open-data>
       </div>
       <div class="quiz-status">已连续答对 {{rightCount}}/{{stageNum}}题</div>
-      <div class="quiz-title" v-if="!quizSuccess && !quizFail">{{rightCount+1}}. {{currentQuiz.title}}</div>
+      <div
+        class="quiz-title"
+        v-if="!quizSuccess && !quizFail"
+      >{{rightCount+1}}. {{currentQuiz.title}}</div>
       <div class="quiz-choice" v-if="!quizSuccess && !quizFail">
         <div class="quiz-choice-body" v-if="currentQuiz.answer_list.length>0">
           <div
@@ -111,8 +114,8 @@ import { config } from "../../utils/index";
 export default {
   data() {
     return {
-      snum:1,
-      shareCount:0,
+      snum: 1,
+      shareCount: 0,
       prefix: config.prefix,
       stageNum: 6,
       count: 0,
@@ -130,8 +133,8 @@ export default {
       showCover: false,
       ruleLayer: false,
       endLayer: false,
-      failLayer:false,
-      showAllclear:false,
+      failLayer: false,
+      showAllclear: false,
       currentQuiz: {
         id: null,
         title: "1.大陆河边有什么鸟",
@@ -190,15 +193,15 @@ export default {
     },
     newStage() {
       this.count--;
-      if (this.checkpoint >= 5){
+      if (this.checkpoint >= 5) {
         this.showAllclear = true;
-        return
+        return;
       } else {
         this.checkpoint++;
       }
       if (this.count <= 0) {
         this.restart();
-        return
+        return;
       }
       this.countNumber = 3;
       this.showCountdown = true;
@@ -349,10 +352,10 @@ export default {
       this.currentQuiz = this.questionList[0];
     },
     addCount() {
-      if (this.shareCount = 0) {
+      if ((this.shareCount = 0)) {
         this.failLayer = true;
         this.showCover = true;
-        return
+        return;
       }
       wx.request({
         url: config.base + "quiz/addCount", //开发者服务器接口地址",
@@ -385,9 +388,13 @@ export default {
       });
     },
     getRandom(arr, count) {
-      let shuffled = arr.slice(0), i = arr.length, min = i - count, temp, index;
-      while(i-- > min) {
-        index = Math.floor((i+1) * Math.random());
+      let shuffled = arr.slice(0),
+        i = arr.length,
+        min = i - count,
+        temp,
+        index;
+      while (i-- > min) {
+        index = Math.floor((i + 1) * Math.random());
         temp = shuffled[index];
         shuffled[index] = shuffled[i];
         shuffled[i] = temp;
@@ -620,7 +627,7 @@ export default {
   height: 100%;
   position: relative;
   padding: 20rpx;
-  background: url("https://gw.alicdn.com/tfs/TB1.nJ1nVzqK1RjSZFvXXcB7VXa-640-1008.png")
+  background: url("https://qg-line.oss-cn-shenzhen.aliyuncs.com/other/answer_background.png")
     no-repeat top/cover;
   display: flex;
   flex-direction: column;
