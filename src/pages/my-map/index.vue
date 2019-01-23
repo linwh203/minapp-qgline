@@ -665,6 +665,7 @@ export default {
       height: 100%;
     }
     .middle {
+      width: 0;
       flex: 1;
       background-color: #fff;
       display: flex;
