@@ -192,19 +192,20 @@ export default {
       wx.redirectTo({ url: url });
     },
     newStage() {
-      this.count--;
       if (this.checkpoint >= 5) {
         this.showAllclear = true;
         return;
-      } else if (this.count <= 0) {
-        this.restart();
+      } 
+      this.restart();
+      this.count--;
+      if (this.count < 0) {
+        // this.restart();
         return;
       } else {
         this.checkpoint++;
       }
       this.countNumber = 3;
       this.showCountdown = true;
-      this.restart();
       this.getList();
       this.snum++;
       this.timer = setInterval(() => {

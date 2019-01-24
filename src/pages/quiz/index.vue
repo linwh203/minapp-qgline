@@ -122,13 +122,7 @@ export default {
         return;
       }
       wx.navigateTo({
-        url:
-          "../quizdetail/main?checkpoint=" +
-          id +
-          "&count=" +
-          this.count +
-          "&share_count=" +
-          this.shareCount
+        url: `../quizdetail/main?checkpoint=${id}&count=${this.count-1}&share_count=${this.shareCount}`
       });
     },
     login(code) {
@@ -152,6 +146,15 @@ export default {
           this.setStorage("userCode", userCode);
           this.loadCheckPoint(userCode);
           this.userCode = userCode;
+          // wx.request({
+          //   url: 'https://qgx.funsomestudio.com/GuideWechat/quiz/RePerformance', //开发者服务器接口地址",
+          //   data: {token:userCode}, //请求的参数",
+          //   method: 'GET',
+          //   dataType: 'json', //如果设为json，会尝试对返回的数据做一次 JSON.parse
+          //   success: res => {},
+          //   fail: () => {},
+          //   complete: () => {}
+          // });
         },
         fail: err => {
           console.log("hasError", err);
