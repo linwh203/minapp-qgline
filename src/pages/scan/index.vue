@@ -28,7 +28,7 @@
         <p>镜头切换</p>
       </div>
     </div>
-    <div class="modal" v-if="showResult" @click="init"></div>
+    <div class="modal" v-if="showResult" @click="initFromModal"></div>
     <div class="waiting" v-if="isWaiting">
       <div class="text">努力识别中...</div>
       <img src="../../assets/waiting.png" alt>
@@ -94,6 +94,12 @@ export default {
       this.cameraDirection == "back"
         ? (this.cameraDirection = "front")
         : (this.cameraDirection = "back");
+    },
+    initFromModal() {
+      if (this.isWaiting) {
+        return;
+      }
+      this.init();
     },
     init() {
       if (this.isWaiting) {

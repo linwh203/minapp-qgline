@@ -18,7 +18,7 @@
       <!-- <cover-view>
         <cover-image src="https://gw.alicdn.com/tfs/TB1JlSPn7zoK1RjSZFlXXai4VXa-2835-2835.jpg"></cover-image>
       </cover-view>-->
-      <cover-view class="message" v-if="isShowOutTip||1">
+      <cover-view class="message" v-if="isShowOutTip">
         <cover-view>您当前不在研习径范围内,</cover-view>
         <cover-view>不能进行定位讲解</cover-view>
       </cover-view>
