@@ -205,7 +205,6 @@ export default {
         }
         return;
       }
-      // this.restart();
       const token = wx.getStorageSync("userCode");
       this.count--;
       this.checkpoint++;
@@ -239,13 +238,6 @@ export default {
               this.index = 0;
               this.countNumber = 3;
               this.showCountdown = true;
-              // wx.showToast({
-              //   title: `${this.checkpoint},${this.count};${this.snum}`, //提示的内容,
-              //   icon: 'success', //图标,
-              //   duration: 2000, //延迟时间,
-              //   mask: true, //显示透明蒙层，防止触摸穿透,
-              //   success: res => {}
-              // });
               this.timer = setInterval(() => {
                 if (this.countNumber > 0) {
                   this.countNumber--;
@@ -395,7 +387,7 @@ export default {
       });
     },
     restart() {
-      if (this.count <= 0) {
+      if (this.count < 0) {
         this.showCover = true;
         if (this.shareCount == 0) {
           this.failLayer = true;
@@ -473,7 +465,6 @@ export default {
     this.userCode = wx.getStorageSync("userCode");
     this.showCountdown = true;
     this.getList();
-    // this.restart();
     if (this.count < 0) {
       this.showCover = true;
       if (this.shareCount == 0) {
