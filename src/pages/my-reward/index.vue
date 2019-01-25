@@ -197,7 +197,7 @@ export default {
         success: res => {
           console.log(res.data);
           if (res.data.res_code == 0) {
-            this.level = res.data.data.count;
+            this.level = res.data.data.count || 1;
           } else {
             wx.showToast({
               title: res.data.res_msg, //提示的内容,
