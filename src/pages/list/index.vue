@@ -16,7 +16,8 @@
         </div>
         <div class="nav-line"></div>
       </div>
-      <div class="nav-border"></div>
+      <div class="nav-border left"></div>
+      <div class="nav-border right"></div>
     </div>
     <div class="main" v-for="(item,index) in articleData" :key="index">
       <div class="article" v-if="item">
@@ -246,6 +247,7 @@ export default {
     // this.loadDetail();
   },
   onShareAppMessage(result) {
+    console.log("share");
     let title = "青谷研习径";
     let path =
       "/pages/index/main?share_from=list&spot_index=" + (this.currentIndex + 1);
@@ -456,12 +458,20 @@ export default {
   &-border {
     position: absolute;
     top: 38%;
-    left: 0;
-    width: 100%;
+    // left: 0;
+    // width: 100%;
+    width: 8rpx;
     box-sizing: border-box;
     height: @h / 2;
-    border-left: 8rpx solid #fff;
-    border-right: 8rpx solid #fff;
+    background-color: #fff;
+    // border-left: 8rpx solid #fff;
+    // border-right: 8rpx solid #fff;
+    &.left {
+      left: 0;
+    }
+    &.right {
+      right: 0;
+    }
   }
 }
 .share-box {

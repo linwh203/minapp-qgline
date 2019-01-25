@@ -30,7 +30,7 @@
     "navigationBarBackgroundColor": "#292770",
     "backgroundColor": "#292770",
     "navigationBarTitleText": "青谷研习径",
-    "navigationBarTextStyle": "#ffffff"
+    "navigationBarTextStyle": "white"
   },
   "permission": {
     "scope.userLocation": {
