@@ -121,6 +121,18 @@ export default {
         });
         return;
       }
+      if (this.count <= 0) {
+        // this.shareLayer = true;
+        // this.showCover = true;
+        wx.showToast({
+          title: '已经没有挑战次数了噢~', //提示的内容,
+          icon: 'none', //图标,
+          duration: 2000, //延迟时间,
+          mask: true, //显示透明蒙层，防止触摸穿透,
+          success: res => {}
+        });
+        return
+      }
       wx.navigateTo({
         url: `../quizdetail/main?checkpoint=${id}&count=${this.count-1}&share_count=${this.shareCount}`
       });
