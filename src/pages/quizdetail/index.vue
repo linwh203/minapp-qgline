@@ -473,7 +473,16 @@ export default {
     this.userCode = wx.getStorageSync("userCode");
     this.showCountdown = true;
     this.getList();
-    this.restart();
+    // this.restart();
+    if (this.count < 0) {
+      this.showCover = true;
+      if (this.shareCount == 0) {
+        this.failLayer = true;
+      } else {
+        this.ruleLayer = true;
+      }
+      return;
+    }
     this.timer = setInterval(() => {
       if (this.countNumber > 0) {
         this.countNumber--;
