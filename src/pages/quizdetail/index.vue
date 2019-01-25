@@ -196,28 +196,90 @@ export default {
         this.showAllclear = true;
         return;
       } 
-      this.restart();
-      this.count--;
-      if (this.count < 0) {
-        // this.restart();
-        return;
-      } else {
-        this.checkpoint++;
-      }
-      this.countNumber = 3;
-      this.showCountdown = true;
-      this.getList();
-      this.snum++;
-      this.timer = setInterval(() => {
-        if (this.countNumber > 0) {
-          this.countNumber--;
+      if (this.count <= 0) {
+        this.showCover = true;
+        if (this.shareCount == 0) {
+          this.failLayer = true;
         } else {
-          this.showCountdown = false;
-          clearInterval(this.timer);
-          return;
+          this.ruleLayer = true;
         }
-      }, 1000);
-      // this.bindTab(`../quiz/main?stage_clear=${this.checkpoint}`);
+        return;
+      }
+      // this.restart();
+      const token = wx.getStorageSync("userCode");
+      this.count--;
+      this.checkpoint++;
+      // this.getList();
+      wx.request({
+        url: config.base + "quiz/list", //开发者服务器接口地址",
+        data: {
+          lineId: config.lineId,
+          token: token,
+          checkpoint: this.checkpoint,
+          newExtract: 1
+        }, //请求的参数",
+        method: "GET",
+        dataType: "json", //如果设为json，会尝试对返回的数据做一次 JSON.parse
+        success: res => {
+          if (res.data.res_code == 0) {
+            this.questionList = res.data.data;
+            if (this.questionList.length > 0) {
+              this.questionList.forEach(item => {
+                item.answer_list = selectSort(item.answer_list);
+              });
+              this.questionList = this.getRandom(this.questionList, 6);
+              this.currentQuiz = this.questionList[0];
+              this.snum++;
+              this.quizFail = false;
+              this.quizSuccess = false;
+              this.choiceIndex = -1;
+              this.showRight = -1;
+              this.showWrong = -1;
+              this.rightCount = 0;
+              this.index = 0;
+              this.countNumber = 3;
+              this.showCountdown = true;
+              // wx.showToast({
+              //   title: `${this.checkpoint},${this.count};${this.snum}`, //提示的内容,
+              //   icon: 'success', //图标,
+              //   duration: 2000, //延迟时间,
+              //   mask: true, //显示透明蒙层，防止触摸穿透,
+              //   success: res => {}
+              // });
+              this.timer = setInterval(() => {
+                if (this.countNumber > 0) {
+                  this.countNumber--;
+                } else {
+                  this.showCountdown = false;
+                  clearInterval(this.timer);
+                  this.timer = null;
+                  return;
+                }
+              }, 1000);
+            }
+          } else {
+            wx.showToast({
+              title: res.data.res_msg,
+              duration: 1000,
+              mask: true,
+              success: res => {}
+            });
+          }
+        },
+        fail: () => {},
+        complete: () => {}
+      });
+      function selectSort(arr) {
+        var len = arr.length;
+        for (let i = 0; i < len - 1; i++) {
+          for (let j = i; j < len; j++) {
+            if (arr[j].answernum < arr[i].answernum) {
+              [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+          }
+        }
+        return arr;
+      }
     },
     chooseItem(index, item) {
       this.choiceIndex = index;
@@ -333,7 +395,7 @@ export default {
       });
     },
     restart() {
-      if (this.count == 0) {
+      if (this.count <= 0) {
         this.showCover = true;
         if (this.shareCount == 0) {
           this.failLayer = true;
@@ -408,8 +470,6 @@ export default {
     this.snum = this.checkpoint;
     this.count = option.count;
     this.shareCount = option.share_count;
-  },
-  onShow(option) {
     this.userCode = wx.getStorageSync("userCode");
     this.showCountdown = true;
     this.getList();
@@ -420,9 +480,13 @@ export default {
       } else {
         this.showCountdown = false;
         clearInterval(this.timer);
+        this.timer = null;
         return;
       }
     }, 1000);
+  },
+  onShow(option) {
+    
   },
   onHide() {},
   onUnload() {
