@@ -249,8 +249,11 @@ export default {
   onShareAppMessage(result) {
     console.log("share");
     let title = "青谷研习径";
-    let path =
-      "/pages/index/main?share_from=list&spot_index=" + (this.currentIndex + 1);
+    let spot_index =
+      this.spotLine === "shige"
+        ? this.currentIndex + 1 + 89
+        : this.currentIndex + 1;
+    let path = "/pages/index/main?share_from=list&spot_index=" + spot_index;
     let imageUrl = "../../assets/list-pic-1.png";
     // let desc = '这里是描述哦'
     // if (result.from === "button") {
