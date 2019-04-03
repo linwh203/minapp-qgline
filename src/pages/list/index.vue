@@ -28,7 +28,7 @@
         <div v-else>
           <div class="article-title-full">{{item.title}}</div>
         </div>
-        <div class="article-text" v-html="item.content"></div>
+        <div class="article-text" :class="{'text-center':activeIndex>=89}" v-html="item.content"></div>
       </div>
 
       <img class="article-img" :src="prefix + item.url" v-if="item.url" mode="widthFix">
@@ -367,6 +367,9 @@ export default {
     font-size: 28rpx;
     line-height: 50rpx;
     letter-spacing: 2rpx;
+    &.text-center {
+      text-align: center;
+    }
   }
   &-img {
     border-left: 8rpx solid #fff;
