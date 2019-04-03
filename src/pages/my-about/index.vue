@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <scroll-view scroll-y class="article-view">
-      <img mode="widthFix" src="../../assets/aboutus.png">
+      <img mode="widthFix" src="https://qg-line.oss-cn-shenzhen.aliyuncs.com/other/Legal.jpg">
     </scroll-view>
   </div>
 </template>
